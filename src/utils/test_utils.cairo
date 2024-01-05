@@ -46,14 +46,14 @@ fn setup_world() -> (IWorldDispatcher, IGameActionsDispatcher, ContractAddress) 
     let contract_address = world
         .deploy_contract('salt', actions::TEST_CLASS_HASH.try_into().unwrap());
     let actions_system = IGameActionsDispatcher { contract_address };
-    let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address]);
+    let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
 
     (world, actions_system, nft)
 }
 
 fn deploy_nft(calldata: Array<felt252>) -> ContractAddress {
     let (address, _) = starknet::deploy_syscall(
-        ERC721::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
+        ERC721NoGame::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
     )
         .unwrap();
     address

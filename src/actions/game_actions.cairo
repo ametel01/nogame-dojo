@@ -1,6 +1,12 @@
 #[starknet::interface]
 trait IGameActions<TContractState> {
-    fn spawn(self: @TContractState, owner: starknet::ContractAddress, price: u128, speed: usize);
+    fn spawn(
+        self: @TContractState,
+        owner: starknet::ContractAddress,
+        nft_address: starknet::ContractAddress,
+        price: u128,
+        speed: usize
+    );
     fn generate_planet(self: @TContractState);
 }
 
@@ -117,9 +123,9 @@ mod tests {
 
     #[test]
     fn test_spawn() {
-        let (world, actions_system) = setup_world();
+        let (world, actions_system, nft) = setup_world();
 
-        actions_system.spawn(OWNER(), PRICE, GAME_SPEED);
+        actions_system.spawn(OWNER(), nft, PRICE, GAME_SPEED);
         actions_system.generate_planet();
 
         let game_setup = get!(world, constants::GAME_ID, (GameSetup));
@@ -134,8 +140,8 @@ mod tests {
 
     #[test]
     fn test_generate_planet() {
-        let (world, actions_system) = setup_world();
-        actions_system.spawn(OWNER(), PRICE, GAME_SPEED);
+        let (world, actions_system, nft) = setup_world();
+        actions_system.spawn(OWNER(), nft, PRICE, GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions_system.generate_planet();
