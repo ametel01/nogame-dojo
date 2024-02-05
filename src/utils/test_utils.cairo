@@ -18,6 +18,8 @@ use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, P
 use nogame::compound::actions::{
     compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
 };
+use nogame::tech::models::{PlanetTechs, planet_techs};
+use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
@@ -55,6 +57,7 @@ fn setup_world() -> (
     ICompoundActionsDispatcher,
     IGameActionsDispatcher,
     IPlanetActionsDispatcher,
+    ITechActionsDispatcher,
     ContractAddress,
     ContractAddress
 ) {
@@ -69,6 +72,7 @@ fn setup_world() -> (
         position_to_planet::TEST_CLASS_HASH,
         planet_resource::TEST_CLASS_HASH,
         planet_resource_timer::TEST_CLASS_HASH,
+        planet_techs::TEST_CLASS_HASH
     ];
 
     // deploy world with models
@@ -86,6 +90,10 @@ fn setup_world() -> (
     let contract_address = world
         .deploy_contract('salt', planetactions::TEST_CLASS_HASH.try_into().unwrap());
     let planet_actions = IPlanetActionsDispatcher { contract_address };
+
+    let contract_address = world
+        .deploy_contract('salt', techactions::TEST_CLASS_HASH.try_into().unwrap());
+    let tech_actions = ITechActionsDispatcher { contract_address };
 
     let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
     let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
@@ -113,7 +121,7 @@ fn setup_world() -> (
     set_contract_address(ACCOUNT_5());
     eth_contract.approve(planet_actions.contract_address, 10 * E18);
 
-    (world, compound_actions, game_actions, planet_actions, nft, eth)
+    (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth)
 }
 
 fn deploy_nft(calldata: Array<felt252>) -> ContractAddress {
@@ -134,7 +142,8 @@ fn deploy_eth(calldata: Array<felt252>) -> ContractAddress {
 
 #[test]
 fn test_setup() {
-    let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
+    let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+        setup_world();
     set_contract_address(planet_actions.contract_address);
     IERC20CamelDispatcher { contract_address: eth }.transferFrom(ACCOUNT_1(), OWNER(), 1.into());
 }

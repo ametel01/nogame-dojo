@@ -9,9 +9,6 @@ trait IGameActions<TContractState> {
         eth_address: starknet::ContractAddress,
         price: u128,
         speed: usize,
-        compound: ContractAddress,
-        game: ContractAddress,
-        planet: ContractAddress,
     );
 }
 
@@ -27,9 +24,7 @@ mod gameactions {
     use super::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::data::types::{Position};
-    use nogame::game::models::{
-        GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameSystems
-    };
+    use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -46,9 +41,6 @@ mod gameactions {
             eth_address: starknet::ContractAddress,
             price: u128,
             speed: usize,
-            compound: ContractAddress,
-            game: ContractAddress,
-            planet: ContractAddress,
         ) {
             let world = self.world_dispatcher.read();
 
@@ -67,7 +59,6 @@ mod gameactions {
                     GamePlanetCount { planet_id: constants::GAME_ID, count: 0 },
                 )
             );
-            set!(world, GameSystems { id: constants::GAME_ID, compound, game, planet });
         }
     }
 }
@@ -89,18 +80,9 @@ mod tests {
 
     #[test]
     fn test_spawn() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                PRICE,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
 
         let game_setup = get!(world, constants::GAME_ID, (GameSetup));
         assert!(game_setup.owner == OWNER(), "test_spawn wrong game owner");

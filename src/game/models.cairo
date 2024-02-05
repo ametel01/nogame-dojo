@@ -17,15 +17,6 @@ struct GameSetup {
 }
 
 #[derive(Model, Drop, Serde)]
-struct GameSystems {
-    #[key]
-    id: u8,
-    compound: ContractAddress,
-    game: ContractAddress,
-    planet: ContractAddress,
-}
-
-#[derive(Model, Drop, Serde)]
 struct GamePlanet {
     #[key]
     owner: ContractAddress,

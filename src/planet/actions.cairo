@@ -4,7 +4,6 @@ use nogame::data::types::ERC20s;
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
     fn get_planet_price(self: @TContractState) -> u128;
-    fn get_resources_available(self: @TContractState, planet_id: u32) -> ERC20s;
 }
 
 
@@ -16,8 +15,10 @@ mod planetactions {
     use super::IPlanetActions;
 
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-
+    use nogame::compound::models::PlanetCompounds;
+    use nogame::compound::library as compound;
     use nogame::data::types::{Position, ERC20s};
+    use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
@@ -71,15 +72,6 @@ mod planetactions {
                 return auction_price;
             }
         }
-
-        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            ERC20s {
-                steel: get!(world, (planet_id, Names::Resource::STEEL), PlanetResource).amount,
-                quartz: get!(world, (planet_id, Names::Resource::QUARTZ), PlanetResource).amount,
-                tritium: get!(world, (planet_id, Names::Resource::TRITIUM), PlanetResource).amount
-            }
-        }
     }
 
     fn get_price(price: u128, time_elapsed: u64, item_sold: u32) -> u128 {
@@ -120,18 +112,9 @@ mod tests {
 
     #[test]
     fn test_generate_planet() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                PRICE,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
@@ -164,18 +147,9 @@ mod tests {
 
     #[test]
     fn test_get_planet_price() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::STARTING_PRICE_SCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::STARTING_PRICE_SCALED, GAME_SPEED,);
         assert(planet_actions.get_planet_price() == 22024160000000002, 'wrong price-1');
 
         set_contract_address(ACCOUNT_1());

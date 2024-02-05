@@ -3,8 +3,6 @@ use nogame::data::types::{ERC20s, CompoundUpgradeType, CompoundsLevels};
 #[starknet::interface]
 trait ICompoundActions<TState> {
     fn process_upgrade(ref self: TState, component: CompoundUpgradeType, quantity: u8);
-    fn get_compound_levels(self: @TState, planet_id: u32) -> CompoundsLevels;
-    fn collect_resources(ref self: TState);
 }
 
 #[dojo::contract]
@@ -13,7 +11,7 @@ mod compoundactions {
     use nogame::libraries::names::Names;
     use nogame::compound::{library as compound, models::{PlanetCompounds}};
     use nogame::defence::models::{PlanetDefences};
-    use nogame::game::models::{GamePlanet, GameSetup, GameSystems};
+    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::libraries::constants;
     use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
@@ -28,7 +26,10 @@ mod compoundactions {
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             self.upgrade_component(planet_id, component, quantity);
         }
+    }
 
+    #[generate_trait]
+    impl Private of PrivateTrait {
         fn get_compound_levels(self: @ContractState, planet_id: u32) -> CompoundsLevels {
             let world = self.world_dispatcher.read();
             CompoundsLevels {
@@ -41,25 +42,120 @@ mod compoundactions {
             }
         }
 
-        fn collect_resources(ref self: ContractState) {
+        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
             let world = self.world_dispatcher.read();
-            let caller = get_caller_address();
-            let planet_id = get!(world, caller, GamePlanet).planet_id;
-            self.collect(planet_id);
+            ERC20s {
+                steel: get!(world, (planet_id, Names::Resource::STEEL), PlanetResource).amount,
+                quartz: get!(world, (planet_id, Names::Resource::QUARTZ), PlanetResource).amount,
+                tritium: get!(world, (planet_id, Names::Resource::TRITIUM), PlanetResource).amount
+            }
         }
-    }
 
-    #[generate_trait]
-    impl Private of PrivateTrait {
+        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
+            let world = self.world_dispatcher.read();
+            let time_now = starknet::get_block_timestamp();
+            let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
+            let time_elapsed = time_now - last_collection_time;
+
+            let steel_level = get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds)
+                .level;
+            let quartz_level = get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds)
+                .level;
+            let tritium_level = get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds)
+                .level;
+            let energy_level = get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds)
+                .level;
+
+            let position = get!(world, planet_id, PlanetPosition).position;
+            let temp = compound::calculate_avg_temperature(position.orbit);
+            let speed = get!(world, constants::GAME_ID, GameSetup).speed;
+            let steel_available = compound::production::steel(steel_level)
+                * speed.into()
+                * time_elapsed.into()
+                / constants::HOUR.into();
+
+            let quartz_available = compound::production::quartz(quartz_level)
+                * speed.into()
+                * time_elapsed.into()
+                / constants::HOUR.into();
+
+            let tritium_available = compound::production::tritium(tritium_level, temp, speed.into())
+                * time_elapsed.into()
+                / constants::HOUR.into();
+            let energy_available = compound::production::energy(energy_level);
+            let celestia_production = compound::celestia_production(position.orbit);
+            let celestia_available = get!(
+                world, (planet_id, Names::Defence::CELESTIA), PlanetDefences
+            )
+                .count;
+            let energy_required = compound::consumption::base(steel_level)
+                + compound::consumption::base(quartz_level)
+                + compound::consumption::base(tritium_level);
+            if energy_available
+                + (celestia_production.into() * celestia_available).into() < energy_required {
+                let _steel = compound::production_scaler(
+                    steel_available, energy_available, energy_required
+                );
+                let _quartz = compound::production_scaler(
+                    quartz_available, energy_available, energy_required
+                );
+                let _tritium = compound::production_scaler(
+                    tritium_available, energy_available, energy_required
+                );
+
+                return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
+            }
+
+            ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
+        }
+
+        fn collect(ref self: ContractState, planet_id: u32) {
+            let world = self.world_dispatcher.read();
+            let available = self.get_resources_available(planet_id);
+            let collectible = self.calculate_production(planet_id);
+            set!(
+                world,
+                (
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::STEEL,
+                        amount: available.steel + collectible.steel
+                    },
+                )
+            );
+            set!(
+                world,
+                (
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: available.quartz + collectible.quartz
+                    },
+                )
+            );
+            set!(
+                world,
+                (
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: available.tritium + collectible.tritium
+                    },
+                )
+            );
+            set!(
+                world,
+                (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },)
+            );
+        }
+
         fn upgrade_component(
             ref self: ContractState, planet_id: u32, component: CompoundUpgradeType, quantity: u8
         ) -> ERC20s {
             let world = self.world_dispatcher.read();
-            let planet = get!(world, constants::GAME_ID, GameSystems).planet;
             let compounds = self.get_compound_levels(planet_id);
             self.collect(planet_id);
-            let available_resources = IPlanetActionsDispatcher { contract_address: planet }
-                .get_resources_available(planet_id);
+            let available_resources = self.get_resources_available(planet_id);
             let mut cost: ERC20s = Default::default();
             match component {
                 CompoundUpgradeType::SteelMine => {
@@ -156,99 +252,6 @@ mod compoundactions {
             cost
         }
 
-        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            let time_now = starknet::get_block_timestamp();
-            let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
-            let time_elapsed = time_now - last_collection_time;
-            let compounds_levels = self.get_compound_levels(planet_id);
-            let position = get!(world, planet_id, PlanetPosition).position;
-            let temp = compound::calculate_avg_temperature(position.orbit);
-            let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-            let steel_available = compound::production::steel(compounds_levels.steel)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let quartz_available = compound::production::quartz(compounds_levels.quartz)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let tritium_available = compound::production::tritium(
-                compounds_levels.tritium, temp, speed.into()
-            )
-                * time_elapsed.into()
-                / constants::HOUR.into();
-            let energy_available = compound::production::energy(compounds_levels.energy);
-            let celestia_production = compound::celestia_production(position.orbit);
-            let celestia_available = get!(
-                world, (planet_id, Names::Defence::CELESTIA), PlanetDefences
-            )
-                .count;
-            let energy_required = compound::consumption::base(compounds_levels.steel)
-                + compound::consumption::base(compounds_levels.quartz)
-                + compound::consumption::base(compounds_levels.tritium);
-            if energy_available
-                + (celestia_production.into() * celestia_available).into() < energy_required {
-                let _steel = compound::production_scaler(
-                    steel_available, energy_available, energy_required
-                );
-                let _quartz = compound::production_scaler(
-                    quartz_available, energy_available, energy_required
-                );
-                let _tritium = compound::production_scaler(
-                    tritium_available, energy_available, energy_required
-                );
-
-                return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
-            }
-
-            ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
-        }
-
-        fn collect(ref self: ContractState, planet_id: u32) {
-            let world = self.world_dispatcher.read();
-            let planet = get!(world, constants::GAME_ID, GameSystems).planet;
-            let available = IPlanetActionsDispatcher { contract_address: planet }
-                .get_resources_available(planet_id);
-            let collectible = self.calculate_production(planet_id);
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + collectible.steel
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + collectible.quartz
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + collectible.tritium
-                    },
-                )
-            );
-            set!(
-                world,
-                (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },)
-            );
-        }
-
         fn pay_resources(ref self: ContractState, planet_id: u32, available: ERC20s, cost: ERC20s) {
             let world = self.world_dispatcher.read();
             if cost.steel > 0 {
@@ -314,18 +317,9 @@ mod tests {
 
     #[test]
     fn test_upgrade_steel_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
@@ -341,18 +335,9 @@ mod tests {
 
     #[test]
     fn test_upgrade_quartz_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
@@ -364,18 +349,9 @@ mod tests {
 
     #[test]
     fn test_upgrade_tritium_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
@@ -387,18 +363,9 @@ mod tests {
 
     #[test]
     fn test_upgrade_energy_plant_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
@@ -410,25 +377,16 @@ mod tests {
 
     #[test]
     fn test_upgrade_lab_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
-        compound_actions.process_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
-        set_block_timestamp(DAY * 7);
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 400 });
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 200 });
+
         compound_actions.process_upgrade(CompoundUpgradeType::Lab(()), 1);
         let lab = get!(world, (1, Names::Compound::LAB), PlanetCompounds).level;
         assert(lab == 1, 'Lab level should be 1');
@@ -436,18 +394,9 @@ mod tests {
 
     #[test]
     fn test_upgrade_dockyard_success() {
-        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
-        game_actions
-            .spawn(
-                OWNER(),
-                nft,
-                eth,
-                constants::MIN_PRICE_UNSCALED,
-                GAME_SPEED,
-                compound_actions.contract_address,
-                game_actions.contract_address,
-                planet_actions.contract_address
-            );
+        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
+            setup_world();
+        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
         planet_actions.generate_planet();
