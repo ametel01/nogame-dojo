@@ -235,6 +235,10 @@ mod compoundactions {
                     },
                 )
             );
+            set!(
+                world,
+                (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },)
+            );
         }
 
         fn pay_resources(ref self: ContractState, planet_id: u32, available: ERC20s, cost: ERC20s) {
