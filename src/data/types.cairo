@@ -17,7 +17,7 @@ struct Position {
     orbit: u8,
 }
 
-#[derive(Copy, Default, Drop, Serde, PartialEq, AddEq, SubEq, Introspect, Clone, Debug)]
+#[derive(Copy, Default, Drop, Serde, Introspect, Print)]
 struct ERC20s {
     steel: u128,
     quartz: u128,
@@ -65,41 +65,6 @@ enum CompoundUpgradeType {
     EnergyPlant,
     Lab,
     Dockyard,
-}
-
-mod Names {
-    const STEEL_MINE: felt252 = 1;
-    const QUARTZ_MINE: felt252 = 2;
-    const TRITIUM_MINE: felt252 = 3;
-    const ENERGY_PLANT: felt252 = 4;
-    const LAB: felt252 = 5;
-    const DOCKYARD: felt252 = 6;
-    const ENERGY_TECH: felt252 = 7;
-    const DIGITAL: felt252 = 8;
-    const BEAM_TECH: felt252 = 9;
-    const ARMOUR: felt252 = 10;
-    const ION: felt252 = 11;
-    const PLASMA_TECH: felt252 = 12;
-    const WEAPONS: felt252 = 13;
-    const SHIELD: felt252 = 14;
-    const SPACETIME: felt252 = 15;
-    const COMBUSTION: felt252 = 16;
-    const THRUST: felt252 = 17;
-    const WARP: felt252 = 18;
-    const CARRIER: felt252 = 19;
-    const SCRAPER: felt252 = 20;
-    const CELESTIA: felt252 = 21;
-    const SPARROW: felt252 = 22;
-    const FRIGATE: felt252 = 23;
-    const ARMADE: felt252 = 24;
-    const BLASTER: felt252 = 25;
-    const BEAM: felt252 = 26;
-    const ASTRAL: felt252 = 27;
-    const PLASMA: felt252 = 28;
-    const EXOCRAFT: felt252 = 29;
-    const STEEL: felt252 = 30;
-    const QUARTZ: felt252 = 31;
-    const TRITIUM: felt252 = 32;
 }
 
 impl ERC20Zeroable of Zeroable<ERC20s> {
@@ -156,10 +121,60 @@ fn erc20_mul(a: ERC20s, multiplicator: u128) -> ERC20s {
     }
 }
 
-impl ERC20Print of PrintTrait<ERC20s> {
-    fn print(self: ERC20s) {
-        self.steel.print();
-        self.quartz.print();
-        self.tritium.print();
-    }
+// impl ERC20Print of PrintTrait<ERC20s> {
+//     fn print(self: ERC20s) {
+//         self.steel.print();
+//         self.quartz.print();
+//         self.tritium.print();
+//     }
+// }
+
+#[derive(Copy, Default, Drop, Serde)]
+struct TechLevels {
+    energy: u8,
+    digital: u8,
+    beam: u8,
+    armour: u8,
+    ion: u8,
+    plasma: u8,
+    weapons: u8,
+    shield: u8,
+    spacetime: u8,
+    combustion: u8,
+    thrust: u8,
+    warp: u8,
+    exocraft: u8,
+}
+
+#[derive(Copy, Drop, Serde)]
+struct TechsCost {
+    energy: ERC20s,
+    digital: ERC20s,
+    beam: ERC20s,
+    armour: ERC20s,
+    ion: ERC20s,
+    plasma: ERC20s,
+    weapons: ERC20s,
+    shield: ERC20s,
+    spacetime: ERC20s,
+    combustion: ERC20s,
+    thrust: ERC20s,
+    warp: ERC20s,
+}
+
+#[derive(Drop, Serde)]
+enum TechUpgradeType {
+    Energy,
+    Digital,
+    Beam,
+    Armour,
+    Ion,
+    Plasma,
+    Weapons,
+    Shield,
+    Spacetime,
+    Combustion,
+    Thrust,
+    Warp,
+    Exocraft,
 }

@@ -4,6 +4,7 @@ use nogame::data::types::{ERC20s, CompoundUpgradeType, CompoundsLevels};
 trait ICompoundActions<TState> {
     fn process_upgrade(ref self: TState, component: CompoundUpgradeType, quantity: u8);
     fn get_compound_levels(self: @TState, planet_id: u32) -> CompoundsLevels;
+    fn collect_resources(ref self: TState);
 }
 
 #[dojo::contract]
@@ -39,6 +40,13 @@ mod compoundactions {
                 dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level
             }
         }
+
+        fn collect_resources(ref self: ContractState) {
+            let world = self.world_dispatcher.read();
+            let caller = get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            self.collect(planet_id);
+        }
     }
 
     #[generate_trait]
@@ -49,7 +57,7 @@ mod compoundactions {
             let world = self.world_dispatcher.read();
             let planet = get!(world, constants::GAME_ID, GameSystems).planet;
             let compounds = self.get_compound_levels(planet_id);
-            self.collect_resources(planet_id);
+            self.collect(planet_id);
             let available_resources = IPlanetActionsDispatcher { contract_address: planet }
                 .get_resources_available(planet_id);
             let mut cost: ERC20s = Default::default();
@@ -199,7 +207,7 @@ mod compoundactions {
             ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
         }
 
-        fn collect_resources(ref self: ContractState, planet_id: u32) {
+        fn collect(ref self: ContractState, planet_id: u32) {
             let world = self.world_dispatcher.read();
             let planet = get!(world, constants::GAME_ID, GameSystems).planet;
             let available = IPlanetActionsDispatcher { contract_address: planet }

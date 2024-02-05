@@ -28,6 +28,7 @@ mod Names {
         const COMBUSTION: felt252 = 10;
         const THRUST: felt252 = 11;
         const WARP: felt252 = 12;
+        const EXOCRAFT: felt252 = 13;
     }
 
     mod Fleet {

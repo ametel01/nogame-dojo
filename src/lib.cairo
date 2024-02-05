@@ -36,6 +36,7 @@ mod planet {
 
 mod tech {
     mod actions;
+    mod library;
     mod models;
 }
 
