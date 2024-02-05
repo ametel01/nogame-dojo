@@ -176,7 +176,6 @@ mod tests {
                 game_actions.contract_address,
                 planet_actions.contract_address
             );
-        planet_actions.get_planet_price().print();
         assert(planet_actions.get_planet_price() == 22024160000000002, 'wrong price-1');
 
         set_contract_address(ACCOUNT_1());

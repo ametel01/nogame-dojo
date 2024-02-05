@@ -17,6 +17,7 @@ mod compoundactions {
     use nogame::libraries::constants;
     use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
     use starknet::{ContractAddress, get_caller_address};
+    use debug::PrintTrait;
 
     #[abi(embed_v0)]
     impl CompoundActionsImpl of super::ICompoundActions<ContractState> {
@@ -48,6 +49,7 @@ mod compoundactions {
             let world = self.world_dispatcher.read();
             let planet = get!(world, constants::GAME_ID, GameSystems).planet;
             let compounds = self.get_compound_levels(planet_id);
+            self.collect_resources(planet_id);
             let available_resources = IPlanetActionsDispatcher { contract_address: planet }
                 .get_resources_available(planet_id);
             let mut cost: ERC20s = Default::default();
@@ -55,7 +57,6 @@ mod compoundactions {
                 CompoundUpgradeType::SteelMine => {
                     cost = compound::cost::steel(compounds.steel, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -71,7 +72,6 @@ mod compoundactions {
                 CompoundUpgradeType::QuartzMine => {
                     cost = compound::cost::quartz(compounds.quartz, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -87,7 +87,6 @@ mod compoundactions {
                 CompoundUpgradeType::TritiumMine => {
                     cost = compound::cost::tritium(compounds.tritium, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -103,7 +102,6 @@ mod compoundactions {
                 CompoundUpgradeType::EnergyPlant => {
                     cost = compound::cost::energy(compounds.energy, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -119,7 +117,6 @@ mod compoundactions {
                 CompoundUpgradeType::Lab => {
                     cost = compound::cost::lab(compounds.lab, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -135,7 +132,6 @@ mod compoundactions {
                 CompoundUpgradeType::Dockyard => {
                     cost = compound::cost::dockyard(compounds.dockyard, quantity);
                     assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.collect_resources(planet_id);
                     self.pay_resources(planet_id, available_resources, cost);
                     set!(
                         world,
@@ -326,8 +322,6 @@ mod tests {
         let steel_mine = get!(world, (1, Names::Compound::STEEL), PlanetCompounds).level;
         let steel_after = get!(world, (1, Names::Resource::STEEL), PlanetResource).amount;
         let quartz_after = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
-        steel_after.print();
-        quartz_after.print();
         assert(steel_mine == 1, 'Steel mine level should be 1');
         assert(steel_after == 440, 'Steel amount should be 440');
         assert(quartz_after == 285, 'Quartz amount should be 285');
@@ -352,8 +346,102 @@ mod tests {
         planet_actions.generate_planet();
 
         compound_actions.process_upgrade(CompoundUpgradeType::QuartzMine(()), 1);
-        let steel_mine = get!(world, (1, Names::Compound::QUARTZ), PlanetCompounds).level;
-        steel_mine.print();
-        assert(steel_mine == 1, 'Steel mine level should be 1');
+        let quartz_mine = get!(world, (1, Names::Compound::QUARTZ), PlanetCompounds).level;
+        assert(quartz_mine == 1, 'Quartz mine level should be 1');
+    }
+
+    #[test]
+    fn test_upgrade_tritium_mine_success() {
+        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
+        game_actions
+            .spawn(
+                OWNER(),
+                nft,
+                eth,
+                constants::MIN_PRICE_UNSCALED,
+                GAME_SPEED,
+                compound_actions.contract_address,
+                game_actions.contract_address,
+                planet_actions.contract_address
+            );
+
+        set_contract_address(ACCOUNT_1());
+        planet_actions.generate_planet();
+
+        compound_actions.process_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
+        let tritium_mine = get!(world, (1, Names::Compound::TRITIUM), PlanetCompounds).level;
+        assert(tritium_mine == 1, 'Tritium mine level should be 1');
+    }
+
+    #[test]
+    fn test_upgrade_energy_plant_success() {
+        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
+        game_actions
+            .spawn(
+                OWNER(),
+                nft,
+                eth,
+                constants::MIN_PRICE_UNSCALED,
+                GAME_SPEED,
+                compound_actions.contract_address,
+                game_actions.contract_address,
+                planet_actions.contract_address
+            );
+
+        set_contract_address(ACCOUNT_1());
+        planet_actions.generate_planet();
+
+        compound_actions.process_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
+        let energy_plant = get!(world, (1, Names::Compound::ENERGY), PlanetCompounds).level;
+        assert(energy_plant == 1, 'Energy plant level should be 1');
+    }
+
+    #[test]
+    fn test_upgrade_lab_success() {
+        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
+        game_actions
+            .spawn(
+                OWNER(),
+                nft,
+                eth,
+                constants::MIN_PRICE_UNSCALED,
+                GAME_SPEED,
+                compound_actions.contract_address,
+                game_actions.contract_address,
+                planet_actions.contract_address
+            );
+
+        set_contract_address(ACCOUNT_1());
+        planet_actions.generate_planet();
+
+        compound_actions.process_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
+        compound_actions.process_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
+        set_block_timestamp(DAY * 7);
+        compound_actions.process_upgrade(CompoundUpgradeType::Lab(()), 1);
+        let lab = get!(world, (1, Names::Compound::LAB), PlanetCompounds).level;
+        assert(lab == 1, 'Lab level should be 1');
+    }
+
+    #[test]
+    fn test_upgrade_dockyard_success() {
+        let (world, compound_actions, game_actions, planet_actions, nft, eth) = setup_world();
+        game_actions
+            .spawn(
+                OWNER(),
+                nft,
+                eth,
+                constants::MIN_PRICE_UNSCALED,
+                GAME_SPEED,
+                compound_actions.contract_address,
+                game_actions.contract_address,
+                planet_actions.contract_address
+            );
+
+        set_contract_address(ACCOUNT_1());
+        planet_actions.generate_planet();
+
+        compound_actions.process_upgrade(CompoundUpgradeType::Dockyard(()), 1);
+        let dockyard = get!(world, (1, Names::Compound::DOCKYARD), PlanetCompounds).level;
+        assert(dockyard == 1, 'Dockyard level should be 1');
     }
 }
