@@ -1,6 +1,6 @@
 use nogame::data::types::Position;
 
-fn get_planet_position(planet_id: u16) -> Position {
+fn get_planet_position(planet_id: u32) -> Position {
     let positions_array: Array<Position> = array![
         Position { system: 86, orbit: 1 },
         Position { system: 44, orbit: 2 },

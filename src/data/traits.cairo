@@ -1,6 +1,6 @@
 use debug::PrintTrait;
 
-use nogame::data::types::{HostileMission, Mission, Fleet, Position};
+use nogame::data::types::{HostileMission, Mission, Fleet, Position, ERC20s};
 
 impl FleetZeroable of Zeroable<Fleet> {
     fn zero() -> Fleet {
@@ -85,3 +85,4 @@ impl MissionPrint of PrintTrait<Mission> {
         self.fleet.print();
     }
 }
+

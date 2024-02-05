@@ -1,7 +1,7 @@
 use nogame::data::types::{HostileMission, Mission};
 
 #[derive(Model, Drop, Serde)]
-struct FleetActiveMission {
+struct ActiveMission {
     #[key]
     planet_id: u16,
     #[key]
@@ -10,14 +10,14 @@ struct FleetActiveMission {
 }
 
 #[derive(Model, Drop, Serde)]
-struct FleetActiveMissionLen {
+struct ActiveMissionLen {
     #[key]
     planet_id: u16,
     lenght: usize,
 }
 
 #[derive(Model, Drop, Serde)]
-struct FleetHostileMission {
+struct IncomingMission {
     #[key]
     planet_id: u16,
     #[key]
@@ -26,7 +26,7 @@ struct FleetHostileMission {
 }
 
 #[derive(Model, Drop, Serde)]
-struct FleetHostileMissionLen {
+struct IncomingMissionLen {
     #[key]
     planet_id: u16,
     lenght: usize,
