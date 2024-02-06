@@ -28,6 +28,10 @@ use nogame::dockyard::models::{PlanetShips, planet_ships};
 use nogame::dockyard::actions::{
     dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
 };
+use nogame::defence::actions::{
+    defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
+};
+use nogame::defence::models::{PlanetDefences, planet_defences};
 use nogame::token::erc721::erc721::ERC721NoGame;
 use nogame::token::erc20::erc20::ERC20;
 
@@ -62,7 +66,8 @@ struct Actions {
     game: IGameActionsDispatcher,
     planet: IPlanetActionsDispatcher,
     tech: ITechActionsDispatcher,
-    dockyard: IDockyardActionsDispatcher
+    dockyard: IDockyardActionsDispatcher,
+    defence: IDefenceActionsDispatcher,
 }
 
 fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress) {
@@ -78,7 +83,8 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         planet_resource::TEST_CLASS_HASH,
         planet_resource_timer::TEST_CLASS_HASH,
         planet_techs::TEST_CLASS_HASH,
-        planet_ships::TEST_CLASS_HASH
+        planet_ships::TEST_CLASS_HASH,
+        planet_defences::TEST_CLASS_HASH
     ];
 
     // deploy world with models
@@ -104,6 +110,10 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
     let contract_address = world
         .deploy_contract('salt', dockyardactions::TEST_CLASS_HASH.try_into().unwrap());
     let dockyard_actions = IDockyardActionsDispatcher { contract_address };
+
+    let contract_address = world
+        .deploy_contract('salt', defenceactions::TEST_CLASS_HASH.try_into().unwrap());
+    let defence_actions = IDefenceActionsDispatcher { contract_address };
 
     let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
     let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
@@ -136,7 +146,8 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         game: game_actions,
         planet: planet_actions,
         tech: tech_actions,
-        dockyard: dockyard_actions
+        dockyard: dockyard_actions,
+        defence: defence_actions
     };
 
     (world, actions, nft, eth)
