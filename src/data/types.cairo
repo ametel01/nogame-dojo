@@ -178,3 +178,39 @@ enum TechUpgradeType {
     Warp,
     Exocraft,
 }
+
+#[derive(Copy, Default, Drop, PartialEq, Serde)]
+struct ShipsLevels {
+    carrier: u32,
+    scraper: u32,
+    sparrow: u32,
+    frigate: u32,
+    armade: u32,
+}
+
+#[derive(Copy, Drop, Serde)]
+struct ShipsCost {
+    carrier: ERC20s,
+    celestia: ERC20s,
+    scraper: ERC20s,
+    sparrow: ERC20s,
+    frigate: ERC20s,
+    armade: ERC20s,
+}
+
+#[derive(Drop, Serde)]
+enum ShipBuildType {
+    Carrier,
+    Scraper,
+    Sparrow,
+    Frigate,
+    Armade,
+}
+#[derive(Drop, Serde)]
+enum DefenceBuildType {
+    Celestia,
+    Blaster,
+    Beam,
+    Astral,
+    Plasma
+}

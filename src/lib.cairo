@@ -17,6 +17,7 @@ mod defence {
 mod dockyard {
     mod actions;
     mod models;
+    mod library;
 }
 
 mod fleet {
