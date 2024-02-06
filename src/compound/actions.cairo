@@ -317,14 +317,13 @@ mod tests {
 
     #[test]
     fn test_upgrade_steel_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::SteelMine(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::SteelMine(()), 1);
         let steel_mine = get!(world, (1, Names::Compound::STEEL), PlanetCompounds).level;
         let steel_after = get!(world, (1, Names::Resource::STEEL), PlanetResource).amount;
         let quartz_after = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
@@ -335,73 +334,68 @@ mod tests {
 
     #[test]
     fn test_upgrade_quartz_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::QuartzMine(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::QuartzMine(()), 1);
         let quartz_mine = get!(world, (1, Names::Compound::QUARTZ), PlanetCompounds).level;
         assert(quartz_mine == 1, 'Quartz mine level should be 1');
     }
 
     #[test]
     fn test_upgrade_tritium_mine_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
         let tritium_mine = get!(world, (1, Names::Compound::TRITIUM), PlanetCompounds).level;
         assert(tritium_mine == 1, 'Tritium mine level should be 1');
     }
 
     #[test]
     fn test_upgrade_energy_plant_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
         let energy_plant = get!(world, (1, Names::Compound::ENERGY), PlanetCompounds).level;
         assert(energy_plant == 1, 'Energy plant level should be 1');
     }
 
     #[test]
     fn test_upgrade_lab_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 400 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 200 });
 
-        compound_actions.process_upgrade(CompoundUpgradeType::Lab(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::Lab(()), 1);
         let lab = get!(world, (1, Names::Compound::LAB), PlanetCompounds).level;
         assert(lab == 1, 'Lab level should be 1');
     }
 
     #[test]
     fn test_upgrade_dockyard_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
-        compound_actions.process_upgrade(CompoundUpgradeType::Dockyard(()), 1);
+        actions.compound.process_upgrade(CompoundUpgradeType::Dockyard(()), 1);
         let dockyard = get!(world, (1, Names::Compound::DOCKYARD), PlanetCompounds).level;
         assert(dockyard == 1, 'Dockyard level should be 1');
     }

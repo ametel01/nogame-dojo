@@ -111,7 +111,7 @@ fn base_tech_costs() -> TechsCost {
 
 fn exocraft_cost(level: u8, quantity: u8) -> ERC20s {
     assert(!quantity.is_zero(), 'quantity can not be zero');
-    let costs: Array<ERC20s> = array![
+    let mut costs: Array<ERC20s> = array![
         ERC20s { steel: 4000, quartz: 8000, tritium: 4000 },
         ERC20s { steel: 7000, quartz: 14000, tritium: 7000 },
         ERC20s { steel: 12250, quartz: 24500, tritium: 12250 },
@@ -159,7 +159,10 @@ fn exocraft_cost(level: u8, quantity: u8) -> ERC20s {
         if i == level.into() {
             break;
         }
-        sum = sum + (*costs.at(i - 1));
+        match costs.pop_front() {
+            Option::Some(e) => { sum = sum + e; },
+            Option::None => { break; }
+        }
         i -= 1;
     };
     sum

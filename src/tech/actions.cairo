@@ -455,17 +455,16 @@ mod test {
 
     #[test]
     fn test_upgrade_energy_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 800 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 400 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Energy(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Energy(()), 1);
         let energy_tech = get!(world, (1, Names::Tech::ENERGY), PlanetTechs).level;
         assert(energy_tech == 1, 'Energy tech level should be 1');
 
@@ -477,17 +476,16 @@ mod test {
 
     #[test]
     fn test_upgrade_digital_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 400 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 600 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Digital(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Digital(()), 1);
         let digital_tech = get!(world, (1, Names::Tech::DIGITAL), PlanetTechs).level;
         assert(digital_tech == 1, 'Digital tech level should be 1');
 
@@ -499,18 +497,17 @@ mod test {
 
     #[test]
     fn test_upgrade_beam_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 800 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 400 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 2 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Beam(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Beam(()), 1);
         let beam_tech = get!(world, (1, Names::Tech::BEAM), PlanetTechs).level;
         assert(beam_tech == 1, 'Beam tech level should be 1');
 
@@ -522,16 +519,15 @@ mod test {
 
     #[test]
     fn test_upgrade_armour_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 1000 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 2 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Armour(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Armour(()), 1);
         let armour_tech = get!(world, (1, Names::Tech::ARMOUR), PlanetTechs).level;
         assert(armour_tech == 1, 'Armour tech level should be 1');
 
@@ -541,12 +537,11 @@ mod test {
 
     #[test]
     fn test_upgrade_ion_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 1000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 300 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 1000 });
@@ -554,7 +549,7 @@ mod test {
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 4 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 5 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Ion(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Ion(()), 1);
         let ion_tech = get!(world, (1, Names::Tech::ION), PlanetTechs).level;
         assert(ion_tech == 1, 'Ion tech level should be 1');
 
@@ -568,12 +563,11 @@ mod test {
 
     #[test]
     fn test_upgrade_plasma_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 2000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 4000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 1000 });
@@ -582,7 +576,7 @@ mod test {
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 10 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ION, level: 5 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Plasma(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Plasma(()), 1);
         let plasma_tech = get!(world, (1, Names::Tech::PLASMA), PlanetTechs).level;
         assert(plasma_tech == 1, 'Plasma tech level should be 1');
 
@@ -596,17 +590,16 @@ mod test {
 
     #[test]
     fn test_upgrade_weapons_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 800 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 200 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 4 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Weapons(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Weapons(()), 1);
         let weapons_tech = get!(world, (1, Names::Tech::WEAPONS), PlanetTechs).level;
         assert(weapons_tech == 1, 'Weapons tech level should be 1');
 
@@ -618,18 +611,17 @@ mod test {
 
     #[test]
     fn test_upgrade_shield_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 200 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 600 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 6 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 3 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Shield(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Shield(()), 1);
         let shield_tech = get!(world, (1, Names::Tech::SHIELD), PlanetTechs).level;
         assert(shield_tech == 1, 'Shield tech level should be 1');
 
@@ -641,19 +633,18 @@ mod test {
 
     #[test]
     fn test_upgrade_spacetime_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 4000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 2000 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 7 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 5 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SHIELD, level: 5 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Spacetime(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Spacetime(()), 1);
         let spacetime_tech = get!(world, (1, Names::Tech::SPACETIME), PlanetTechs).level;
         assert!(spacetime_tech == 1, "Spacetime tech level should be 1");
 
@@ -665,18 +656,17 @@ mod test {
 
     #[test]
     fn test_upgrade_combustion_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 400 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 600 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 1 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Combustion(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Combustion(()), 1);
         let combustion_tech = get!(world, (1, Names::Tech::COMBUSTION), PlanetTechs).level;
         assert!(combustion_tech == 1, "Combustion tech level should be 1");
 
@@ -688,19 +678,18 @@ mod test {
 
     #[test]
     fn test_upgrade_thrust_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 2000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 4000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 600 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 2 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 1 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Thrust(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Thrust(()), 1);
         let thrust_tech = get!(world, (1, Names::Tech::THRUST), PlanetTechs).level;
         assert!(thrust_tech == 1, "Thrust tech level should be 1");
 
@@ -714,12 +703,11 @@ mod test {
 
     #[test]
     fn test_upgrade_warp_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 10000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 20000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 6000 });
@@ -727,7 +715,7 @@ mod test {
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 5 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SPACETIME, level: 3 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Warp(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Warp(()), 1);
         let warp_tech = get!(world, (1, Names::Tech::WARP), PlanetTechs).level;
         assert!(warp_tech == 1, "Warp tech level should be 1");
 
@@ -741,19 +729,18 @@ mod test {
 
     #[test]
     fn test_upgrade_exocraft_tech_success() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 4000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 8000 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 4000 });
         set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 3 });
         set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 3 });
 
-        tech_actions.process_upgrade(TechUpgradeType::Exocraft(()), 1);
+        actions.tech.process_upgrade(TechUpgradeType::Exocraft(()), 1);
         let exocraft_tech = get!(world, (1, Names::Tech::EXOCRAFT), PlanetTechs).level;
         assert!(exocraft_tech == 1, "Exocraft tech level should be 1");
 

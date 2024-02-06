@@ -80,9 +80,8 @@ mod tests {
 
     #[test]
     fn test_spawn() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
 
         let game_setup = get!(world, constants::GAME_ID, (GameSetup));
         assert!(game_setup.owner == OWNER(), "test_spawn wrong game owner");

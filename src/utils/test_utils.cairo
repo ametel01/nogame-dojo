@@ -24,6 +24,10 @@ use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDi
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
+use nogame::dockyard::models::{PlanetShips, planet_ships};
+use nogame::dockyard::actions::{
+    dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
+};
 use nogame::token::erc721::erc721::ERC721NoGame;
 use nogame::token::erc20::erc20::ERC20;
 
@@ -52,15 +56,16 @@ fn ACCOUNT_5() -> ContractAddress {
     contract_address_const::<'account_5'>()
 }
 
-fn setup_world() -> (
-    IWorldDispatcher,
-    ICompoundActionsDispatcher,
-    IGameActionsDispatcher,
-    IPlanetActionsDispatcher,
-    ITechActionsDispatcher,
-    ContractAddress,
-    ContractAddress
-) {
+#[derive(Clone, Copy, Serde)]
+struct Actions {
+    compound: ICompoundActionsDispatcher,
+    game: IGameActionsDispatcher,
+    planet: IPlanetActionsDispatcher,
+    tech: ITechActionsDispatcher,
+    dockyard: IDockyardActionsDispatcher
+}
+
+fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress) {
     // components
     let mut models = array![
         planet_compounds::TEST_CLASS_HASH,
@@ -72,7 +77,8 @@ fn setup_world() -> (
         position_to_planet::TEST_CLASS_HASH,
         planet_resource::TEST_CLASS_HASH,
         planet_resource_timer::TEST_CLASS_HASH,
-        planet_techs::TEST_CLASS_HASH
+        planet_techs::TEST_CLASS_HASH,
+        planet_ships::TEST_CLASS_HASH
     ];
 
     // deploy world with models
@@ -94,6 +100,10 @@ fn setup_world() -> (
     let contract_address = world
         .deploy_contract('salt', techactions::TEST_CLASS_HASH.try_into().unwrap());
     let tech_actions = ITechActionsDispatcher { contract_address };
+
+    let contract_address = world
+        .deploy_contract('salt', dockyardactions::TEST_CLASS_HASH.try_into().unwrap());
+    let dockyard_actions = IDockyardActionsDispatcher { contract_address };
 
     let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
     let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
@@ -121,7 +131,15 @@ fn setup_world() -> (
     set_contract_address(ACCOUNT_5());
     eth_contract.approve(planet_actions.contract_address, 10 * E18);
 
-    (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth)
+    let actions = Actions {
+        compound: compound_actions,
+        game: game_actions,
+        planet: planet_actions,
+        tech: tech_actions,
+        dockyard: dockyard_actions
+    };
+
+    (world, actions, nft, eth)
 }
 
 fn deploy_nft(calldata: Array<felt252>) -> ContractAddress {
@@ -142,8 +160,7 @@ fn deploy_eth(calldata: Array<felt252>) -> ContractAddress {
 
 #[test]
 fn test_setup() {
-    let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-        setup_world();
-    set_contract_address(planet_actions.contract_address);
+    let (world, actions, nft, eth) = setup_world();
+    set_contract_address(actions.planet.contract_address);
     IERC20CamelDispatcher { contract_address: eth }.transferFrom(ACCOUNT_1(), OWNER(), 1.into());
 }

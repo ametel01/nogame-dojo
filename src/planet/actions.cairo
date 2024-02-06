@@ -112,12 +112,11 @@ mod tests {
 
     #[test]
     fn test_generate_planet() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
         let planet_id = get!(world, constants::GAME_ID, (GamePlanetCount)).count;
 
@@ -147,28 +146,27 @@ mod tests {
 
     #[test]
     fn test_get_planet_price() {
-        let (world, compound_actions, game_actions, planet_actions, tech_actions, nft, eth) =
-            setup_world();
-        game_actions.spawn(OWNER(), nft, eth, constants::STARTING_PRICE_SCALED, GAME_SPEED,);
-        assert(planet_actions.get_planet_price() == 22024160000000002, 'wrong price-1');
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::STARTING_PRICE_SCALED, GAME_SPEED,);
+        assert(actions.planet.get_planet_price() == 22024160000000002, 'wrong price-1');
 
         set_contract_address(ACCOUNT_1());
-        planet_actions.generate_planet();
-        assert(planet_actions.get_planet_price() == 22134556560993767, 'wrong price-2');
+        actions.planet.generate_planet();
+        assert(actions.planet.get_planet_price() == 22134556560993767, 'wrong price-2');
 
         set_contract_address(ACCOUNT_2());
-        planet_actions.generate_planet();
-        assert(planet_actions.get_planet_price() == 22245506487155662, 'wrong price-3');
+        actions.planet.generate_planet();
+        assert(actions.planet.get_planet_price() == 22245506487155662, 'wrong price-3');
 
         set_contract_address(ACCOUNT_3());
-        planet_actions.generate_planet();
+        actions.planet.generate_planet();
 
         set_block_timestamp(DAY * 13);
 
-        assert(planet_actions.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-4');
+        assert(actions.planet.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-4');
         set_contract_address(ACCOUNT_4());
 
-        assert(planet_actions.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-5');
+        assert(actions.planet.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-5');
         set_contract_address(ACCOUNT_5());
     }
 }
