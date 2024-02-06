@@ -214,3 +214,21 @@ enum DefenceBuildType {
     Astral,
     Plasma
 }
+
+#[derive(Copy, Drop, Serde)]
+struct DefencesCost {
+    celestia: ERC20s,
+    blaster: ERC20s,
+    beam: ERC20s,
+    astral: ERC20s,
+    plasma: ERC20s,
+}
+
+#[derive(Copy, Default, PartialEq, Drop, Serde)]
+struct Defences {
+    celestia: u32,
+    blaster: u32,
+    beam: u32,
+    astral: u32,
+    plasma: u32
+}

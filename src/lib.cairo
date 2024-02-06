@@ -11,6 +11,7 @@ mod compound {
 
 mod defence {
     mod actions;
+    mod library;
     mod models;
 }
 

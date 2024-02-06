@@ -24,11 +24,6 @@ fn carrier_requirements_check(dockyard_level: u8, techs: TechLevels) {
     assert(techs.combustion >= 2, 'Combustive Engine 2 required');
 }
 
-fn celestia_requirements_check(dockyard_level: u8, techs: TechLevels) {
-    assert(dockyard_level >= 1, 'Dockyard 1 required');
-    assert(techs.combustion >= 1, 'Combustive Engine 1 required');
-}
-
 fn sparrow_requirements_check(dockyard_level: u8, techs: TechLevels) {
     assert(dockyard_level >= 1, 'Dockyard 1 required');
     assert(techs.combustion >= 1, 'Combustive Engine 1 required');
