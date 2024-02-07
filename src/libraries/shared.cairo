@@ -8,7 +8,7 @@ use nogame::dockyard::models::PlanetShips;
 use nogame::tech::models::PlanetTechs;
 use nogame::libraries::names::Names;
 use nogame::libraries::constants;
-use nogame::data::types::{ERC20s, ShipsLevels, TechLevels};
+use nogame::data::types::{ERC20s, ShipsLevels, TechLevels, CompoundsLevels};
 
 fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cost: ERC20s) {
     if cost.steel > 0 {
@@ -164,5 +164,16 @@ fn get_tech_levels(world: IWorldDispatcher, planet_id: u32) -> TechLevels {
         thrust: get!(world, (planet_id, Names::Tech::THRUST), PlanetTechs).level,
         warp: get!(world, (planet_id, Names::Tech::WARP), PlanetTechs).level,
         exocraft: get!(world, (planet_id, Names::Tech::EXOCRAFT), PlanetTechs).level,
+    }
+}
+
+fn get_compound_levels(world: IWorldDispatcher, planet_id: u32) -> CompoundsLevels {
+    CompoundsLevels {
+        steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
+        quartz: get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds).level,
+        tritium: get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level,
+        energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
+        lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
+        dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level
     }
 }

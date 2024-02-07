@@ -15,6 +15,7 @@ mod compoundactions {
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::libraries::constants;
     use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
+    use nogame::libraries::shared;
     use starknet::{ContractAddress, get_caller_address};
     use debug::PrintTrait;
 
@@ -24,273 +25,108 @@ mod compoundactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            self.upgrade_component(planet_id, component, quantity);
+            upgrade_component(world, planet_id, component, quantity);
         }
     }
 
-    #[generate_trait]
-    impl Private of PrivateTrait {
-        fn get_compound_levels(self: @ContractState, planet_id: u32) -> CompoundsLevels {
-            let world = self.world_dispatcher.read();
-            CompoundsLevels {
-                steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
-                quartz: get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds).level,
-                tritium: get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level,
-                energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
-                lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
-                dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level
-            }
-        }
-
-        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            ERC20s {
-                steel: get!(world, (planet_id, Names::Resource::STEEL), PlanetResource).amount,
-                quartz: get!(world, (planet_id, Names::Resource::QUARTZ), PlanetResource).amount,
-                tritium: get!(world, (planet_id, Names::Resource::TRITIUM), PlanetResource).amount
-            }
-        }
-
-        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            let time_now = starknet::get_block_timestamp();
-            let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
-            let time_elapsed = time_now - last_collection_time;
-
-            let steel_level = get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds)
-                .level;
-            let quartz_level = get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds)
-                .level;
-            let tritium_level = get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds)
-                .level;
-            let energy_level = get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds)
-                .level;
-
-            let position = get!(world, planet_id, PlanetPosition).position;
-            let temp = compound::calculate_avg_temperature(position.orbit);
-            let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-            let steel_available = compound::production::steel(steel_level)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let quartz_available = compound::production::quartz(quartz_level)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let tritium_available = compound::production::tritium(tritium_level, temp, speed.into())
-                * time_elapsed.into()
-                / constants::HOUR.into();
-            let energy_available = compound::production::energy(energy_level);
-            let celestia_production = compound::celestia_production(position.orbit);
-            let celestia_available = get!(
-                world, (planet_id, Names::Defence::CELESTIA), PlanetDefences
-            )
-                .count;
-            let energy_required = compound::consumption::base(steel_level)
-                + compound::consumption::base(quartz_level)
-                + compound::consumption::base(tritium_level);
-            if energy_available
-                + (celestia_production.into() * celestia_available).into() < energy_required {
-                let _steel = compound::production_scaler(
-                    steel_available, energy_available, energy_required
-                );
-                let _quartz = compound::production_scaler(
-                    quartz_available, energy_available, energy_required
-                );
-                let _tritium = compound::production_scaler(
-                    tritium_available, energy_available, energy_required
-                );
-
-                return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
-            }
-
-            ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
-        }
-
-        fn collect(ref self: ContractState, planet_id: u32) {
-            let world = self.world_dispatcher.read();
-            let available = self.get_resources_available(planet_id);
-            let collectible = self.calculate_production(planet_id);
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + collectible.steel
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + collectible.quartz
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + collectible.tritium
-                    },
-                )
-            );
-            set!(
-                world,
-                (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },)
-            );
-        }
-
-        fn upgrade_component(
-            ref self: ContractState, planet_id: u32, component: CompoundUpgradeType, quantity: u8
-        ) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            let compounds = self.get_compound_levels(planet_id);
-            self.collect(planet_id);
-            let available_resources = self.get_resources_available(planet_id);
-            let mut cost: ERC20s = Default::default();
-            match component {
-                CompoundUpgradeType::SteelMine => {
-                    cost = compound::cost::steel(compounds.steel, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::STEEL,
-                                level: compounds.steel + quantity
-                            },
-                        )
-                    );
-                },
-                CompoundUpgradeType::QuartzMine => {
-                    cost = compound::cost::quartz(compounds.quartz, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::QUARTZ,
-                                level: compounds.quartz + quantity
-                            },
-                        )
-                    );
-                },
-                CompoundUpgradeType::TritiumMine => {
-                    cost = compound::cost::tritium(compounds.tritium, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::TRITIUM,
-                                level: compounds.tritium + quantity
-                            },
-                        )
-                    );
-                },
-                CompoundUpgradeType::EnergyPlant => {
-                    cost = compound::cost::energy(compounds.energy, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::ENERGY,
-                                level: compounds.energy + quantity
-                            },
-                        )
-                    );
-                },
-                CompoundUpgradeType::Lab => {
-                    cost = compound::cost::lab(compounds.lab, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::LAB,
-                                level: compounds.lab + quantity
-                            },
-                        )
-                    );
-                },
-                CompoundUpgradeType::Dockyard => {
-                    cost = compound::cost::dockyard(compounds.dockyard, quantity);
-                    assert!(available_resources >= cost, "Compound: Not enough resources");
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetCompounds {
-                                planet_id,
-                                name: Names::Compound::DOCKYARD,
-                                level: compounds.dockyard + quantity
-                            },
-                        )
-                    );
-                },
-            };
-            cost
-        }
-
-        fn pay_resources(ref self: ContractState, planet_id: u32, available: ERC20s, cost: ERC20s) {
-            let world = self.world_dispatcher.read();
-            if cost.steel > 0 {
+    fn upgrade_component(
+        world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
+    ) -> ERC20s {
+        let compounds = shared::get_compound_levels(world, planet_id);
+        shared::collect(world, planet_id);
+        let available_resources = shared::get_resources_available(world, planet_id);
+        let mut cost: ERC20s = Default::default();
+        match component {
+            CompoundUpgradeType::SteelMine => {
+                cost = compound::cost::steel(compounds.steel, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
+                        PlanetCompounds {
                             planet_id,
-                            name: Names::Resource::STEEL,
-                            amount: available.steel - cost.steel
+                            name: Names::Compound::STEEL,
+                            level: compounds.steel + quantity
                         },
                     )
                 );
-            }
-            if cost.quartz > 0 {
+            },
+            CompoundUpgradeType::QuartzMine => {
+                cost = compound::cost::quartz(compounds.quartz, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
+                        PlanetCompounds {
                             planet_id,
-                            name: Names::Resource::QUARTZ,
-                            amount: available.quartz - cost.quartz
+                            name: Names::Compound::QUARTZ,
+                            level: compounds.quartz + quantity
                         },
                     )
                 );
-            }
-            if cost.tritium > 0 {
+            },
+            CompoundUpgradeType::TritiumMine => {
+                cost = compound::cost::tritium(compounds.tritium, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
+                        PlanetCompounds {
                             planet_id,
-                            name: Names::Resource::TRITIUM,
-                            amount: available.tritium - cost.tritium
+                            name: Names::Compound::TRITIUM,
+                            level: compounds.tritium + quantity
                         },
                     )
                 );
-            }
-        }
+            },
+            CompoundUpgradeType::EnergyPlant => {
+                cost = compound::cost::energy(compounds.energy, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetCompounds {
+                            planet_id,
+                            name: Names::Compound::ENERGY,
+                            level: compounds.energy + quantity
+                        },
+                    )
+                );
+            },
+            CompoundUpgradeType::Lab => {
+                cost = compound::cost::lab(compounds.lab, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetCompounds {
+                            planet_id, name: Names::Compound::LAB, level: compounds.lab + quantity
+                        },
+                    )
+                );
+            },
+            CompoundUpgradeType::Dockyard => {
+                cost = compound::cost::dockyard(compounds.dockyard, quantity);
+                assert!(available_resources >= cost, "Compound: Not enough resources");
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetCompounds {
+                            planet_id,
+                            name: Names::Compound::DOCKYARD,
+                            level: compounds.dockyard + quantity
+                        },
+                    )
+                );
+            },
+        };
+        cost
     }
 }
 
