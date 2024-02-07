@@ -33,7 +33,7 @@ mod compoundactions {
         world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
     ) -> ERC20s {
         let compounds = shared::get_compound_levels(world, planet_id);
-        shared::collect(world, planet_id);
+        shared::collect(world, planet_id, compounds);
         let available_resources = shared::get_resources_available(world, planet_id);
         let mut cost: ERC20s = Default::default();
         match component {

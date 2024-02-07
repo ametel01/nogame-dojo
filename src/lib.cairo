@@ -23,6 +23,7 @@ mod dockyard {
 
 mod fleet {
     mod actions;
+    mod library;
     mod models;
 }
 
@@ -53,6 +54,7 @@ mod libraries {
     mod names;
     mod position;
     mod math;
+    mod shared;
 }
 
 mod token {

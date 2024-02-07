@@ -45,9 +45,9 @@ fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cos
     }
 }
 
-fn collect(world: IWorldDispatcher, planet_id: u32) {
+fn collect(world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels) {
     let available = get_resources_available(world, planet_id);
-    let collectible = calculate_production(world, planet_id);
+    let collectible = calculate_production(world, planet_id, compounds);
     set!(
         world,
         (
@@ -87,39 +87,36 @@ fn get_resources_available(world: IWorldDispatcher, planet_id: u32) -> ERC20s {
     }
 }
 
-fn calculate_production(world: IWorldDispatcher, planet_id: u32) -> ERC20s {
+fn calculate_production(
+    world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels
+) -> ERC20s {
     let time_now = starknet::get_block_timestamp();
     let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
     let time_elapsed = time_now - last_collection_time;
 
-    let steel_level = get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level;
-    let quartz_level = get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds).level;
-    let tritium_level = get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level;
-    let energy_level = get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level;
-
     let position = get!(world, planet_id, PlanetPosition).position;
     let temp = compound::calculate_avg_temperature(position.orbit);
     let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-    let steel_available = compound::production::steel(steel_level)
+    let steel_available = compound::production::steel(compounds.steel)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let quartz_available = compound::production::quartz(quartz_level)
+    let quartz_available = compound::production::quartz(compounds.quartz)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let tritium_available = compound::production::tritium(tritium_level, temp, speed.into())
+    let tritium_available = compound::production::tritium(compounds.tritium, temp, speed.into())
         * time_elapsed.into()
         / constants::HOUR.into();
-    let energy_available = compound::production::energy(energy_level);
+    let energy_available = compound::production::energy(compounds.energy);
     let celestia_production = compound::celestia_production(position.orbit);
     let celestia_available = get!(world, (planet_id, Names::Defence::CELESTIA), PlanetDefences)
         .count;
-    let energy_required = compound::consumption::base(steel_level)
-        + compound::consumption::base(quartz_level)
-        + compound::consumption::base(tritium_level);
+    let energy_required = compound::consumption::base(compounds.steel)
+        + compound::consumption::base(compounds.quartz)
+        + compound::consumption::base(compounds.tritium);
     if energy_available
         + (celestia_production.into() * celestia_available).into() < energy_required {
         let _steel = compound::production_scaler(

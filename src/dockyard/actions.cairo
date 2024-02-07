@@ -35,10 +35,9 @@ mod dockyardactions {
         world: IWorldDispatcher, planet_id: u32, component: ShipBuildType, quantity: u32
     ) -> ERC20s {
         let techs = shared::get_tech_levels(world, planet_id);
-        let dockyard_level = get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
-            .level;
+        let compounds = shared::get_compound_levels(world, planet_id);
         let ships_levels = shared::get_ships_levels(world, planet_id);
-        shared::collect(world, planet_id);
+        shared::collect(world, planet_id, compounds);
         let available_resources = shared::get_resources_available(world, planet_id);
         match component {
             ShipBuildType::Carrier => {
@@ -46,7 +45,7 @@ mod dockyardactions {
                     quantity, dockyard::get_ships_unit_cost().carrier
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
-                dockyard::carrier_requirements_check(dockyard_level, techs);
+                dockyard::carrier_requirements_check(compounds.dockyard, techs);
                 shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
@@ -65,7 +64,7 @@ mod dockyardactions {
                     quantity, dockyard::get_ships_unit_cost().scraper
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
-                dockyard::scraper_requirements_check(dockyard_level, techs);
+                dockyard::scraper_requirements_check(compounds.dockyard, techs);
                 shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
@@ -84,7 +83,7 @@ mod dockyardactions {
                     quantity, dockyard::get_ships_unit_cost().sparrow
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
-                dockyard::sparrow_requirements_check(dockyard_level, techs);
+                dockyard::sparrow_requirements_check(compounds.dockyard, techs);
                 shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
@@ -103,7 +102,7 @@ mod dockyardactions {
                     quantity, dockyard::get_ships_unit_cost().frigate
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
-                dockyard::frigate_requirements_check(dockyard_level, techs);
+                dockyard::frigate_requirements_check(compounds.dockyard, techs);
                 shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
@@ -122,7 +121,7 @@ mod dockyardactions {
                     quantity, dockyard::get_ships_unit_cost().armade
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
-                dockyard::armade_requirements_check(dockyard_level, techs);
+                dockyard::armade_requirements_check(compounds.dockyard, techs);
                 shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
