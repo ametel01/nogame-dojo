@@ -34,7 +34,7 @@ mod Names {
     mod Fleet {
         const CARRIER: felt252 = 1;
         const SCRAPER: felt252 = 2;
-        const SPARROW: felt252 = 4;
+        const SPARROW: felt252 = 3;
         const FRIGATE: felt252 = 4;
         const ARMADE: felt252 = 5;
     }
