@@ -49,7 +49,7 @@ mod planetactions {
             set!(world, PlanetPosition { planet_id, position });
             set!(world, PositionToPlanet { position, planet_id });
 
-            set!(world, GamePlanetCount { planet_id: constants::GAME_ID, count: planet_id });
+            set!(world, GamePlanetCount { game_id: constants::GAME_ID, count: planet_id });
 
             set!(world, PlanetResource { planet_id, name: Names::Resource::STEEL, amount: 500 });
             set!(world, PlanetResource { planet_id, name: Names::Resource::QUARTZ, amount: 300 });

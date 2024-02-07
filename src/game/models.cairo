@@ -7,7 +7,7 @@ use dojo::database::introspect::Introspect;
 #[derive(Model, Drop, Serde)]
 struct GameSetup {
     #[key]
-    id: u8,
+    game_id: u8,
     owner: ContractAddress,
     nft_address: ContractAddress,
     eth_address: ContractAddress,
@@ -33,7 +33,7 @@ struct GamePlanetOwner {
 #[derive(Model, Drop, Serde)]
 struct GamePlanetCount {
     #[key]
-    planet_id: u8,
+    game_id: u8,
     count: u32,
 }
 

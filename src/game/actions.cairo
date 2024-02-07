@@ -48,7 +48,7 @@ mod gameactions {
                 world,
                 (
                     GameSetup {
-                        id: constants::GAME_ID,
+                        game_id: constants::GAME_ID,
                         owner,
                         nft_address,
                         eth_address,
@@ -56,7 +56,7 @@ mod gameactions {
                         speed,
                         start_time: get_block_timestamp()
                     },
-                    GamePlanetCount { planet_id: constants::GAME_ID, count: 0 },
+                    GamePlanetCount { game_id: constants::GAME_ID, count: 0 },
                 )
             );
         }
