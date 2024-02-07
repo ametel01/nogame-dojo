@@ -14,6 +14,7 @@ mod techactions {
     use nogame::defence::models::{PlanetDefences};
     use nogame::libraries::names::Names;
     use nogame::libraries::constants;
+    use nogame::libraries::shared;
     use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
@@ -27,407 +28,229 @@ mod techactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            self.upgrade_component(planet_id, component, quantity);
+            upgrade_component(world, planet_id, component, quantity);
         }
     }
 
-    #[generate_trait]
-    impl Private of PrivateTrait {
-        fn get_tech_levels(self: @ContractState, planet_id: u32) -> TechLevels {
-            let world = self.world_dispatcher.read();
-            TechLevels {
-                energy: get!(world, (planet_id, Names::Tech::ENERGY), PlanetTechs).level,
-                digital: get!(world, (planet_id, Names::Tech::DIGITAL), PlanetTechs).level,
-                beam: get!(world, (planet_id, Names::Tech::BEAM), PlanetTechs).level,
-                armour: get!(world, (planet_id, Names::Tech::ARMOUR), PlanetTechs).level,
-                ion: get!(world, (planet_id, Names::Tech::ION), PlanetTechs).level,
-                plasma: get!(world, (planet_id, Names::Tech::PLASMA), PlanetTechs).level,
-                weapons: get!(world, (planet_id, Names::Tech::WEAPONS), PlanetTechs).level,
-                shield: get!(world, (planet_id, Names::Tech::SHIELD), PlanetTechs).level,
-                spacetime: get!(world, (planet_id, Names::Tech::SPACETIME), PlanetTechs).level,
-                combustion: get!(world, (planet_id, Names::Tech::COMBUSTION), PlanetTechs).level,
-                thrust: get!(world, (planet_id, Names::Tech::THRUST), PlanetTechs).level,
-                warp: get!(world, (planet_id, Names::Tech::WARP), PlanetTechs).level,
-                exocraft: get!(world, (planet_id, Names::Tech::EXOCRAFT), PlanetTechs).level,
-            }
-        }
+    fn upgrade_component(
+        world: IWorldDispatcher, planet_id: u32, component: TechUpgradeType, quantity: u8
+    ) -> ERC20s {
+        let lab_level = get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level;
+        let tech_levels = shared::get_tech_levels(world, planet_id);
+        let base_tech_cost = tech::base_tech_costs();
+        shared::collect(world, planet_id);
+        let available_resources = shared::get_resources_available(world, planet_id);
+        let mut cost: ERC20s = Default::default();
 
-        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            ERC20s {
-                steel: get!(world, (planet_id, Names::Resource::STEEL), PlanetResource).amount,
-                quartz: get!(world, (planet_id, Names::Resource::QUARTZ), PlanetResource).amount,
-                tritium: get!(world, (planet_id, Names::Resource::TRITIUM), PlanetResource).amount
-            }
-        }
-
-        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            let time_now = starknet::get_block_timestamp();
-            let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
-            let time_elapsed = time_now - last_collection_time;
-
-            let steel_level = get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds)
-                .level;
-            let quartz_level = get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds)
-                .level;
-            let tritium_level = get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds)
-                .level;
-            let energy_level = get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds)
-                .level;
-
-            let position = get!(world, planet_id, PlanetPosition).position;
-            let temp = compound::calculate_avg_temperature(position.orbit);
-            let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-            let steel_available = compound::production::steel(steel_level)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let quartz_available = compound::production::quartz(quartz_level)
-                * speed.into()
-                * time_elapsed.into()
-                / constants::HOUR.into();
-
-            let tritium_available = compound::production::tritium(tritium_level, temp, speed.into())
-                * time_elapsed.into()
-                / constants::HOUR.into();
-            let energy_available = compound::production::energy(energy_level);
-            let celestia_production = compound::celestia_production(position.orbit);
-            let celestia_available = get!(
-                world, (planet_id, Names::Defence::CELESTIA), PlanetDefences
-            )
-                .count;
-            let energy_required = compound::consumption::base(steel_level)
-                + compound::consumption::base(quartz_level)
-                + compound::consumption::base(tritium_level);
-            if energy_available
-                + (celestia_production.into() * celestia_available).into() < energy_required {
-                let _steel = compound::production_scaler(
-                    steel_available, energy_available, energy_required
-                );
-                let _quartz = compound::production_scaler(
-                    quartz_available, energy_available, energy_required
-                );
-                let _tritium = compound::production_scaler(
-                    tritium_available, energy_available, energy_required
-                );
-
-                return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
-            }
-
-            ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
-        }
-
-        fn collect(ref self: ContractState, planet_id: u32) {
-            let world = self.world_dispatcher.read();
-            let available = self.get_resources_available(planet_id);
-            let collectible = self.calculate_production(planet_id);
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + collectible.steel
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + collectible.quartz
-                    },
-                )
-            );
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + collectible.tritium
-                    },
-                )
-            );
-            set!(
-                world,
-                (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },)
-            );
-        }
-
-        fn upgrade_component(
-            ref self: ContractState, planet_id: u32, component: TechUpgradeType, quantity: u8
-        ) -> ERC20s {
-            let world = self.world_dispatcher.read();
-            let lab_level = get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level;
-            let tech_levels = self.get_tech_levels(planet_id);
-            let base_tech_cost = tech::base_tech_costs();
-            self.collect(planet_id);
-            let available_resources = self.get_resources_available(planet_id);
-            let mut cost: ERC20s = Default::default();
-
-            match component {
-                TechUpgradeType::Energy => {
-                    cost = tech::get_tech_cost(tech_levels.energy, quantity, base_tech_cost.energy);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::energy(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::ENERGY,
-                                level: tech_levels.energy + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Digital => {
-                    cost =
-                        tech::get_tech_cost(tech_levels.digital, quantity, base_tech_cost.digital);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::digital(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::DIGITAL,
-                                level: tech_levels.digital + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Beam => {
-                    cost = tech::get_tech_cost(tech_levels.beam, quantity, base_tech_cost.beam);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::beam(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::BEAM,
-                                level: tech_levels.beam + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Armour => {
-                    cost = tech::get_tech_cost(tech_levels.armour, quantity, base_tech_cost.armour);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::armour(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::ARMOUR,
-                                level: tech_levels.armour + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Ion => {
-                    cost = tech::get_tech_cost(tech_levels.ion, quantity, base_tech_cost.ion);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::ion(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id, name: Names::Tech::ION, level: tech_levels.ion + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Plasma => {
-                    cost = tech::get_tech_cost(tech_levels.plasma, quantity, base_tech_cost.plasma);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::plasma(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::PLASMA,
-                                level: tech_levels.plasma + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Weapons => {
-                    cost =
-                        tech::get_tech_cost(tech_levels.weapons, quantity, base_tech_cost.weapons);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::weapons(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::WEAPONS,
-                                level: tech_levels.weapons + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Shield => {
-                    cost = tech::get_tech_cost(tech_levels.shield, quantity, base_tech_cost.shield);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::shield(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::SHIELD,
-                                level: tech_levels.shield + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Spacetime => {
-                    cost =
-                        tech::get_tech_cost(
-                            tech_levels.spacetime, quantity, base_tech_cost.spacetime
-                        );
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::spacetime(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::SPACETIME,
-                                level: tech_levels.spacetime + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Combustion => {
-                    cost =
-                        tech::get_tech_cost(
-                            tech_levels.combustion, quantity, base_tech_cost.combustion
-                        );
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::combustion(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::COMBUSTION,
-                                level: tech_levels.combustion + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Thrust => {
-                    cost = tech::get_tech_cost(tech_levels.thrust, quantity, base_tech_cost.thrust);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::thrust(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::THRUST,
-                                level: tech_levels.thrust + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Warp => {
-                    cost = tech::get_tech_cost(tech_levels.warp, quantity, base_tech_cost.warp);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::warp(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::WARP,
-                                level: tech_levels.warp + quantity
-                            },
-                        )
-                    );
-                },
-                TechUpgradeType::Exocraft => {
-                    cost = tech::exocraft_cost(tech_levels.exocraft, quantity);
-                    assert!(available_resources >= cost, "Tech: Not enough resources");
-                    tech::requirements::exocraft(lab_level, tech_levels);
-                    self.pay_resources(planet_id, available_resources, cost);
-                    set!(
-                        world,
-                        (
-                            PlanetTechs {
-                                planet_id,
-                                name: Names::Tech::EXOCRAFT,
-                                level: tech_levels.exocraft + quantity
-                            },
-                        )
-                    );
-                },
-            };
-            cost
-        }
-
-        fn pay_resources(ref self: ContractState, planet_id: u32, available: ERC20s, cost: ERC20s) {
-            let world = self.world_dispatcher.read();
-            if cost.steel > 0 {
+        match component {
+            TechUpgradeType::Energy => {
+                cost = tech::get_tech_cost(tech_levels.energy, quantity, base_tech_cost.energy);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::energy(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
+                        PlanetTechs {
                             planet_id,
-                            name: Names::Resource::STEEL,
-                            amount: available.steel - cost.steel
+                            name: Names::Tech::ENERGY,
+                            level: tech_levels.energy + quantity
                         },
                     )
                 );
-            }
-            if cost.quartz > 0 {
+            },
+            TechUpgradeType::Digital => {
+                cost = tech::get_tech_cost(tech_levels.digital, quantity, base_tech_cost.digital);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::digital(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
+                        PlanetTechs {
                             planet_id,
-                            name: Names::Resource::QUARTZ,
-                            amount: available.quartz - cost.quartz
+                            name: Names::Tech::DIGITAL,
+                            level: tech_levels.digital + quantity
                         },
                     )
                 );
-            }
-            if cost.tritium > 0 {
+            },
+            TechUpgradeType::Beam => {
+                cost = tech::get_tech_cost(tech_levels.beam, quantity, base_tech_cost.beam);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::beam(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
                 set!(
                     world,
                     (
-                        PlanetResource {
-                            planet_id,
-                            name: Names::Resource::TRITIUM,
-                            amount: available.tritium - cost.tritium
+                        PlanetTechs {
+                            planet_id, name: Names::Tech::BEAM, level: tech_levels.beam + quantity
                         },
                     )
                 );
-            }
-        }
+            },
+            TechUpgradeType::Armour => {
+                cost = tech::get_tech_cost(tech_levels.armour, quantity, base_tech_cost.armour);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::armour(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::ARMOUR,
+                            level: tech_levels.armour + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Ion => {
+                cost = tech::get_tech_cost(tech_levels.ion, quantity, base_tech_cost.ion);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::ion(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id, name: Names::Tech::ION, level: tech_levels.ion + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Plasma => {
+                cost = tech::get_tech_cost(tech_levels.plasma, quantity, base_tech_cost.plasma);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::plasma(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::PLASMA,
+                            level: tech_levels.plasma + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Weapons => {
+                cost = tech::get_tech_cost(tech_levels.weapons, quantity, base_tech_cost.weapons);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::weapons(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::WEAPONS,
+                            level: tech_levels.weapons + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Shield => {
+                cost = tech::get_tech_cost(tech_levels.shield, quantity, base_tech_cost.shield);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::shield(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::SHIELD,
+                            level: tech_levels.shield + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Spacetime => {
+                cost =
+                    tech::get_tech_cost(tech_levels.spacetime, quantity, base_tech_cost.spacetime);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::spacetime(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::SPACETIME,
+                            level: tech_levels.spacetime + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Combustion => {
+                cost =
+                    tech::get_tech_cost(
+                        tech_levels.combustion, quantity, base_tech_cost.combustion
+                    );
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::combustion(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::COMBUSTION,
+                            level: tech_levels.combustion + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Thrust => {
+                cost = tech::get_tech_cost(tech_levels.thrust, quantity, base_tech_cost.thrust);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::thrust(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::THRUST,
+                            level: tech_levels.thrust + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Warp => {
+                cost = tech::get_tech_cost(tech_levels.warp, quantity, base_tech_cost.warp);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::warp(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id, name: Names::Tech::WARP, level: tech_levels.warp + quantity
+                        },
+                    )
+                );
+            },
+            TechUpgradeType::Exocraft => {
+                cost = tech::exocraft_cost(tech_levels.exocraft, quantity);
+                assert!(available_resources >= cost, "Tech: Not enough resources");
+                tech::requirements::exocraft(lab_level, tech_levels);
+                shared::pay_resources(world, planet_id, available_resources, cost);
+                set!(
+                    world,
+                    (
+                        PlanetTechs {
+                            planet_id,
+                            name: Names::Tech::EXOCRAFT,
+                            level: tech_levels.exocraft + quantity
+                        },
+                    )
+                );
+            },
+        };
+        cost
     }
 }
 
