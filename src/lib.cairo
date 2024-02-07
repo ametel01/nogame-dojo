@@ -1,6 +1,7 @@
 mod colony {
     mod actions;
     mod models;
+    mod positions;
 }
 
 mod compound {

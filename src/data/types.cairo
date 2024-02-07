@@ -24,7 +24,7 @@ struct ERC20s {
     tritium: u128,
 }
 
-#[derive(Copy, Drop, PartialEq, Serde, Introspect)]
+#[derive(Copy, Default, Drop, PartialEq, Serde, Introspect)]
 struct Fleet {
     carrier: u32,
     scraper: u32,
@@ -33,7 +33,7 @@ struct Fleet {
     armade: u32,
 }
 
-#[derive(Copy, Drop, Serde, Introspect)]
+#[derive(Copy, Default, Drop, Serde, Introspect)]
 struct Debris {
     steel: u128,
     quartz: u128
@@ -231,4 +231,74 @@ struct Defences {
     beam: u32,
     astral: u32,
     plasma: u32
+}
+
+#[derive(Default, Drop, Copy, PartialEq, Serde)]
+struct Unit {
+    id: u8,
+    hull: u32,
+    shield: u32,
+    weapon: u32,
+    speed: u32,
+    cargo: u32,
+    consumption: u32,
+}
+
+impl DefencesZeroable of Zeroable<Defences> {
+    fn zero() -> Defences {
+        Defences { celestia: 0, blaster: 0, beam: 0, astral: 0, plasma: 0, }
+    }
+    fn is_zero(self: Defences) -> bool {
+        self.celestia == 0
+            && self.blaster == 0
+            && self.beam == 0
+            && self.astral == 0
+            && self.plasma == 0
+    }
+    fn is_non_zero(self: Defences) -> bool {
+        !self.is_zero()
+    }
+}
+
+#[generate_trait]
+impl UnitImpl of UnitTrait {
+    fn is_destroyed(self: Unit) -> bool {
+        self.hull == 0
+    }
+}
+
+impl PrintUnit of PrintTrait<Unit> {
+    fn print(self: Unit) {
+        self.weapon.print();
+        self.shield.print();
+        self.hull.print();
+    }
+}
+
+#[derive(Default, Drop, Copy, PartialEq, Serde)]
+struct SimulationResult {
+    attacker_carrier: u32,
+    attacker_scraper: u32,
+    attacker_sparrow: u32,
+    attacker_frigate: u32,
+    attacker_armade: u32,
+    defender_carrier: u32,
+    defender_scraper: u32,
+    defender_sparrow: u32,
+    defender_frigate: u32,
+    defender_armade: u32,
+    celestia: u32,
+    blaster: u32,
+    beam: u32,
+    astral: u32,
+    plasma: u32,
+}
+
+#[derive(Copy, Drop, Serde)]
+enum ColonyUpgradeType {
+    SteelMine,
+    QuartzMine,
+    TritiumMine,
+    EnergyPlant,
+    Dockyard,
 }
