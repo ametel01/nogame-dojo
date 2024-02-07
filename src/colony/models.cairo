@@ -3,8 +3,8 @@ use nogame::data::types::Position;
 #[derive(Model, Copy, Drop, Serde)]
 struct ColonyOwner {
     #[key]
+    colony_planet_id: u32,
     planet_id: u32,
-    colony_id: u8,
 }
 
 #[derive(Model, Copy, Drop, Serde)]
@@ -30,13 +30,13 @@ struct ColonyPosition {
     position: Position,
 }
 
-#[derive(Model, Copy, Drop, Serde)]
-struct PositionToColony {
-    #[key]
-    position: Position,
-    planet_id: u32,
-    colony_id: u8,
-}
+// #[derive(Model, Copy, Drop, Serde)]
+// struct PositionToColony {
+//     #[key]
+//     position: Position,
+//     planet_id: u32,
+//     colony_id: u8,
+// }
 
 #[derive(Model, Copy, Drop, Serde)]
 struct ColonyResource {

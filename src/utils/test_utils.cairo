@@ -7,6 +7,17 @@ use dojo::test_utils::{spawn_test_world, deploy_contract};
 use openzeppelin::token::erc20::interface::{
     IERC20Dispatcher, IERC20DispatcherTrait, IERC20CamelDispatcher, IERC20CamelDispatcherTrait
 };
+use nogame::colony::models::{
+    ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
+    ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
+};
+use nogame::colony::models::{
+    colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
+    colony_resource_timer, colony_compounds, colony_ships, colony_defences
+};
+use nogame::colony::actions::{
+    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
+};
 use nogame::compound::models::{planet_compounds};
 use nogame::compound::models::{PlanetCompounds};
 use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
@@ -62,6 +73,7 @@ fn ACCOUNT_5() -> ContractAddress {
 
 #[derive(Clone, Copy, Serde)]
 struct Actions {
+    colony: IColonyActionsDispatcher,
     compound: ICompoundActionsDispatcher,
     game: IGameActionsDispatcher,
     planet: IPlanetActionsDispatcher,
@@ -84,7 +96,16 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         planet_resource_timer::TEST_CLASS_HASH,
         planet_techs::TEST_CLASS_HASH,
         planet_ships::TEST_CLASS_HASH,
-        planet_defences::TEST_CLASS_HASH
+        planet_defences::TEST_CLASS_HASH,
+        colony_owner::TEST_CLASS_HASH,
+        colony_count::TEST_CLASS_HASH,
+        planet_colonies_count::TEST_CLASS_HASH,
+        colony_position::TEST_CLASS_HASH,
+        colony_resource::TEST_CLASS_HASH,
+        colony_resource_timer::TEST_CLASS_HASH,
+        colony_ships::TEST_CLASS_HASH,
+        colony_defences::TEST_CLASS_HASH,
+        colony_compounds::TEST_CLASS_HASH
     ];
 
     // deploy world with models
@@ -115,6 +136,10 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         .deploy_contract('salt', defenceactions::TEST_CLASS_HASH.try_into().unwrap());
     let defence_actions = IDefenceActionsDispatcher { contract_address };
 
+    let contract_address = world
+        .deploy_contract('salt', colonyactions::TEST_CLASS_HASH.try_into().unwrap());
+    let colony_actions = IColonyActionsDispatcher { contract_address };
+
     let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
     let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
 
@@ -142,6 +167,7 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
     eth_contract.approve(planet_actions.contract_address, 10 * E18);
 
     let actions = Actions {
+        colony: colony_actions,
         compound: compound_actions,
         game: game_actions,
         planet: planet_actions,

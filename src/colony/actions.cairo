@@ -23,7 +23,7 @@ mod colonyactions {
     };
     use nogame::colony::models::{
         ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
-        PlanetColoniesCount, ColonyResource, ColonyShips,
+        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
     };
     use nogame::colony::positions;
     use nogame::compound::library as compound;
@@ -64,6 +64,7 @@ mod colonyactions {
             let position = positions::get_colony_position(current_count.into());
             let colony_id = current_planet_colonies + 1;
             let id = ((planet_id * 1000) + colony_id.into());
+            set!(world, ColonyOwner { colony_planet_id: id, planet_id, });
             set!(world, ColonyPosition { planet_id, colony_id, position });
             set!(
                 world,
@@ -100,7 +101,11 @@ mod colonyactions {
 
         fn process_defence_build(
             ref self: ContractState, colony_id: u8, name: DefenceBuildType, quantity: u32,
-        ) { // ...
+        ) {
+            let world = self.world_dispatcher.read();
+            let caller = get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            build_defence(world, planet_id, colony_id, name, quantity);
         }
     }
 
@@ -621,5 +626,76 @@ mod colonyactions {
         }
 
         ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::colony::actions::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
+    use nogame::colony::models::{
+        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
+        ColonyResource, ColonyShips, ColonyDefences,
+    };
+    use nogame::libraries::{constants};
+    use nogame::data::types::{Position, ShipBuildType};
+    use nogame::libraries::names::Names;
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::models::{
+        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+    };
+    use nogame::utils::test_utils::{
+        setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
+    };
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
+    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
+    use nogame::tech::models::{PlanetTechs};
+    use nogame::dockyard::models::{PlanetShips};
+    use debug::PrintTrait;
+
+    #[test]
+    fn test_generate_colony() {
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::EXOCRAFT, level: 3 });
+
+        actions.colony.generate_colony();
+
+        let colony_owner = get!(world, 1001, ColonyOwner).planet_id;
+        assert!(colony_owner == 1, "Colony: owner not set correctly");
+
+        let total_colonies_count = get!(world, constants::GAME_ID, ColonyCount).count;
+        assert!(total_colonies_count == 1, "Colony: count not set correctly");
+
+        let planet_colonies_count = get!(world, 1, PlanetColoniesCount).count;
+        assert!(planet_colonies_count == 1, "Colony: count not set correctly");
+
+        let colony_position = get!(world, (1, 1), ColonyPosition).position;
+        assert!(
+            colony_position.system == 188 && colony_position.orbit == 10,
+            "Colony: position not set correctly"
+        );
+
+        actions.colony.generate_colony();
+        let colony_owner = get!(world, 1002, ColonyOwner).planet_id;
+        assert!(colony_owner == 1, "Colony: owner not set correctly");
+
+        let total_colonies_count = get!(world, constants::GAME_ID, ColonyCount).count;
+        assert!(total_colonies_count == 2, "Colony: count not set correctly");
+
+        let planet_colonies_count = get!(world, 1, PlanetColoniesCount).count;
+        assert!(planet_colonies_count == 2, "Colony: count not set correctly");
+
+        let colony_position = get!(world, (1, 2), ColonyPosition).position;
+        assert!(
+            colony_position.system == 182 && colony_position.orbit == 2,
+            "Colony: position not set correctly"
+        );
     }
 }
