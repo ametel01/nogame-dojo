@@ -8,7 +8,7 @@ use nogame::dockyard::models::PlanetShips;
 use nogame::tech::models::PlanetTechs;
 use nogame::libraries::names::Names;
 use nogame::libraries::constants;
-use nogame::data::types::{ERC20s, ShipsLevels, TechLevels, CompoundsLevels};
+use nogame::data::types::{ERC20s, ShipsLevels, TechLevels, CompoundsLevels, Defences};
 
 fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cost: ERC20s) {
     if cost.steel > 0 {
@@ -175,5 +175,15 @@ fn get_compound_levels(world: IWorldDispatcher, planet_id: u32) -> CompoundsLeve
         energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
         lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
         dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level
+    }
+}
+
+fn get_defences_levels(world: IWorldDispatcher, planet_id: u32) -> Defences {
+    Defences {
+        celestia: get!(world, (planet_id, Names::Defence::CELESTIA), PlanetDefences).count,
+        blaster: get!(world, (planet_id, Names::Defence::BLASTER), PlanetDefences).count,
+        beam: get!(world, (planet_id, Names::Defence::BEAM), PlanetDefences).count,
+        astral: get!(world, (planet_id, Names::Defence::ASTRAL), PlanetDefences).count,
+        plasma: get!(world, (planet_id, Names::Defence::PLASMA), PlanetDefences).count,
     }
 }
