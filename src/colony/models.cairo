@@ -44,8 +44,9 @@ struct ColonyResource {
     planet_id: u32,
     #[key]
     colony_id: u8,
+    #[key]
     name: felt252,
-    amount: u32,
+    amount: u128,
 }
 
 #[derive(Model, Copy, Drop, Serde)]
