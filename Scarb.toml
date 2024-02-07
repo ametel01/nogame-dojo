@@ -9,7 +9,7 @@ sierra-replace-ids = true
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", version = "0.5.0" }
 openzeppelin = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v0.8.0" }
-nogame_fixed = {git = "https://github.com/ametel01/nogame-fixed.git", rev="5317597"}
+nogame_fixed = {git = "https://github.com/ametel01/nogame-fixed.git", rev="e16cf2d"}
 
 [[target.dojo]]
 

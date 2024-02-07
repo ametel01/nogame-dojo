@@ -26,7 +26,7 @@ dependencies = [
 [[package]]
 name = "nogame_fixed"
 version = "0.1.0"
-source = "git+https://github.com/ametel01/nogame-fixed.git?rev=5317597#5317597d4524f687b12903b85da5d5824c6d50a8"
+source = "git+https://github.com/ametel01/nogame-fixed.git?rev=e16cf2d#e16cf2d95bbb031907fc8e714191acd5260ae55b"
 
 [[package]]
 name = "openzeppelin"
