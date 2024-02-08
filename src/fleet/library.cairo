@@ -87,7 +87,6 @@ fn war(
 }
 
 fn unit_combat(ref unit1: Unit, ref unit2: Unit) -> (Unit, Unit) {
-    rapid_fire(ref unit1, ref unit2);
     if unit1.weapon < unit2.shield / 100 {
         unit2.shield = unit2.shield;
     } else if unit1.weapon < unit2.shield {
@@ -99,7 +98,6 @@ fn unit_combat(ref unit1: Unit, ref unit2: Unit) -> (Unit, Unit) {
         unit2.hull -= unit1.weapon - unit2.shield;
     }
 
-    rapid_fire(ref unit2, ref unit1);
     if unit2.weapon < unit1.shield / 100 {
         unit1.shield = unit1.shield;
     } else if unit2.weapon < unit1.shield {

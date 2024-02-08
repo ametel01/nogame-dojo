@@ -245,6 +245,7 @@ mod fleetactions {
                 );
             }
             fleet_return_planet(world, mission.origin, f1);
+            set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             set!(
                 world, PlanetResourcesSpent { planet_id: mission.origin, spent: Zeroable::zero() }
             );
@@ -260,16 +261,112 @@ mod fleetactions {
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
         }
 
-        fn recall_fleet(ref self: ContractState, mission_id: usize) {}
+        fn recall_fleet(ref self: ContractState, mission_id: usize) {
+            let world = self.world_dispatcher.read();
+            let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
+            let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
+            assert!(!mission.is_zero(), "Fleet: mission not found");
+            fleet_return_planet(world, mission.origin, mission.fleet);
+            set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
+            remove_incoming_mission(world, mission.destination, mission_id);
+            set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
+        }
 
-        fn dock_fleet(ref self: ContractState, mission_id: usize) {}
+        fn dock_fleet(ref self: ContractState, mission_id: usize) {
+            let world = self.world_dispatcher.read();
+            let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
+            let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
+            assert!(!mission.is_zero(), "Fleet: mission not found");
+            assert!(
+                mission.category == MissionCategory::TRANSPORT, "Fleet: not a transport mission"
+            );
+            fleet_return_planet(world, mission.destination, mission.fleet);
+            set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
+            set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
+        }
 
-        fn collect_debris(ref self: ContractState, mission_id: usize) {}
+        fn collect_debris(ref self: ContractState, mission_id: usize) {
+            let world = self.world_dispatcher.read();
+            let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
+            let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
+            assert!(!mission.is_zero(), "Fleet: mission not found");
+            assert!(mission.category == MissionCategory::DEBRIS, "Fleet: not a debris mission");
+
+            let time_now = get_block_timestamp();
+            assert!(time_now >= mission.time_arrival, "Fleet: mission not arrived yet");
+
+            let time_since_arrived = time_now - mission.time_arrival;
+            let mut collector_fleet: Fleet = mission.fleet;
+
+            if time_since_arrived > (2 * constants::HOUR) {
+                let decay_amount = fleet::calculate_fleet_loss(
+                    time_since_arrived - (2 * constants::HOUR)
+                );
+                collector_fleet = fleet::decay_fleet(mission.fleet, decay_amount);
+            }
+
+            let debris = get!(world, mission.destination, PlanetDebrisField).debris;
+            let storage = fleet::get_fleet_cargo_capacity(collector_fleet);
+            let collectible_debris = fleet::get_collectible_debris(storage, debris);
+            let new_debris = Debris {
+                steel: debris.steel - collectible_debris.steel,
+                quartz: debris.quartz - collectible_debris.quartz
+            };
+
+            set!(world, PlanetDebrisField { planet_id: mission.destination, debris: new_debris });
+
+            let collection = ERC20s {
+                steel: collectible_debris.steel,
+                quartz: collectible_debris.quartz,
+                tritium: Zeroable::zero()
+            };
+
+            if mission.origin > 500 {
+                let mother_planet = mission.origin / 1000;
+                let colony_id: u8 = (mission.origin % 1000)
+                    .try_into()
+                    .expect('collect debris fail');
+                let available = colonyactions::get_colony_resources(
+                    world, mother_planet, colony_id
+                );
+                colonyactions::receive_resources(
+                    world, mother_planet, colony_id, available, collection
+                );
+            } else {
+                let available = shared::get_resources_available(world, mission.origin);
+                shared::receive_resources(world, mission.origin, available, collection);
+            }
+
+            fleet_return_planet(world, mission.origin, collector_fleet);
+            set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
+            set!(world, LastActive { planet_id: mission.origin, time: time_now });
+        }
 
         fn simulate_attack(
             self: @ContractState, attacker_fleet: Fleet, defender_fleet: Fleet, defences: Defences
         ) -> SimulationResult {
-            Default::default()
+            let techs: TechLevels = Default::default();
+            let (f1, f2, d) = fleet::war(attacker_fleet, techs, defender_fleet, defences, techs);
+            let attacker_loss = calculate_fleet_loss(attacker_fleet, f1);
+            let defender_loss = calculate_fleet_loss(defender_fleet, f2);
+            let defences_loss = calculate_defences_loss(defences, d);
+            SimulationResult {
+                attacker_carrier: attacker_loss.carrier,
+                attacker_scraper: attacker_loss.scraper,
+                attacker_sparrow: attacker_loss.sparrow,
+                attacker_frigate: attacker_loss.frigate,
+                attacker_armade: attacker_loss.armade,
+                defender_carrier: defender_loss.carrier,
+                defender_scraper: defender_loss.scraper,
+                defender_sparrow: defender_loss.sparrow,
+                defender_frigate: defender_loss.frigate,
+                defender_armade: defender_loss.armade,
+                celestia: defences_loss.celestia,
+                blaster: defences_loss.blaster,
+                beam: defences_loss.beam,
+                astral: defences_loss.astral,
+                plasma: defences_loss.plasma
+            }
         }
     }
 
