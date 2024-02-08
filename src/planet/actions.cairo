@@ -56,7 +56,7 @@ mod planetactions {
             set!(world, PlanetResource { planet_id, name: Names::Resource::TRITIUM, amount: 100 });
             set!(world, PlanetResource { planet_id, name: Names::Resource::ENERGY, amount: 0 });
 
-            set!(world, PlanetResourceTimer { planet_id, timestamp: get_block_timestamp() });
+            set!(world, PlanetResourceTimer { planet_id, last_collection: get_block_timestamp() });
         }
 
         fn get_planet_price(self: @ContractState) -> u128 {

@@ -48,6 +48,43 @@ fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cos
     set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
 }
 
+fn receive_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, amount: ERC20s) {
+    if amount.steel > 0 {
+        set!(
+            world,
+            (
+                PlanetResource {
+                    planet_id, name: Names::Resource::STEEL, amount: available.steel + amount.steel
+                },
+            )
+        );
+    }
+    if amount.quartz > 0 {
+        set!(
+            world,
+            (
+                PlanetResource {
+                    planet_id,
+                    name: Names::Resource::QUARTZ,
+                    amount: available.quartz + amount.quartz
+                },
+            )
+        );
+    }
+    if amount.tritium > 0 {
+        set!(
+            world,
+            (
+                PlanetResource {
+                    planet_id,
+                    name: Names::Resource::TRITIUM,
+                    amount: available.tritium + amount.tritium
+                },
+            )
+        );
+    }
+}
+
 fn collect(world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels) {
     let available = get_resources_available(world, planet_id);
     let collectible = calculate_production(world, planet_id, compounds);
@@ -79,7 +116,10 @@ fn collect(world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels) 
             },
         )
     );
-    set!(world, (PlanetResourceTimer { planet_id, timestamp: starknet::get_block_timestamp() },));
+    set!(
+        world,
+        (PlanetResourceTimer { planet_id, last_collection: starknet::get_block_timestamp() },)
+    );
 }
 
 fn get_resources_available(world: IWorldDispatcher, planet_id: u32) -> ERC20s {
@@ -94,23 +134,25 @@ fn calculate_production(
     world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels
 ) -> ERC20s {
     let time_now = starknet::get_block_timestamp();
-    let last_collection_time = get!(world, planet_id, PlanetResourceTimer).timestamp;
+    let last_collection_time = get!(world, planet_id, PlanetResourceTimer).last_collection;
     let time_elapsed = time_now - last_collection_time;
 
     let position = get!(world, planet_id, PlanetPosition).position;
     let temp = compound::calculate_avg_temperature(position.orbit);
     let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-    let steel_available = compound::production::steel(compounds.steel)
+    let steel_available: u128 = compound::production::steel(compounds.steel)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let quartz_available = compound::production::quartz(compounds.quartz)
+    let quartz_available: u128 = compound::production::quartz(compounds.quartz)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let tritium_available = compound::production::tritium(compounds.tritium, temp, speed.into())
+    let tritium_available: u128 = compound::production::tritium(
+        compounds.tritium, temp, speed.into()
+    )
         * time_elapsed.into()
         / constants::HOUR.into();
     let energy_available = compound::production::energy(compounds.energy);

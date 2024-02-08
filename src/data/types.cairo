@@ -165,6 +165,15 @@ impl DebrisZeroable of Zeroable<Debris> {
     }
 }
 
+impl DebrisAdd of Add<Debris> {
+    fn add(lhs: Debris, rhs: Debris) -> Debris {
+        Debris {
+            steel: u128_overflowing_add(lhs.steel, rhs.steel).expect('u128_add Overflow'),
+            quartz: u128_overflowing_add(lhs.quartz, rhs.quartz).expect('u128_add Overflow')
+        }
+    }
+}
+
 #[derive(Copy, Default, Drop, Serde, Introspect)]
 struct Mission {
     id: u32,

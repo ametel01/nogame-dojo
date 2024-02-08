@@ -429,13 +429,17 @@ mod colonyactions {
     }
 
     fn get_colony_resources(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> ERC20s {
+        let uni_speed = get!(world, constants::GAME_ID, GameSetup).speed;
         ERC20s {
             steel: get!(world, (planet_id, colony_id, Names::Resource::STEEL), ColonyResource)
-                .amount,
+                .amount
+                * uni_speed.into(),
             quartz: get!(world, (planet_id, colony_id, Names::Resource::QUARTZ), ColonyResource)
-                .amount,
+                .amount
+                * uni_speed.into(),
             tritium: get!(world, (planet_id, colony_id, Names::Resource::TRITIUM), ColonyResource)
                 .amount
+                * uni_speed.into(),
         }
     }
 
@@ -573,6 +577,50 @@ mod colonyactions {
             );
         }
         set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
+    }
+
+    fn receive_resources(
+        world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: ERC20s, amount: ERC20s
+    ) {
+        if amount.steel > 0 {
+            set!(
+                world,
+                (
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::STEEL,
+                        amount: available.steel + amount.steel
+                    },
+                )
+            );
+        }
+        if amount.quartz > 0 {
+            set!(
+                world,
+                (
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: available.quartz + amount.quartz
+                    },
+                )
+            );
+        }
+        if amount.tritium > 0 {
+            set!(
+                world,
+                (
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: available.tritium + amount.tritium
+                    },
+                )
+            );
+        }
     }
 
     fn calculate_production(

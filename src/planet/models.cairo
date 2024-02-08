@@ -32,7 +32,7 @@ struct PlanetResourcesSpent {
 struct PlanetResourceTimer {
     #[key]
     planet_id: u32,
-    timestamp: u64,
+    last_collection: u64,
 }
 
 #[derive(Model, Copy, Drop, Serde)]
