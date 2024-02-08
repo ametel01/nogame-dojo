@@ -21,6 +21,7 @@ struct PlanetDebrisField {
     debris: Debris,
 }
 
+#[derive(Model, Copy, Drop, Serde)]
 struct PlanetResourcesSpent {
     #[key]
     planet_id: u32,
@@ -41,4 +42,11 @@ struct PlanetResource {
     #[key]
     name: felt252,
     amount: u128,
+}
+
+#[derive(Model, Copy, Drop, Serde)]
+struct LastActive {
+    #[key]
+    planet_id: u32,
+    time: u64,
 }

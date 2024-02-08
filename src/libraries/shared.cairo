@@ -1,14 +1,16 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::defence::models::PlanetDefences;
 use nogame::game::models::GameSetup;
-use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
+use nogame::planet::models::{
+    PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent
+};
 use nogame::compound::models::PlanetCompounds;
 use nogame::compound::library as compound;
 use nogame::dockyard::models::PlanetShips;
 use nogame::tech::models::PlanetTechs;
 use nogame::libraries::names::Names;
 use nogame::libraries::constants;
-use nogame::data::types::{ERC20s, ShipsLevels, TechLevels, CompoundsLevels, Defences};
+use nogame::data::types::{ERC20s, Fleet, TechLevels, CompoundsLevels, Defences};
 
 fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cost: ERC20s) {
     if cost.steel > 0 {
@@ -43,6 +45,7 @@ fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cos
             )
         );
     }
+    set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
 }
 
 fn collect(world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels) {
@@ -135,8 +138,8 @@ fn calculate_production(
     ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
 }
 
-fn get_ships_levels(world: IWorldDispatcher, planet_id: u32) -> ShipsLevels {
-    ShipsLevels {
+fn get_ships_levels(world: IWorldDispatcher, planet_id: u32) -> Fleet {
+    Fleet {
         carrier: get!(world, (planet_id, Names::Fleet::CARRIER), PlanetShips).count,
         scraper: get!(world, (planet_id, Names::Fleet::SCRAPER), PlanetShips).count,
         sparrow: get!(world, (planet_id, Names::Fleet::SPARROW), PlanetShips).count,

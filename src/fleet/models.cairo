@@ -1,33 +1,33 @@
-use nogame::data::types::{HostileMission, Mission};
+use nogame::data::types::{IncomingMission, Mission};
 
 #[derive(Model, Drop, Serde)]
 struct ActiveMission {
     #[key]
-    planet_id: u16,
+    planet_id: u32,
     #[key]
-    id: u16,
+    mission_id: usize,
     mission: Mission,
 }
 
 #[derive(Model, Drop, Serde)]
 struct ActiveMissionLen {
     #[key]
-    planet_id: u16,
+    planet_id: u32,
     lenght: usize,
 }
 
 #[derive(Model, Drop, Serde)]
-struct IncomingMission {
+struct IncomingMissions {
     #[key]
-    planet_id: u16,
+    planet_id: u32,
     #[key]
-    id: u16,
-    mission: HostileMission,
+    mission_id: usize,
+    mission: IncomingMission,
 }
 
 #[derive(Model, Drop, Serde)]
 struct IncomingMissionLen {
     #[key]
-    planet_id: u16,
+    planet_id: u32,
     lenght: usize,
 }

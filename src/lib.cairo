@@ -45,7 +45,6 @@ mod tech {
 }
 
 mod data {
-    mod traits;
     mod types;
 }
 

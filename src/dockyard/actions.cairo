@@ -10,7 +10,7 @@ mod dockyardactions {
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
     use nogame::libraries::constants;
-    use nogame::data::types::{ShipBuildType, ERC20s, TechLevels, ShipsLevels};
+    use nogame::data::types::{ShipBuildType, ERC20s, TechLevels, Fleet};
     use nogame::defence::models::PlanetDefences;
     use nogame::dockyard::models::PlanetShips;
     use nogame::dockyard::library as dockyard;

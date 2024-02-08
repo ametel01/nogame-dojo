@@ -33,6 +33,7 @@ mod colonyactions {
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address};
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
@@ -66,6 +67,8 @@ mod colonyactions {
             let colony_id = current_planet_colonies + 1;
             let id = ((planet_id * 1000) + colony_id.into());
             set!(world, ColonyOwner { colony_planet_id: id, planet_id, });
+            set!(world, PositionToPlanet { position, planet_id: id });
+            set!(world, PlanetPosition { planet_id: id, position });
             set!(world, ColonyPosition { planet_id, colony_id, position });
             set!(
                 world,
@@ -569,6 +572,7 @@ mod colonyactions {
                 )
             );
         }
+        set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
     }
 
     fn calculate_production(
@@ -637,9 +641,7 @@ mod test {
     use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
     use nogame::game::models::{GameSetup, GamePlanetCount};
-    use nogame::planet::models::{
-        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
-    };
+    use nogame::planet::models::{PlanetPosition, PositionToPlanet,};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
