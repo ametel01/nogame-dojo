@@ -887,14 +887,17 @@ mod test {
     };
     use nogame::libraries::{constants};
     use nogame::data::types::{
-        MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType
+        MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
+        Debris
     };
     use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
     use nogame::fleet::models::{ActiveMission, IncomingMission};
     use nogame::game::models::{GameSetup, GamePlanetCount};
-    use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource};
+    use nogame::planet::models::{
+        PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField
+    };
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
@@ -1110,5 +1113,54 @@ mod test {
         assert!(frigate == 4, "Fleet: frigate not docked correctly");
         let armade = get!(world, (1, 1, Names::Fleet::ARMADE), ColonyShips).count;
         assert!(armade == 5, "Fleet: armade not docked correctly");
+    }
+
+    #[test]
+    fn test_collect_debris() {
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set_contract_address(ACCOUNT_2());
+        actions.planet.generate_planet();
+
+        let p2_position = get!(world, 2, PlanetPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::SCRAPER, count: 10 });
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 1_000 });
+
+        let debris = Debris { steel: 20_000, quartz: 20_000, };
+        set!(world, PlanetDebrisField { planet_id: 2, debris });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.scraper = 1;
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::DEBRIS, 100, 0);
+
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 0 });
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 0 });
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 0 });
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        assert!(
+            mission.category == MissionCategory::DEBRIS, "Fleet: mission category not set correctly"
+        );
+        set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
+        actions.fleet.collect_debris(1);
+
+        let steel = get!(world, (1, Names::Resource::STEEL), PlanetResource).amount;
+        assert!(steel == 10_000, "Fleet: steel not collected correctly");
+        let quartz = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
+        assert!(quartz == 10_000, "Fleet: quartz not collected correctly");
+
+        let debris = get!(world, 2, PlanetDebrisField).debris;
+        assert!(debris.steel == 10_000, "Fleet: debris steel not collected correctly");
+        assert!(debris.quartz == 10_000, "Fleet: debris quartz not collected correctly");
+
+        let carrier = get!(world, (1, Names::Fleet::SCRAPER), PlanetShips).count;
+        assert!(carrier == 10, "Fleet: scraper not returned to planet");
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        assert!(mission.is_zero(), "Fleet: mission not removed correctly");
     }
 }
