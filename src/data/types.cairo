@@ -1,4 +1,5 @@
 use integer::{u128_overflowing_add, u128_overflowing_sub};
+use debug::PrintTrait;
 
 #[derive(Copy, Default, Drop, Serde, PartialEq, Introspect)]
 struct CompoundsLevels {
@@ -100,6 +101,16 @@ struct Fleet {
     armade: u32,
 }
 
+impl FleetPrint of PrintTrait<Fleet> {
+    fn print(self: Fleet) {
+        self.carrier.print();
+        self.scraper.print();
+        self.sparrow.print();
+        self.frigate.print();
+        self.armade.print();
+    }
+}
+
 impl FleetZeroable of Zeroable<Fleet> {
     fn zero() -> Fleet {
         Fleet { carrier: 0, scraper: 0, sparrow: 0, frigate: 0, armade: 0, }
@@ -174,7 +185,7 @@ impl DebrisAdd of Add<Debris> {
     }
 }
 
-#[derive(Copy, Default, Drop, Serde, Introspect)]
+#[derive(Copy, Default, Drop, Serde, Print, Introspect)]
 struct Mission {
     id: u32,
     time_start: u64,

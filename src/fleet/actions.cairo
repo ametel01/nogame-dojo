@@ -78,50 +78,38 @@ mod fleetactions {
                 }
             }
             let time_now = get_block_timestamp();
-
             check_enough_ships(world, origin_id, colony_id, fleet);
             // Calculate distance
             let distance = fleet::get_distance(
                 get!(world, origin_id, PlanetPosition).position, destination
             );
-
             // Calculate time
             let techs = shared::get_tech_levels(world, sender_mother_planet_id);
             let speed = fleet::get_fleet_speed(fleet, techs);
             let travel_time = fleet::get_flight_time(speed, distance, speed_modifier);
-
             // Check numeber of mission
             let active_missions_len = get!(world, sender_mother_planet_id, ActiveMissionLen).lenght;
             assert!(
                 active_missions_len < techs.digital.into() + 1,
                 "Fleet: too many active missions, upgrade digital tech to send more"
             );
-
             // Pay for fuel
             let consumption = fleet::get_fuel_consumption(fleet, distance, speed_modifier);
             let mut cost: ERC20s = Default::default();
             cost.tritium = consumption;
-
             if colony_id.is_zero() {
-                assert!(
-                    shared::get_resources_available(world, sender_mother_planet_id)
-                        .tritium >= consumption,
-                    "Fleet: not enough tritium for mission"
-                );
+                let available = shared::get_resources_available(world, sender_mother_planet_id);
+                assert!(available.tritium >= consumption, "Fleet: not enough tritium for mission");
+                shared::pay_resources(world, sender_mother_planet_id, available, cost);
+            } else {
                 let available = colonyactions::get_colony_resources(
                     world, sender_mother_planet_id, colony_id
                 );
+                assert!(available.tritium >= consumption, "Fleet: not enough tritium for mission");
                 colonyactions::pay_resources(
                     world, sender_mother_planet_id, colony_id, available, cost
                 );
-            } else {
-                assert!(
-                    colonyactions::get_colony_resources(world, sender_mother_planet_id, colony_id)
-                        .tritium >= consumption,
-                    "Fleet: not enough tritium for mission"
-                );
             }
-
             // Write mission
             let mut mission: Mission = Default::default();
             mission.time_start = time_now;
@@ -146,7 +134,7 @@ mod fleetactions {
                     - get!(world, sender_mother_planet_id, LastActive).time > constants::WEEK;
                 if !is_inactive {
                     assert!(
-                        get_is_noob_protected(world, sender_mother_planet_id, destination_id),
+                        !get_is_noob_protected(world, sender_mother_planet_id, destination_id),
                         "Fleet: noob protection active between planet {} and {}",
                         sender_mother_planet_id,
                         destination_id
@@ -883,5 +871,69 @@ mod fleetactions {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::colony::actions::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
+    use nogame::colony::models::{
+        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
+    };
+    use nogame::libraries::{constants};
+    use nogame::data::types::{
+        MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType
+    };
+    use nogame::libraries::names::Names;
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
+    use nogame::fleet::models::{ActiveMission, IncomingMission};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource};
+    use nogame::utils::test_utils::{
+        setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
+    };
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
+    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
+    use nogame::tech::models::{PlanetTechs};
+    use nogame::dockyard::models::{PlanetShips};
+    use debug::PrintTrait;
+
+    #[test]
+    fn test_send_fleet() {
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set_contract_address(ACCOUNT_2());
+        actions.planet.generate_planet();
+
+        let p2_position = get!(world, 2, PlanetPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 100 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 10;
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::ATTACK, 100, 0);
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        assert!(mission.id == 1, "Fleet: mission id not set correctly");
+        assert!(mission.time_start == 100, "Fleet: mission time_start not set correctly");
+        assert!(mission.origin == 1, "Fleet: mission origin not set correctly");
+        assert!(mission.destination == 2, "Fleet: mission destination not set correctly");
+        assert!(mission.time_arrival == 12912, "Fleet: mission time_arrival not set correctly");
+        assert!(mission.fleet.carrier == 10, "Fleet: mission fleet not set correctly");
+        assert!(
+            mission.category == MissionCategory::ATTACK, "Fleet: mission category not set correctly"
+        );
     }
 }

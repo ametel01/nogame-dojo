@@ -42,6 +42,11 @@ use nogame::dockyard::actions::{
 use nogame::defence::actions::{
     defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
 };
+use nogame::fleet::models::{ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen};
+use nogame::fleet::models::{
+    active_mission, active_mission_len, incoming_missions, incoming_mission_len
+};
+use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
 use nogame::defence::models::{PlanetDefences, planet_defences};
 use nogame::token::erc721::erc721::ERC721NoGame;
 use nogame::token::erc20::erc20::ERC20;
@@ -80,6 +85,7 @@ struct Actions {
     tech: ITechActionsDispatcher,
     dockyard: IDockyardActionsDispatcher,
     defence: IDefenceActionsDispatcher,
+    fleet: IFleetActionsDispatcher
 }
 
 fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress) {
@@ -105,7 +111,11 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         colony_resource_timer::TEST_CLASS_HASH,
         colony_ships::TEST_CLASS_HASH,
         colony_defences::TEST_CLASS_HASH,
-        colony_compounds::TEST_CLASS_HASH
+        colony_compounds::TEST_CLASS_HASH,
+        active_mission::TEST_CLASS_HASH,
+        active_mission_len::TEST_CLASS_HASH,
+        incoming_missions::TEST_CLASS_HASH,
+        incoming_mission_len::TEST_CLASS_HASH
     ];
 
     // deploy world with models
@@ -140,6 +150,10 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         .deploy_contract('salt', colonyactions::TEST_CLASS_HASH.try_into().unwrap());
     let colony_actions = IColonyActionsDispatcher { contract_address };
 
+    let contract_address = world
+        .deploy_contract('salt', fleetactions::TEST_CLASS_HASH.try_into().unwrap());
+    let fleet_actions = IFleetActionsDispatcher { contract_address };
+
     let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
     let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
 
@@ -173,7 +187,8 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         planet: planet_actions,
         tech: tech_actions,
         dockyard: dockyard_actions,
-        defence: defence_actions
+        defence: defence_actions,
+        fleet: fleet_actions
     };
 
     (world, actions, nft, eth)

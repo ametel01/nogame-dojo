@@ -138,7 +138,7 @@ mod tests {
         let energy = get!(world, (planet_id, Names::Resource::ENERGY), (PlanetResource)).amount;
         assert!(energy == 0, "test_generate_planet: wrong initial energy");
 
-        let time_start = get!(world, planet_id, (PlanetResourceTimer)).timestamp;
+        let time_start = get!(world, planet_id, (PlanetResourceTimer)).last_collection;
         assert!(
             time_start == starknet::get_block_timestamp(), "test_generate_planet: wrong time start"
         );
