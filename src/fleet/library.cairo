@@ -339,6 +339,7 @@ fn get_fleet_speed(fleet: Fleet, techs: TechLevels) -> u32 {
     let mut min_speed = 4294967295;
     let combustion: u32 = techs.combustion.into();
     let thrust: u32 = techs.thrust.into();
+    let spacetime: u32 = techs.spacetime.into();
     if fleet.carrier > 0 && thrust >= 4 {
         let base_speed = CARRIER().speed * 2;
         let level_diff = thrust - 4;
@@ -378,8 +379,8 @@ fn get_fleet_speed(fleet: Fleet, techs: TechLevels) -> u32 {
     }
     if fleet.armade > 0 {
         let base_speed = ARMADE().speed;
-        let level_diff = techs.spacetime - 3;
-        let speed = base_speed + (base_speed * level_diff.into() * 3) / 10;
+        let level_diff = spacetime - 3;
+        let speed = base_speed + (base_speed * level_diff * 3) / 10;
         if speed < min_speed {
             min_speed = speed;
         }
