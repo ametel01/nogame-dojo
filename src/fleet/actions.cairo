@@ -1015,4 +1015,100 @@ mod test {
         let mission = get!(world, (1, 1), ActiveMission).mission;
         assert!(mission.is_zero(), "Fleet: mission not removed correctly");
     }
+
+    #[test]
+    fn test_recall_fleet() {
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set_contract_address(ACCOUNT_2());
+        actions.planet.generate_planet();
+
+        let p2_position = get!(world, 2, PlanetPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::SCRAPER, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::SPARROW, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::FRIGATE, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::ARMADE, count: 10 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SPACETIME, level: 3 });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 1;
+        fleet.scraper = 2;
+        fleet.sparrow = 3;
+        fleet.frigate = 4;
+        fleet.armade = 5;
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::ATTACK, 100, 0);
+
+        actions.fleet.recall_fleet(1);
+        let carrier = get!(world, (1, Names::Fleet::CARRIER), PlanetShips).count;
+        assert!(carrier == 10, "Fleet: carrier not returned to planet");
+        let scraper = get!(world, (1, Names::Fleet::SCRAPER), PlanetShips).count;
+        assert!(scraper == 10, "Fleet: scraper not returned to planet");
+        let sparrow = get!(world, (1, Names::Fleet::SPARROW), PlanetShips).count;
+        assert!(sparrow == 10, "Fleet: sparrow not returned to planet");
+        let frigate = get!(world, (1, Names::Fleet::FRIGATE), PlanetShips).count;
+        assert!(frigate == 10, "Fleet: frigate not returned to planet");
+        let armade = get!(world, (1, Names::Fleet::ARMADE), PlanetShips).count;
+        assert!(armade == 10, "Fleet: armade not returned to planet");
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        assert!(mission.is_zero(), "Fleet: mission not removed correctly");
+    }
+
+    #[test]
+    fn test_dock_fleet() {
+        let (world, actions, nft, eth) = setup_world();
+        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::EXOCRAFT, level: 1 });
+        actions.colony.generate_colony();
+
+        let colony_position = get!(world, (1, 1), ColonyPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::SCRAPER, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::SPARROW, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::FRIGATE, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::ARMADE, count: 10 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SPACETIME, level: 3 });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 1;
+        fleet.scraper = 2;
+        fleet.sparrow = 3;
+        fleet.frigate = 4;
+        fleet.armade = 5;
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, colony_position, MissionCategory::TRANSPORT, 100, 0);
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
+        actions.fleet.dock_fleet(1);
+
+        let carrier = get!(world, (1, 1, Names::Fleet::CARRIER), ColonyShips).count;
+        assert!(carrier == 1, "Fleet: carrier not docked correctly");
+        let scraper = get!(world, (1, 1, Names::Fleet::SCRAPER), ColonyShips).count;
+        assert!(scraper == 2, "Fleet: scraper not docked correctly");
+        let sparrow = get!(world, (1, 1, Names::Fleet::SPARROW), ColonyShips).count;
+        assert!(sparrow == 3, "Fleet: sparrow not docked correctly");
+        let frigate = get!(world, (1, 1, Names::Fleet::FRIGATE), ColonyShips).count;
+        assert!(frigate == 4, "Fleet: frigate not docked correctly");
+        let armade = get!(world, (1, 1, Names::Fleet::ARMADE), ColonyShips).count;
+        assert!(armade == 5, "Fleet: armade not docked correctly");
+    }
 }
