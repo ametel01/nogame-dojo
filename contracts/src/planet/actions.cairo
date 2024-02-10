@@ -38,8 +38,8 @@ mod planetactions {
             let planets = get!(world, constants::GAME_ID, GamePlanetCount);
             let game_setup = get!(world, constants::GAME_ID, GameSetup);
             let price: u256 = self.get_planet_price().into();
-            IERC20CamelDispatcher { contract_address: game_setup.eth_address }
-                .transferFrom(caller, game_setup.owner, price);
+            // IERC20CamelDispatcher { contract_address: game_setup.eth_address }
+            //     .transferFrom(caller, game_setup.owner, price);
 
             let planet_id = planets.count + 1;
             set!(world, GamePlanet { owner: caller, planet_id });
