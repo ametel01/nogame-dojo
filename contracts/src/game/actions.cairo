@@ -4,10 +4,6 @@ use starknet::ContractAddress;
 trait IGameActions<TContractState> {
     fn spawn(
         self: @TContractState,
-        owner: starknet::ContractAddress,
-        nft_address: starknet::ContractAddress,
-        eth_address: starknet::ContractAddress,
-        price: u128,
         speed: usize,
     );
 }
@@ -36,10 +32,6 @@ mod gameactions {
         // ContractState is defined by system decorator expansion
         fn spawn(
             self: @ContractState,
-            owner: ContractAddress,
-            nft_address: ContractAddress,
-            eth_address: starknet::ContractAddress,
-            price: u128,
             speed: usize,
         ) {
             let world = self.world_dispatcher.read();
@@ -49,10 +41,6 @@ mod gameactions {
                 (
                     GameSetup {
                         game_id: constants::GAME_ID,
-                        owner,
-                        nft_address,
-                        eth_address,
-                        price,
                         speed,
                         start_time: get_block_timestamp()
                     },
@@ -80,13 +68,10 @@ mod tests {
 
     #[test]
     fn test_spawn() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED,);
 
         let game_setup = get!(world, constants::GAME_ID, (GameSetup));
-        assert!(game_setup.owner == OWNER(), "test_spawn wrong game owner");
-        assert!(game_setup.price == PRICE, "test_spawn wrong game price");
-        assert!(game_setup.speed == GAME_SPEED, "test_spawn wrong game speed");
         assert!(
             game_setup.start_time == starknet::get_block_timestamp(),
             "test_spawn: wrong game start time"

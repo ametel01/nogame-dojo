@@ -166,8 +166,8 @@ mod test {
 
     #[test]
     fn test_build_celestia_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -188,8 +188,8 @@ mod test {
 
     #[test]
     fn test_build_blaster_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -206,8 +206,8 @@ mod test {
 
     #[test]
     fn test_build_beam_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -229,8 +229,8 @@ mod test {
 
     #[test]
     fn test_build_astral_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -260,8 +260,8 @@ mod test {
 
     #[test]
     fn test_build_plasma_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();

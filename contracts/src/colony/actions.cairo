@@ -57,12 +57,6 @@ mod colonyactions {
                 max_colonies,
                 planet_id
             );
-            let price: u256 = 0;
-            if !price.is_zero() {
-                let game_setup = get!(world, constants::GAME_ID, GameSetup);
-                IERC20CamelDispatcher { contract_address: game_setup.eth_address }
-                    .transferFrom(caller, game_setup.owner, price);
-            }
             let position = positions::get_colony_position(current_count.into());
             let colony_id = current_planet_colonies + 1;
             let id = ((planet_id * 1000) + colony_id.into());
@@ -702,8 +696,8 @@ mod test {
 
     #[test]
     fn test_generate_colony() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -745,8 +739,8 @@ mod test {
 
     #[test]
     fn test_generate_colony_different_planets() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -785,8 +779,8 @@ mod test {
 
     #[test]
     fn test_upgrade_colony_compound() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -835,8 +829,8 @@ mod test {
 
     #[test]
     fn test_build_colony_ships() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -891,8 +885,8 @@ mod test {
 
     #[test]
     fn test_build_colony_defence() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();

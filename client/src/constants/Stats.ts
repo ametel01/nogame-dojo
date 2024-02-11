@@ -1,0 +1,83 @@
+export const ShipsStats = {
+  carrier: {
+    id: 0,
+    weapon: 50,
+    shield: 10,
+    hull: 1000,
+    speed: 5000,
+    cargo: 10000,
+    consumption: 23,
+  },
+  scraper: {
+    id: 1,
+    weapon: 50,
+    shield: 10,
+    hull: 1600,
+    speed: 2000,
+    cargo: 20000,
+    consumption: 343,
+  },
+  sparrow: {
+    id: 2,
+    weapon: 250,
+    shield: 10,
+    hull: 1000,
+    speed: 12500,
+    cargo: 50,
+    consumption: 23,
+  },
+  frigate: {
+    id: 3,
+    weapon: 400,
+    shield: 150,
+    hull: 8000,
+    speed: 15000,
+    cargo: 300,
+    consumption: 353,
+  },
+  armade: {
+    id: 4,
+    weapon: 600,
+    shield: 200,
+    hull: 15000,
+    speed: 10000,
+    cargo: 1500,
+    consumption: 590,
+  },
+};
+
+export const DefencesStats = {
+  celestia: {
+    id: 5,
+    weapon: 1,
+    shield: 1,
+    hull: 500,
+    speed: 0,
+    cargo: 0,
+    consumption: 0,
+  },
+  blaster: {
+    id: 6,
+    weapon: 175,
+    shield: 20,
+    hull: 750,
+  },
+  beam: {
+    id: 7,
+    weapon: 350,
+    shield: 100,
+    hull: 2500,
+  },
+  astral: {
+    id: 8,
+    weapon: 800,
+    shield: 200,
+    hull: 7750,
+  },
+  plasma: {
+    id: 9,
+    weapon: 900,
+    shield: 300,
+    hull: 20000,
+  },
+};

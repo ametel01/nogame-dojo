@@ -910,8 +910,8 @@ mod test {
 
     #[test]
     fn test_send_fleet() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -969,8 +969,8 @@ mod test {
 
     #[test]
     fn test_attack_planet() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -1021,8 +1021,8 @@ mod test {
 
     #[test]
     fn test_recall_fleet() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -1069,8 +1069,8 @@ mod test {
 
     #[test]
     fn test_dock_fleet() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -1117,8 +1117,8 @@ mod test {
 
     #[test]
     fn test_collect_debris() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();

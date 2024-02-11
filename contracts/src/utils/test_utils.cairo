@@ -88,7 +88,7 @@ struct Actions {
     fleet: IFleetActionsDispatcher
 }
 
-fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress) {
+fn setup_world() -> (IWorldDispatcher, Actions) {
     // components
     let mut models = array![
         planet_compounds::TEST_CLASS_HASH,
@@ -154,32 +154,6 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         .deploy_contract('salt', fleetactions::TEST_CLASS_HASH.try_into().unwrap());
     let fleet_actions = IFleetActionsDispatcher { contract_address };
 
-    let nft = deploy_nft(array!['NoGame NFT', 'NGPLANET', world.contract_address.into()]);
-    let eth = deploy_eth(array!['Ether', 'ETH', ETH_SUPPLY, 0, OWNER().into()]);
-
-    let eth_contract = IERC20Dispatcher { contract_address: eth };
-    set_contract_address(OWNER());
-    eth_contract.transfer(ACCOUNT_1(), 10 * E18);
-    eth_contract.transfer(ACCOUNT_2(), 10 * E18);
-    eth_contract.transfer(ACCOUNT_3(), 10 * E18);
-    eth_contract.transfer(ACCOUNT_4(), 10 * E18);
-    eth_contract.transfer(ACCOUNT_5(), 10 * E18);
-
-    set_contract_address(ACCOUNT_1());
-    eth_contract.approve(planet_actions.contract_address, 10 * E18);
-
-    set_contract_address(ACCOUNT_2());
-    eth_contract.approve(planet_actions.contract_address, 10 * E18);
-
-    set_contract_address(ACCOUNT_3());
-    eth_contract.approve(planet_actions.contract_address, 10 * E18);
-
-    set_contract_address(ACCOUNT_4());
-    eth_contract.approve(planet_actions.contract_address, 10 * E18);
-
-    set_contract_address(ACCOUNT_5());
-    eth_contract.approve(planet_actions.contract_address, 10 * E18);
-
     let actions = Actions {
         colony: colony_actions,
         compound: compound_actions,
@@ -191,7 +165,7 @@ fn setup_world() -> (IWorldDispatcher, Actions, ContractAddress, ContractAddress
         fleet: fleet_actions
     };
 
-    (world, actions, nft, eth)
+    (world, actions)
 }
 
 fn deploy_nft(calldata: Array<felt252>) -> ContractAddress {
@@ -210,9 +184,4 @@ fn deploy_eth(calldata: Array<felt252>) -> ContractAddress {
     address
 }
 
-#[test]
-fn test_setup() {
-    let (world, actions, nft, eth) = setup_world();
-    set_contract_address(actions.planet.contract_address);
-    IERC20CamelDispatcher { contract_address: eth }.transferFrom(ACCOUNT_1(), OWNER(), 1.into());
-}
+

@@ -278,8 +278,8 @@ mod test {
 
     #[test]
     fn test_upgrade_energy_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -299,8 +299,8 @@ mod test {
 
     #[test]
     fn test_upgrade_digital_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -320,8 +320,8 @@ mod test {
 
     #[test]
     fn test_upgrade_beam_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -342,8 +342,8 @@ mod test {
 
     #[test]
     fn test_upgrade_armour_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -360,8 +360,8 @@ mod test {
 
     #[test]
     fn test_upgrade_ion_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -386,8 +386,8 @@ mod test {
 
     #[test]
     fn test_upgrade_plasma_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -413,8 +413,8 @@ mod test {
 
     #[test]
     fn test_upgrade_weapons_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -434,8 +434,8 @@ mod test {
 
     #[test]
     fn test_upgrade_shield_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -456,8 +456,8 @@ mod test {
 
     #[test]
     fn test_upgrade_spacetime_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -479,8 +479,8 @@ mod test {
 
     #[test]
     fn test_upgrade_combustion_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -501,8 +501,8 @@ mod test {
 
     #[test]
     fn test_upgrade_thrust_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -526,8 +526,8 @@ mod test {
 
     #[test]
     fn test_upgrade_warp_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -552,8 +552,8 @@ mod test {
 
     #[test]
     fn test_upgrade_exocraft_tech_success() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::MIN_PRICE_UNSCALED, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();

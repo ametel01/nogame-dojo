@@ -3,7 +3,6 @@ use nogame::data::types::ERC20s;
 #[starknet::interface]
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
-    fn get_planet_price(self: @TContractState) -> u128;
 }
 
 
@@ -19,7 +18,7 @@ mod planetactions {
     use nogame::compound::library as compound;
     use nogame::data::types::{Position, ERC20s};
     use nogame::defence::models::PlanetDefences;
-    use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner};
+    use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -35,15 +34,16 @@ mod planetactions {
             // Access the world dispatcher for reading.
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
+            assert!(get!(world, caller, GameOwnerPlanet).planet_id == 0, "Game Actions: You already have a planet");
+
             let planets = get!(world, constants::GAME_ID, GamePlanetCount);
             let game_setup = get!(world, constants::GAME_ID, GameSetup);
-            let price: u256 = self.get_planet_price().into();
-            // IERC20CamelDispatcher { contract_address: game_setup.eth_address }
-            //     .transferFrom(caller, game_setup.owner, price);
+            
 
             let planet_id = planets.count + 1;
             set!(world, GamePlanet { owner: caller, planet_id });
             set!(world, GamePlanetOwner { planet_id, owner: caller });
+            set!(world, GameOwnerPlanet { owner: caller, planet_id });
 
             let position = position::get_planet_position(planet_id);
             set!(world, PlanetPosition { planet_id, position });
@@ -58,36 +58,6 @@ mod planetactions {
 
             set!(world, PlanetResourceTimer { planet_id, last_collection: get_block_timestamp() });
         }
-
-        fn get_planet_price(self: @ContractState) -> u128 {
-            let world = self.world_dispatcher.read();
-            let game_setup = get!(world, constants::GAME_ID, GameSetup);
-            let planet_count = get!(world, constants::GAME_ID, GamePlanetCount).count;
-
-            let time_elapsed = (get_block_timestamp() - game_setup.start_time) / constants::DAY;
-            let auction_price = get_price(game_setup.price, time_elapsed, planet_count);
-            if auction_price < constants::MIN_PRICE_UNSCALED {
-                return constants::MIN_PRICE_UNSCALED;
-            } else {
-                return auction_price;
-            }
-        }
-    }
-
-    fn get_price(price: u128, time_elapsed: u64, item_sold: u32) -> u128 {
-        let auction = LinearVRGDA {
-            target_price: FixedTrait::new(price, false),
-            decay_constant: FixedTrait::new(constants::_0_05, true),
-            per_time_unit: FixedTrait::new_unscaled(10, false),
-        };
-        auction
-            .get_vrgda_price(
-                FixedTrait::new_unscaled(time_elapsed.into(), false),
-                FixedTrait::new_unscaled(item_sold.into(), false)
-            )
-            .mag
-            * constants::E18
-            / ONE
     }
 }
 
@@ -112,8 +82,8 @@ mod tests {
 
     #[test]
     fn test_generate_planet() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, PRICE, GAME_SPEED,);
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
 
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
@@ -142,31 +112,5 @@ mod tests {
         assert!(
             time_start == starknet::get_block_timestamp(), "test_generate_planet: wrong time start"
         );
-    }
-
-    #[test]
-    fn test_get_planet_price() {
-        let (world, actions, nft, eth) = setup_world();
-        actions.game.spawn(OWNER(), nft, eth, constants::STARTING_PRICE_SCALED, GAME_SPEED,);
-        assert(actions.planet.get_planet_price() == 22024160000000002, 'wrong price-1');
-
-        set_contract_address(ACCOUNT_1());
-        actions.planet.generate_planet();
-        assert(actions.planet.get_planet_price() == 22134556560993767, 'wrong price-2');
-
-        set_contract_address(ACCOUNT_2());
-        actions.planet.generate_planet();
-        assert(actions.planet.get_planet_price() == 22245506487155662, 'wrong price-3');
-
-        set_contract_address(ACCOUNT_3());
-        actions.planet.generate_planet();
-
-        set_block_timestamp(DAY * 13);
-
-        assert(actions.planet.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-4');
-        set_contract_address(ACCOUNT_4());
-
-        assert(actions.planet.get_planet_price() == constants::MIN_PRICE_UNSCALED, 'wrong price-5');
-        set_contract_address(ACCOUNT_5());
     }
 }

@@ -8,10 +8,6 @@ use dojo::database::introspect::Introspect;
 struct GameSetup {
     #[key]
     game_id: u8,
-    owner: ContractAddress,
-    nft_address: ContractAddress,
-    eth_address: ContractAddress,
-    price: u128,
     speed: usize,
     start_time: u64,
 }
@@ -28,6 +24,13 @@ struct GamePlanetOwner {
     #[key]
     planet_id: u32,
     owner: ContractAddress,
+}
+
+#[derive(Model, Drop, Serde)]
+struct GameOwnerPlanet {
+    #[key]
+    owner: ContractAddress,
+    planet_id: u32,
 }
 
 #[derive(Model, Drop, Serde)]
