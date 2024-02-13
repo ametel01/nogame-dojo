@@ -13,6 +13,7 @@ trait IColonyActions<TState> {
     fn process_defence_build(
         ref self: TState, colony_id: u8, name: DefenceBuildType, quantity: u32,
     );
+    fn get_resources_available(ref self: TState, colony_id: u8) -> ERC20s;
 }
 
 #[dojo::contract]
@@ -29,7 +30,7 @@ mod colonyactions {
     use nogame::compound::library as compound;
     use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
-    use nogame::game::models::{GamePlanet, GamePlanetCount, GameSetup};
+    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
@@ -97,6 +98,17 @@ mod colonyactions {
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             build_defence(world, planet_id, colony_id, name, quantity);
+        }
+
+        fn get_resources_available(
+            ref self: ContractState, planet_id: u32, colony_id: u8
+        ) -> ERC20s {
+            let world = self.world_dispatcher.read();
+            let caller = get_caller_address();
+            get_colony_resources(world, planet_id, colony_id)
+                + calculate_production(
+                    world, planet_id, colony_id, get_colony_compounds(world, planet_id, colony_id)
+                )
         }
     }
 
@@ -682,7 +694,7 @@ mod test {
     use nogame::data::types::{Position, ShipBuildType, CompoundUpgradeType, DefenceBuildType};
     use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::game::models::{GameSetup};
     use nogame::planet::models::{PlanetPosition, PositionToPlanet,};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
