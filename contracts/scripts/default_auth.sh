@@ -6,30 +6,90 @@ export RPC_URL="http://localhost:5050";
 
 export WORLD_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.world.address')
 
+export COLONY_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::colonyactions" ).address')
+
+export COMPOUND_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::compoundactions" ).address')
+
+export DEFENCE_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::defenceactions" ).address')
+
+export DOCKYARD_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::dockyardactions" ).address')
+
+export FLEET_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::fleetactions" ).address')
+
 export GAME_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::gameactions" ).address')
 
 export PLANET_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::planet::actions::planetactions" ).address')
 
+export TECH_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::planet::actions::techactions" ).address')
+
 echo "---------------------------------------------------------------------------"
 echo world : $WORLD_ADDRESS 
 echo " "
+echo colonyactions : $COLONY_ADDRESS
+echo " "
+echo compoundactions : $COMPOUND_ADDRESS
+echo " "
+echo defenceactions : $DEFENCE_ADDRESS
+echo " "
+echo dockyardactions : $DOCKYARD_ADDRESS
+echo " "    
+echo fleetactions : $FLEET_ADDRESS
+
 echo gameactions : $GAME_ADDRESS
 echo " "
 echo planetactions : $PLANET_ADDRESS
+echo " "
+echo planetactions : $PLANET_ADDRESS
+echo " "
+echo techactions : $TECH_ADDRESS
 echo "---------------------------------------------------------------------------"
 
 # enable system -> component authorizations
-GAME_COMPONENTS=("GameSetup" "GamePlanetCount" )
+COLONY_COMPONENTS=("ColonyResource" "ColonyCompounds" "ColonyShips" "ColonyDefences" "ColonyPosition" "PositionToColony" "ColonyResourceTimer" "ColonyOwner" "PositionToPlanet" "PlanetPosition" "PlanetColoniesCount" "ColonyCount")
+for component in ${COLONY_COMPONENTS[@]}; do
+    sozo auth writer $component $COLONY_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
 
+COMPOUND_COMPONENTS=("PlanetCompounds")
+for component in ${COMPOUND_COMPONENTS[@]}; do
+    sozo auth writer $component $COMPOUND_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
+
+DEFENCE_COMPONENTS=("PlanetDefences")
+for component in ${DEFENCE_COMPONENTS[@]}; do
+    sozo auth writer $component $DEFENCE_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
+
+DOCKYARD_COMPONENTS=("PlanetShips")
+for component in ${DOCKYARD_COMPONENTS[@]}; do
+    sozo auth writer $component $DOCKYARD_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
+
+FLEET_COMPONENTS=("LastActive" "PlanetDebrisField" "ColonyResourceTimer" "PlanetResourceTimer" "ActiveMission" "ActiveMissionLen" "IncomingMissions" "IncomingMissionLen" "ColonyShips" "PlanetShips" "PlanetDefences")
+for component in ${FLEET_COMPONENTS[@]}; do
+    sozo auth writer $component $FLEET_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
+
+GAME_COMPONENTS=("GameSetup" "GamePlanetCount" )
 for component in ${GAME_COMPONENTS[@]}; do
     sozo auth writer $component $GAME_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
     sleep 1
 done
 
 PLANET_COMPONENTS=("PlanetPosition" "PositionToPlanet"  "PlanetResourceTimer" "PlanetResource"  "GamePlanetCount" "GamePlanet" "GamePlanetOwner" "GameOwnerPlanet")
-
 for component in ${PLANET_COMPONENTS[@]}; do
     sozo auth writer $component $PLANET_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sleep 1
+done
+
+TECH_COMPONENTS=("PlanetTechs")
+for component in ${TECH_COMPONENTS[@]}; do
+    sozo auth writer $component $TECH_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
     sleep 1
 done
 
