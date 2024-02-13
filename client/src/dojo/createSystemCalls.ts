@@ -12,7 +12,6 @@ import { DojoProvider } from '@dojoengine/core';
 import { GenerateColony } from '../components/buttons/GenerateColony';
 import { getBaseDefenceCost } from '../constants/costs';
 import { CompoundsCostUpgrade } from '../shared/types';
-import { getCompoundUpgradeType } from '../types';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -91,9 +90,36 @@ export function createSystemCalls(
     }
   };
 
+  const buildDefence = async (
+    account: Account,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'defenceactions',
+        'process_defence_build',
+        [component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return {
     generatePlanet,
     generateColony,
     upgradeCompound,
+    buildDefence,
   };
 }
