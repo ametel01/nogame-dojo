@@ -1,29 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  UniverseProps,
-  useAccount,
-  useGetIsNoobProtected,
-  useGetPlanetRanking,
-  useCalculateWinsAndLosses,
-  useLastActive,
-  useShipsLevels,
-  ShipsLevels,
-  getPlanetImage,
-  ImageId,
-  UniverseViewBox,
-  Resources,
-  TechLevels,
-  DefenceLevels,
-  PlanetDetails,
-  fetchPlanetsData,
-  StyledTabPanel,
-  // Stack,
-  Pagination,
-} from '.';
-import { useGetColonyShips } from '../hooks/ColoniesHooks';
+import * as deps from '.';
 import { useDestination } from '../context/DestinationContext';
 import TextField from '@mui/material/TextField';
 import { styled as muiStyled } from '@mui/material/styles';
+import { usePlanetShips } from '../hooks/usePlanetShips';
+import { useColonyShips } from '../hooks/useColonyShips';
 
 const PaginationContainer = muiStyled('div')({
   display: 'flex',
@@ -58,9 +39,7 @@ const UniverseBoxItem = ({
   planet,
   ownTechs,
   colonyId,
-}: UniverseProps) => {
-  const { address: address_data } = useAccount();
-  const address = address_data || '';
+}: deps.UniverseProps) => {
   const highlighted = parseInt(address, 16) === parseInt(planet.account, 16);
 
   const motherPlanet =
@@ -76,28 +55,26 @@ const UniverseBoxItem = ({
     motherPlanet
   );
 
-  const ownFleetData = useShipsLevels(Number(ownPlanetId));
-  const ownFleet: ShipsLevels = ownFleetData || {
+  const ownFleetData = usePlanetShips(ownPlanetId);
+  const ownFleet: deps.Fleet = ownFleetData || {
     carrier: 0,
     scraper: 0,
     sparrow: 0,
     frigate: 0,
     armade: 0,
-    celestia: 0,
   };
 
-  const colonyFleetData = useGetColonyShips(Number(ownPlanetId), colonyId);
-  const colonyFleet: ShipsLevels = colonyFleetData || {
+  const colonyFleetData = useColonyShips(ownPlanetId, colonyId);
+  const colonyFleet: deps.Fleet = colonyFleetData || {
     carrier: 0,
     scraper: 0,
     sparrow: 0,
     frigate: 0,
     armade: 0,
-    celestia: 0,
   };
 
-  const img = getPlanetImage(
-    planet.position.orbit.toString() as unknown as ImageId
+  const img = deps.getPlanetImage(
+    planet.position.orbit.toString() as unknown as deps.ImageId
   );
 
   const shortenedAddress = `${planet.account.slice(
@@ -106,7 +83,7 @@ const UniverseBoxItem = ({
   )}...${planet.account.slice(-4)}`;
 
   return (
-    <UniverseViewBox
+    <deps.UniverseViewBox
       planetId={planet.planetId}
       img={img}
       owner={shortenedAddress}
@@ -125,11 +102,10 @@ const UniverseBoxItem = ({
 };
 
 interface UniverseViewTabPanelProps {
-  spendable?: Resources;
-  collectible?: Resources;
-  ownTechs?: TechLevels;
-  fleet?: ShipsLevels;
-  defences?: DefenceLevels;
+  resources: deps.Resources;
+  ownTechs?: deps.Techs;
+  fleet?: deps.Fleet;
+  defences?: deps.Defences;
   ownPlanetId: number;
   colonyId: number;
 }
@@ -140,7 +116,7 @@ export const UniverseViewTabPanel = ({
   colonyId,
   ...rest
 }: UniverseViewTabPanelProps) => {
-  const [planetsData, setPlanetsData] = useState<PlanetDetails[]>([]);
+  const [planetsData, setPlanetsData] = useState<deps.PlanetDetails[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [inputPage, setInputPage] = useState('');
   const [pageError, setPageError] = useState(false);
@@ -148,45 +124,6 @@ export const UniverseViewTabPanel = ({
   const pageCount = Math.ceil(planetsData.length / itemsPerPage);
 
   const { selectedDestination } = useDestination();
-
-  useEffect(() => {
-    fetchPlanetsData()
-      .then((data) => {
-        const sortedData = data.sort((a, b) => {
-          if (Number(a.position.system) === Number(b.position.system)) {
-            return Number(a.position.orbit) - Number(b.position.orbit);
-          }
-          return Number(a.position.system) - Number(b.position.system);
-        });
-
-        setPlanetsData(sortedData);
-
-        if (selectedDestination !== null) {
-          const destinationIndex = sortedData.findIndex(
-            (planet) => Number(planet.planetId) === Number(selectedDestination)
-          );
-          if (destinationIndex !== -1) {
-            // Check if index is valid
-            const destinationPage = Math.ceil(
-              (destinationIndex + 1) / itemsPerPage
-            );
-            setCurrentPage(destinationPage);
-          }
-        } else {
-          // Default page setting logic
-          const ownPlanetIndex = sortedData.findIndex((planet) =>
-            colonyId === 0
-              ? Number(planet.planetId) === ownPlanetId
-              : Number(planet.planetId) === ownPlanetId * 1000 + colonyId
-          );
-          const initialPage = Math.ceil((ownPlanetIndex + 1) / itemsPerPage);
-          setCurrentPage(initialPage);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching planets data:', error);
-      });
-  }, [colonyId, ownPlanetId, selectedDestination]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const selectedPlanets = planetsData.slice(

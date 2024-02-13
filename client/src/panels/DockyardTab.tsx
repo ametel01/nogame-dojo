@@ -1,101 +1,75 @@
 import React from 'react';
 import DockyardBox from '../boxes/DockyardBox';
 import { ColonyBuildType } from '../shared/types/index';
-import {
-  ArmadeDescription,
-  BuildType,
-  CarrierDescription,
-  CelestiaDescription,
-  DockyardProps,
-  FrigateDescription,
-  ScraperDescription,
-  ShipConfigType,
-  SparrowDescription,
-  StyledTabPanel,
-  armadeImg,
-  armadeRequirements,
-  calculEnoughResources,
-  carrierImg,
-  carrierRequirements,
-  celestiaImg,
-  celestiaRequirements,
-  frigateImg,
-  frigateRequirements,
-  scraperImg,
-  scraperRequirements,
-  sparrowImg,
-  sparrowRequirements,
-} from '.';
+import * as deps from '.';
 
 export const DockyardTabPanel = ({
-  spendableResources,
-  shipsLevels,
+  resources,
+  ships,
   shipsCost,
-  dockyardLevel,
-  techLevels,
+  dockyard,
+  techs,
   celestia,
   colonyId,
   ...rest
-}: DockyardProps) => {
-  const shipsConfig: ShipConfigType[] = [
+}: deps.DockyardProps) => {
+  const shipsConfig: deps.ShipConfigType[] = [
     {
-      description: <CarrierDescription />,
-      img: carrierImg,
+      description: <deps.CarrierDescription />,
+      img: deps.carrierImg,
       title: 'Carrier',
-      functionCallName:
-        colonyId == 0 ? BuildType.Carrier : ColonyBuildType.Carrier,
+      functionCallName: deps.ShipBuildType.carrier,
       shipName: 'carrier',
-      requirements: carrierRequirements(dockyardLevel, techLevels),
+      requirements: deps.carrierRequirements(dockyard, techs),
     },
     {
-      description: <CelestiaDescription />,
-      img: celestiaImg,
+      description: <deps.CelestiaDescription />,
+      img: deps.celestiaImg,
       title: 'Celestia',
-      functionCallName:
-        colonyId == 0 ? BuildType.Celestia : ColonyBuildType.Celestia,
+      functionCallName: deps.DefenceBuildType.celestia,
       shipName: 'celestia',
-      requirements: celestiaRequirements(dockyardLevel, techLevels),
+      requirements: deps.celestiaRequirements(dockyard, techs),
     },
     {
-      description: <ScraperDescription />,
-      img: scraperImg,
+      description: <deps.ScraperDescription />,
+      img: deps.scraperImg,
       title: 'Scraper',
       functionCallName:
-        colonyId == 0 ? BuildType.Scraper : ColonyBuildType.Scraper,
+        colonyId == 0 ? deps.ShipBuildType.scraper : ColonyBuildType.Scraper,
       shipName: 'scraper',
-      requirements: scraperRequirements(dockyardLevel, techLevels),
+      requirements: deps.scraperRequirements(dockyard, techs),
     },
     {
-      description: <SparrowDescription />,
-      img: sparrowImg,
+      description: <deps.SparrowDescription />,
+      img: deps.sparrowImg,
       title: 'Sparrow',
       functionCallName:
-        colonyId == 0 ? BuildType.Sparrow : ColonyBuildType.Sparrow,
+        colonyId == 0 ? deps.ShipBuildType.sparrow : ColonyBuildType.Sparrow,
       shipName: 'sparrow',
-      requirements: sparrowRequirements(dockyardLevel, techLevels),
+      requirements: deps.sparrowRequirements(dockyard, techs),
     },
     {
-      description: <FrigateDescription />,
-      img: frigateImg,
+      description: <deps.FrigateDescription />,
+      img: deps.frigateImg,
       title: 'Frigate',
       functionCallName:
-        colonyId == 0 ? BuildType.Frigate : ColonyBuildType.Frigate,
+        colonyId == 0 ? deps.ShipBuildType.frigate : ColonyBuildType.Frigate,
       shipName: 'frigate',
-      requirements: frigateRequirements(dockyardLevel, techLevels),
+      requirements: deps.frigateRequirements(dockyard, techs),
     },
     {
-      description: <ArmadeDescription />,
-      img: armadeImg,
+      description: <deps.ArmadeDescription />,
+      img: deps.armadeImg,
       title: 'Armade',
       functionCallName:
-        colonyId == 0 ? BuildType.Armade : ColonyBuildType.Armade,
+        colonyId == 0 ? deps.ShipBuildType.armade : ColonyBuildType.Armade,
       shipName: 'armade',
-      requirements: armadeRequirements(dockyardLevel, techLevels),
+      requirements: deps.armadeRequirements(dockyard, techs),
     },
   ];
 
   return (
-    <StyledTabPanel {...rest}>
+    <deps.StyledTabPanel {...rest}>
       {shipsConfig.map((ship) => (
         <DockyardBox
           key={ship.functionCallName}
@@ -105,17 +79,17 @@ export const DockyardTabPanel = ({
           functionCallName={ship.functionCallName}
           level={
             ship.title === 'Celestia'
-              ? Number(celestia)
-              : Number(shipsLevels?.[ship.shipName])
+              ? celestia
+              : ships?.[ship.shipName] || 
           }
           costUpdate={shipsCost?.[ship.shipName]}
           hasEnoughResources={
-            spendableResources &&
+            resources &&
             shipsCost?.[ship.shipName] &&
-            calculEnoughResources(shipsCost[ship.shipName], spendableResources)
+            calculEnoughResources(shipsCost[ship.shipName], resources)
           }
           requirementsMet={ship.requirements}
-          resourcesAvailable={spendableResources!}
+          resourcesAvailable={resources!}
           colonyId={colonyId}
         />
       ))}

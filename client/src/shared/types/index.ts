@@ -230,19 +230,6 @@ export function getColonyBuildType(name: number): CairoCustomEnum | undefined {
   }
 }
 
-export const BuildType = {
-  Carrier: 0,
-  Scraper: 1,
-  Celestia: 2,
-  Sparrow: 3,
-  Frigate: 4,
-  Armade: 5,
-  Blaster: 6,
-  Beam: 7,
-  Astral: 8,
-  Plasma: 9,
-};
-
 export function getBuildType(name: number): CairoCustomEnum | undefined {
   switch (name) {
     case 0:
@@ -308,20 +295,6 @@ export const callTypeOptions = {
 };
 
 type UpgradeTypeKeys = keyof typeof UpgradeType;
-type BuildTypeKeys = keyof typeof BuildType;
-
-export function getUpgradeNameById(id: number, isBuild: boolean) {
-  if (isBuild == false) {
-    const reversedMapping = (
-      Object.keys(UpgradeType) as UpgradeTypeKeys[]
-    ).find((key) => UpgradeType[key] === id);
-    return reversedMapping;
-  }
-  const reversedMapping = (Object.keys(BuildType) as BuildTypeKeys[]).find(
-    (key) => BuildType[key] === id
-  );
-  return reversedMapping;
-}
 
 export type SimulationResult = {
   attacker_carrier: number;

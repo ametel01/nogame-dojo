@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyledButton } from '../../shared/styled/Button';
-import { TransactionStatus } from './TransactionStatus';
-// import { InvokeFunctionResponse } from "starknet";
+
 interface Props {
   name: string;
   callback?: () => void;
@@ -37,7 +36,6 @@ export function ButtonUpgrade({
           Upgrade
         </StyledButton>
       )}
-      {isClicked ? <TransactionStatus name={name} tx={tx} /> : <></>}
       {!disabled && noRequirements && (
         <StyledButton
           disabled
@@ -91,7 +89,6 @@ export function ButtonBuild({
           Build
         </StyledButton>
       )}
-      {isClicked ? <TransactionStatus name={name} tx={tx} /> : <></>}
       {!disabled && noRequirements && (
         <StyledButton
           disabled

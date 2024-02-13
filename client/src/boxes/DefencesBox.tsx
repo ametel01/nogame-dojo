@@ -156,13 +156,6 @@ const DefencesBox = ({
             />
           </deps.Tooltip>
         </deps.Styled.ResourceContainer>
-        <deps.AddTransactionIcon
-          callType="defence"
-          unitName={functionCallName}
-          quantity={quantity}
-          disabled={hasRequirements || !hasEnoughResources}
-          colonyId={colonyId}
-        />
         <deps.Styled.ButtonContainer>
           <deps.ButtonBuild
             name={`Build ${quantity} ${title}`}
@@ -175,6 +168,7 @@ const DefencesBox = ({
       </deps.Styled.SubBox>
     </deps.Styled.Box>
   );
+  return boxContent;
 };
 
 export default DefencesBox;

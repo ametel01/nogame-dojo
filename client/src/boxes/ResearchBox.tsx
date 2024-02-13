@@ -1,22 +1,6 @@
-import {
-  React,
-  useMemo,
-  useState,
-  Styled,
-  useTechUpgrade,
-  baseTechCost,
-  getCumulativeTechCost,
-  calculEnoughResources,
-  DescriptionModal,
-  numberWithCommas,
-  Tooltip,
-  Input,
-  AddTransactionIcon,
-  ButtonUpgrade,
-  LabBoxProps as Props,
-  ButtonState,
-} from './deps';
+import * as deps from './deps';
 import { InfoContainer } from './styled';
+import { useDojo } from '../dojo/useDojo';
 
 const ResearchBox = ({
   img,
@@ -25,22 +9,26 @@ const ResearchBox = ({
   level,
   requirementsMet,
   description,
-  resourcesAvailable,
-}: Props) => {
-  const [quantity, setQuantity] = useState(1);
-  const [showTooltip, setShowTooltip] = useState(true);
+  resources,
+}: deps.LabBoxProps) => {
+  const [quantity, setQuantity] = deps.useState(1);
+  const [showTooltip, setShowTooltip] = deps.useState(true);
+  const {
+    setup: {
+      systemCalls: { upgradeTech },
+    },
+    account,
+  } = useDojo();
 
-  const { tx, writeAsync: upgrade } = useTechUpgrade(
-    functionCallName,
-    quantity
-  );
+  const upgrade = () =>
+    upgradeTech(account.account, functionCallName, quantity);
 
-  const baseCosts = baseTechCost[functionCallName];
+  const baseCosts = deps.baseTechCost[functionCallName as number];
   const isExo = functionCallName === 18;
   // Calculate the cumulative cost of the upgrade
-  const upgradeCost = useMemo(() => {
+  const upgradeCost = deps.useMemo(() => {
     if (quantity > 0 && level != undefined) {
-      const cost = getCumulativeTechCost(
+      const cost = deps.getCumulativeTechCost(
         level,
         quantity,
         baseCosts.steel,
@@ -53,12 +41,9 @@ const ResearchBox = ({
     return { steel: 0, quartz: 0, tritium: 0 };
   }, [level, quantity, baseCosts, isExo]);
 
-  const hasEnoughResources = calculEnoughResources(
-    upgradeCost,
-    resourcesAvailable
-  );
+  const hasEnoughResources = deps.calculEnoughResources(upgradeCost, resources);
 
-  const buttonState = useMemo((): ButtonState => {
+  const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {
       return 'noRequirements';
     } else if (!hasEnoughResources) {
@@ -81,9 +66,9 @@ const ResearchBox = ({
     ].includes(title) && showTooltip;
 
   const boxContent = (
-    <Styled.Box>
-      <Styled.ImageContainer>
-        <DescriptionModal
+    <deps.Styled.Box>
+      <deps.Styled.ImageContainer>
+        <deps.DescriptionModal
           onClick={() => {
             setShowTooltip(false);
           }}
@@ -91,60 +76,60 @@ const ResearchBox = ({
           title={title}
           description={description}
         />
-      </Styled.ImageContainer>
-      <Styled.SubBox>
-        <Styled.Title>{title}</Styled.Title>
+      </deps.Styled.ImageContainer>
+      <deps.Styled.SubBox>
+        <deps.Styled.Title>{title}</deps.Styled.Title>
         <InfoContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>STAGE</Styled.ResourceTitle>
-            <Styled.NumberContainer>{level}</Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>STEEL</Styled.ResourceTitle>
-            <Styled.NumberContainer
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>STAGE</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer>{level}</deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.steel < upgradeCost.steel
+                color: resources
+                  ? resources.steel || 0 < upgradeCost.steel
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
-              {numberWithCommas(upgradeCost.steel)}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>QUARTZ</Styled.ResourceTitle>
-            <Styled.NumberContainer
+              {deps.numberWithCommas(upgradeCost.steel)}
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>QUARTZ</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.quartz < upgradeCost.quartz
+                color: resources
+                  ? resources.quartz || 0 < upgradeCost.quartz
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
-              {numberWithCommas(upgradeCost.quartz)}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>TRITIUM</Styled.ResourceTitle>
-            <Styled.NumberContainer
+              {deps.numberWithCommas(upgradeCost.quartz)}
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>TRITIUM</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.tritium < upgradeCost.tritium
+                color: resources
+                  ? resources.tritium || 0 < upgradeCost.tritium
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
-              {numberWithCommas(upgradeCost.tritium)}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
+              {deps.numberWithCommas(upgradeCost.tritium)}
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
         </InfoContainer>
-        <Styled.ResourceContainer>
-          <Tooltip title="Select the number of levels to upgrade" arrow>
-            <Input
+        <deps.Styled.ResourceContainer>
+          <deps.Tooltip title="Select the number of levels to upgrade" arrow>
+            <deps.Input
               type="number"
               value={quantity}
               onChange={(e) => {
@@ -159,32 +144,29 @@ const ResearchBox = ({
               variant="soft"
               style={{ width: '80px' }}
             />
-          </Tooltip>
-        </Styled.ResourceContainer>
-        <AddTransactionIcon
-          callType="tech"
-          unitName={functionCallName}
-          quantity={quantity}
-          disabled={hasRequirements || !hasEnoughResources}
-          colonyId={0}
-        />
-        <Styled.ButtonContainer>
-          <ButtonUpgrade
+          </deps.Tooltip>
+        </deps.Styled.ResourceContainer>
+        <deps.Styled.ButtonContainer>
+          <deps.ButtonUpgrade
             name={`Upgrade ${title}`}
             callback={upgrade}
-            tx={tx?.transaction_hash}
+            // tx={tx?.transaction_hash}
             disabled={isDisabled}
             noRequirements={hasRequirements}
           />
-        </Styled.ButtonContainer>
-      </Styled.SubBox>
-    </Styled.Box>
+        </deps.Styled.ButtonContainer>
+      </deps.Styled.SubBox>
+    </deps.Styled.Box>
   );
 
   return shouldShowTooltip ? (
-    <Tooltip title="Non available on testnet release" placement="top" arrow>
+    <deps.Tooltip
+      title="Non available on testnet release"
+      placement="top"
+      arrow
+    >
       {boxContent}
-    </Tooltip>
+    </deps.Tooltip>
   ) : (
     boxContent
   );

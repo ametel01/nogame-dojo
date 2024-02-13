@@ -28,7 +28,7 @@ export const ResourcesSection = ({
     if (selectedDestination !== null) {
       setActiveTab(5); // Set to Universe tab
     }
-  }, [selectedDestination]);
+  }, [selectedDestination, setActiveTab]);
 
   if (!compoundsLevels || !techLevels || !resources || !shipsLevels) {
     // Centered CircularProgress
@@ -140,7 +140,7 @@ export const ResourcesSection = ({
           techLevels,
           colonyId
         )}
-      {activeTab === 5 && renderUniversePanel(planetId, techLevels, colonyId)}
+      {/* {activeTab === 5 && renderUniversePanel(planetId, techLevels, colonyId)} */}
     </deps.ResourcesTabs>
   );
 };
@@ -166,7 +166,7 @@ function renderLabPanel(
 ) {
   return (
     <deps.ResearchTabPanel
-      spendableResources={spendable}
+      resources={spendable}
       techLevels={techs}
       labLevel={labLevel}
     />
@@ -184,11 +184,11 @@ function renderDockyardTab(
 ) {
   return (
     <deps.DockyardTabPanel
-      spendableResources={spendable}
-      shipsLevels={ships}
+      resources={spendable}
+      ships={ships}
       shipsCost={shipCost}
-      dockyardLevel={dockyard}
-      techLevels={techs}
+      dockyard={dockyard}
+      techs={techs}
       celestia={celestia}
       colonyId={colonyId}
     />
@@ -205,26 +205,26 @@ function renderDefencesPanel(
 ) {
   return (
     <deps.DefenceTabPanel
-      spendableResources={spendable}
-      defenceLevels={defences}
+      resources={spendable}
+      defences={defences}
       defenceCost={defencesCost}
-      dockyardLevel={dockyard}
-      techLevels={techs}
+      dockyard={dockyard}
+      techs={techs}
       colonyId={colonyId}
     />
   );
 }
 
-function renderUniversePanel(
-  planetId: number,
-  techLevels: deps.Techs,
-  colonyId: number
-) {
-  return (
-    <deps.UniverseViewTabPanel
-      ownPlanetId={planetId}
-      ownTechs={techLevels}
-      colonyId={colonyId}
-    />
-  );
-}
+// function renderUniversePanel(
+//   planetId: number,
+//   techLevels: deps.Techs,
+//   colonyId: number
+// ) {
+//   return (
+//     <deps.UniverseViewTabPanel
+//       ownPlanetId={planetId}
+//       ownTechs={techLevels}
+//       colonyId={colonyId}
+//     />
+//   );
+// }

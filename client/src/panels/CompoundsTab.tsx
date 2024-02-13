@@ -71,7 +71,7 @@ export const CompoundsTabPanel = ({
   return (
     <deps.StyledTabPanel {...rest}>
       {compoundsConfig.map((compound) => {
-        const level = Number(compounds?.[compound.compoundName]);
+        const level = compounds[compound.compoundName] || 0;
 
         return (
           <CompoundsBox

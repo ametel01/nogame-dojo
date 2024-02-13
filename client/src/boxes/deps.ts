@@ -9,12 +9,10 @@ import {
   convertPositionToNumbers,
 } from '../shared/utils';
 import DescriptionModal from '../components/modals/Description';
-import AddTransactionIcon from '../../multicall/AddTransactionIcon';
 
 import { Resources } from '../hooks/usePlanetResources';
 export type { Resources } from '../hooks/usePlanetResources';
 
-import { Compounds } from '../hooks/usePlanetCompounds';
 export type { Compounds } from '../hooks/usePlanetCompounds';
 
 import { Techs } from '../hooks/usePlanetTechs';
@@ -40,11 +38,7 @@ export { ButtonUpgrade } from '../components/ui/Button';
 export { ButtonBuild } from '../components/ui/Button';
 export { getCumulativeTechCost } from '../shared/utils/Formulas';
 export { baseTechCost } from '../constants/costs';
-export {
-  type TechLevels,
-  type ShipsLevels,
-  type DefenceLevels,
-} from '../shared/types';
+export { type ShipsLevels, type DefenceLevels } from '../shared/types';
 export {
   getCompoundCost,
   getCumulativeEnergyChange,
@@ -57,7 +51,6 @@ export {
   useState,
   useEffect,
   DescriptionModal,
-  AddTransactionIcon,
   Tooltip,
   Input,
   Styled,
@@ -84,7 +77,7 @@ export interface CompoundsBoxProps {
 export interface LabBoxProps {
   img: string;
   title: string;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   level?: number;
   requirementsMet?: boolean;
   description: ReactNode;
@@ -95,7 +88,7 @@ export interface LabBoxProps {
 export interface DockyardBoxProps {
   img: string;
   title: string;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   level?: number;
   costUpdate?: { steel: number; quartz: number; tritium: number };
   hasEnoughResources?: boolean;
@@ -108,11 +101,11 @@ export interface DockyardBoxProps {
 export interface DefenceBoxProps {
   img: string;
   title: string;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   level?: number;
   costUpdate?: { steel: number; quartz: number; tritium: number };
-  hasEnoughResources?: boolean;
-  requirementsMet?: boolean;
+  hasEnoughResources: boolean | number;
+  requirementsMet?: boolean | number;
   description: React.ReactNode;
   resourcesAvailable: Resources;
   colonyId: number;

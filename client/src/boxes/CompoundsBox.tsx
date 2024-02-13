@@ -12,6 +12,7 @@ const CompoundsBox = ({
   resourcesAvailable,
   colonyId,
 }: deps.CompoundsBoxProps) => {
+  console.log('level', level);
   const [quantity, setQuantity] = deps.useState(1);
   const [, setShowTooltip] = deps.useState(true);
   const [costUpdate, setCostUpdate] = deps.useState({
@@ -23,7 +24,6 @@ const CompoundsBox = ({
   const {
     setup: {
       systemCalls: { upgradeCompound },
-      // clientComponents: { GameOwnerPlanet },
     },
     account,
   } = useDojo();
@@ -148,13 +148,6 @@ const CompoundsBox = ({
             />
           </deps.Tooltip>
         </deps.Styled.ResourceContainer>
-        <deps.AddTransactionIcon
-          callType="compound"
-          unitName={functionCallName}
-          quantity={quantity}
-          disabled={isDisabled}
-          colonyId={colonyId}
-        />
         <deps.Styled.ButtonContainer>
           <deps.ButtonUpgrade
             name={`Upgrade ${title}`}

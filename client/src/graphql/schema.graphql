@@ -166,6 +166,29 @@ query getColonyCompound($planet_id: u32!, $colony_id: u8!, $name: u8!) {
   }
 }
 
+query getColonyShip($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+  colonyShipsModels(
+    where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ColonyShips {
+              planet_id
+              colony_id
+              name
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query getColonyDefence($planet_id: u32!, $colony_id: u8!, $name: u8!) {
   colonyDefencesModels(
     where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }

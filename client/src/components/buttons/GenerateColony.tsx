@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/system';
-import { TransactionStatus } from '../ui/TransactionStatus';
 import { StyledButton } from '../../shared/styled/Button';
 import { useDojo } from '../../dojo/useDojo';
 
@@ -55,14 +54,6 @@ export function GenerateColony({ isActivated }: Props) {
           </StyledButton>
         )}
       </StyledBox>
-      {/* {isClicked ? (
-        <TransactionStatus
-          name="Collect Resources"
-          tx={data?.transaction_hash}
-        />
-      ) : (
-        <></>
-      )} */}
     </>
   );
 }

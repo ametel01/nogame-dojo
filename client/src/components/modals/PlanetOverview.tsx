@@ -10,17 +10,8 @@ import {
   type Resources,
   type ShipsLevels,
 } from '../../shared/types';
-import {
-  useSpendableResources,
-  useCollectibleResources,
-} from '../../hooks/ResourcesHooks';
-import { useShipsLevels, useDefencesLevels } from '../../hooks/LevelsHooks';
 import { getPlanetAndColonyIds, numberWithCommas } from '../../shared/utils';
-import {
-  useGetColonyResources,
-  useGetColonyDefences,
-} from '../../hooks/ColoniesHooks';
-import { useGetColonyShips } from '../../hooks/ColoniesHooks';
+import { usePlanetShips } from '../../hooks/usePlanetShips';
 
 export const StyledBox = styled(Box)({
   fontWeight: 400,
@@ -127,7 +118,7 @@ export default function PlanetModal({ planetId, image, position }: Props) {
   const collectibleResources = useCollectibleResources(Number(planetId));
   const [planet, colony] = getPlanetAndColonyIds(planetId);
 
-  const shipsLevels = useShipsLevels(Number(planetId));
+  const shipsLevels = usePlanetShips(planetId);
   const colonyShips = useGetColonyShips(planet, colony);
   const actualShips =
     colonyShips && shipsLevels && colony === 0 ? shipsLevels : colonyShips;

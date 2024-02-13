@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BigNumberish } from 'starknet';
 
 import steelImg from '../assets/gameElements/compounds/steel4.webp';
 import quartzImg from '../assets/gameElements/compounds/quartz4.webp';
@@ -38,10 +39,11 @@ export {
   type EnergyCost,
   UpgradeType,
   type ShipsCost,
-  BuildType,
   type DefenceCost,
   type PlanetDetails,
 } from '../shared/types';
+
+export { DefenceBuildType, ShipBuildType, TechUpgradeType } from '../types';
 
 export {
   armourRequirements,
@@ -138,7 +140,7 @@ export interface CompoundConfigType {
   description: React.ReactNode;
   img: string;
   title: string;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   compoundName: keyof Compounds;
   energyKey: keyof EnergyCost;
 }
@@ -153,13 +155,13 @@ export interface ResearchConfigType {
   description: React.ReactNode;
   img: string;
   title: string;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   techName: TechEntities; // <-- make sure of this type
   requirements: boolean;
 }
 
 export interface LabProps {
-  spendableResources: Resources;
+  resources: Resources;
   techLevels?: Techs;
   labLevel?: number;
 }
@@ -168,27 +170,27 @@ export interface ShipConfigType {
   description: React.ReactNode;
   img: string;
   title: string;
-  functionCallName: number;
-  shipName: keyof Fleet;
+  functionCallName: BigNumberish;
+  shipName: keyof Fleet | 'celestia';
   requirements: boolean;
 }
 
 export interface DockyardProps {
-  spendableResources?: Resources;
-  shipsLevels?: Fleet;
-  shipsCost?: ShipsCost;
-  dockyardLevel?: number;
-  techLevels?: Techs;
+  resources: Resources;
+  ships?: Fleet;
+  shipsCost: ShipsCost;
+  dockyard: number;
+  techs: Techs;
   celestia?: number;
   colonyId: number;
 }
 
 export interface DefenceProps {
-  spendableResources?: Resources;
-  defenceLevels?: Defences;
-  defenceCost?: DefenceCost;
-  dockyardLevel?: number;
-  techLevels?: Techs;
+  resources: Resources;
+  defences: Defences;
+  defenceCost: DefenceCost;
+  dockyard: number;
+  techs: Techs;
   colonyId: number;
 }
 
@@ -229,6 +231,7 @@ import {
 } from '@mui/icons-material';
 
 import { Typography } from '@mui/material';
+import DefencesBox from '../boxes/DefencesBox';
 export { getBaseShipsCost, getBaseDefenceCost } from '../constants/costs';
 
 export {
@@ -274,6 +277,7 @@ export {
   beamCannonImg,
   astralLauncherImg,
   plasmaCannonImg,
+  DefencesBox,
 };
 
 export interface ResourcesSectionArgs {

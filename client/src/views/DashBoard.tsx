@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import SideBar from '../sidebar/SideBar';
 import { PlanetSection } from '../planetSection/PlanetSection';
-// import { ResourcesSection } from '../panels/MainTabPanel';
+import { ResourcesSection } from '../panels/MainTabPanel';
 import { SelectChangeEvent } from '@mui/material';
-// import ColonyDashboard from '../colony/ColonyDashboard';
+import ColonyDashboard from '../colony/ColonyDashboard';
 import { useDojo } from '../dojo/useDojo';
 import { useComponentValue } from '@dojoengine/react';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
@@ -85,7 +85,7 @@ export default function Dashboard({ planetId }: Props) {
             selctedColonyId={selectedColonyId}
           />
         </DashboardSubBodyContainer>
-        {/* <DashboardSubBodyContainer>
+        <DashboardSubBodyContainer>
           {selectedColonyId !== 0 && selectedColonyId !== null ? (
             <ColonyDashboard
               planetId={planetId}
@@ -93,8 +93,8 @@ export default function Dashboard({ planetId }: Props) {
             />
           ) : (
             <ResourcesSection planetId={planetId} colonyId={selectedColonyId} />
-          )} */}
-        {/* </DashboardSubBodyContainer> */}
+          )}
+        </DashboardSubBodyContainer>
       </GameContainer>
     </DashboardMainContainer>
   );

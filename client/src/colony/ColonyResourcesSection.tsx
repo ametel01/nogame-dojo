@@ -7,57 +7,47 @@ import {
   ResourcesTabs,
   ResourcesTabList,
 } from '../shared/styled/Tabs';
-import {
-  type CompoundsLevels,
-  type Resources,
-  type TechLevels,
-  type DefenceCost,
-  type DefenceLevels,
-  type ShipsLevels,
-  type ShipsCost,
-} from '../shared/types';
+import { ColonyCompounds } from '../hooks/useColonyCompounds';
+import { Techs } from '../hooks/usePlanetTechs';
+import { Resources } from '../hooks/usePlanetResources';
+import { Fleet } from '../hooks/usePlanetShips';
+import { Defences } from '../hooks/usePlanetDefences';
+import { type DefenceCost, type ShipsCost } from '../shared/types';
 import { Typography } from '@mui/material';
-import { getBaseDefenceCost } from '../constants/costs';
+import { getBaseDefenceCost, getBaseShipsCost } from '../constants/costs';
 import { DefenceTabPanel } from '../panels/DefencesTab';
 import { ColonyCompoundTabPanel } from './ColonyTab';
 import RocketIcon from '@mui/icons-material/Rocket';
 import { DockyardTabPanel } from '../panels/DockyardTab';
 import { UniverseViewTabPanel } from '../panels/UniverseViewTab';
 import { Explore } from '@mui/icons-material';
+import { usePlanetTechs } from '../hooks/usePlanetTechs';
 
 interface ResourcesSectionArgs {
   planetId: number;
   colonyId: number;
-  spendableResources: Resources;
-  collectibleResource: Resources;
-  compoundsLevels: CompoundsLevels;
-  defencesLevels: DefenceLevels;
-  shipsLevels: ShipsLevels;
-  shipsCost: ShipsCost;
-  celestiaAvailable: number;
+  resources: Resources;
+  compounds: ColonyCompounds;
+  defences: Defences;
+  ships: Fleet;
+  celestia: number;
 }
 
 export const ColonyResourcesSection = ({
   planetId,
   colonyId,
-  spendableResources,
-  collectibleResource,
-  compoundsLevels,
-  defencesLevels,
-  shipsLevels,
-  shipsCost,
-  celestiaAvailable,
+  resources,
+  compounds,
+  defences,
+  ships,
+  celestia,
 }: ResourcesSectionArgs) => {
   const [activeTab, setActiveTab] = useState(1);
-  const techLevels = useTechLevels(planetId);
+  const techLevels = usePlanetTechs(planetId);
+  const shipsCost = getBaseShipsCost();
   const defencesCost = getBaseDefenceCost();
 
-  if (
-    !compoundsLevels ||
-    !techLevels ||
-    !spendableResources ||
-    !collectibleResource
-  ) {
+  if (!compounds || !techLevels || !resources) {
     // Centered CircularProgress
     return (
       <div
@@ -85,12 +75,6 @@ export const ColonyResourcesSection = ({
       </div>
     );
   }
-
-  const totalResources: Resources = {
-    steel: spendableResources.steel + (collectibleResource?.steel ?? 0),
-    quartz: spendableResources.quartz + (collectibleResource?.quartz ?? 0),
-    tritium: spendableResources.tritium + (collectibleResource?.tritium ?? 0),
-  };
 
   return (
     <ResourcesTabs>
@@ -140,24 +124,23 @@ export const ColonyResourcesSection = ({
           </RowCentered>
         </ResourceTab>
       </ResourcesTabList>
-      {activeTab === 1 &&
-        renderCompounds(colonyId, totalResources, compoundsLevels)}
+      {activeTab === 1 && renderCompounds(colonyId, resources, compounds)}
       {activeTab === 2 &&
         renderDockyardTab(
-          totalResources,
-          shipsLevels,
+          resources,
+          ships,
           shipsCost,
-          compoundsLevels.dockyard,
+          compounds.dockyard || 0,
           techLevels,
-          celestiaAvailable,
+          celestia,
           colonyId
         )}
       {activeTab === 3 &&
         renderDefencesPanel(
-          totalResources,
-          defencesLevels,
+          resources,
+          defences,
           defencesCost,
-          compoundsLevels.dockyard,
+          compounds.dockyard || 0,
           techLevels,
           colonyId
         )}
@@ -169,23 +152,23 @@ export const ColonyResourcesSection = ({
 function renderCompounds(
   colonyId: number,
   spendable: Resources,
-  compounds: CompoundsLevels
+  compounds: ColonyCompounds
 ) {
   return (
     <ColonyCompoundTabPanel
       colonyId={colonyId}
-      spendableResources={spendable}
-      compoundsLevels={compounds}
+      resources={spendable}
+      compounds={compounds}
     />
   );
 }
 
 function renderDockyardTab(
   spendable: Resources,
-  ships: ShipsLevels,
+  ships: Fleet,
   shipCost: ShipsCost,
   dockyard: number,
-  techs: TechLevels,
+  techs: Techs,
   celestia: number,
   colonyId: number
 ) {
@@ -204,10 +187,10 @@ function renderDockyardTab(
 
 function renderDefencesPanel(
   spendable: Resources,
-  defences: DefenceLevels,
+  defences: Defences,
   defencesCost: DefenceCost,
   dockyard: number,
-  techs: TechLevels,
+  techs: Techs,
   colonyId: number
 ) {
   return (
@@ -224,7 +207,7 @@ function renderDefencesPanel(
 
 function renderUniversePanel(
   planetId: number,
-  techLevels: TechLevels,
+  techLevels: Techs,
   colonyId: number
 ) {
   return (

@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
-
-type Defences = {
-  celestia: number | undefined;
-  blaster: number | undefined;
-  beam: number | undefined;
-  astral: number | undefined;
-  plasma: number | undefined;
-};
+import { Defences } from './usePlanetDefences';
 
 export function useColonyDefences(
   planetId: number,

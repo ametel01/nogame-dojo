@@ -17,8 +17,6 @@ import {
   type Position,
   MissionCategory,
 } from '../../shared/types';
-import useSendFleet from '../../hooks/writeHooks/useSendFleet';
-import { useGetActiveMissions } from '../../hooks/FleetHooks';
 import {
   calculateTotalCargoCapacity,
   getDistance,
@@ -27,7 +25,6 @@ import {
   getFuelConsumption,
 } from '../../shared/utils/FleetUtils';
 import { convertSecondsToTime } from '../../shared/utils';
-import { TransactionStatus } from '../ui/TransactionStatus';
 import { numberWithCommas } from '../../shared/utils';
 import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
@@ -184,7 +181,7 @@ function ButtonAttackPlanet({
   const [isButtotClicked, setisButtotClicked] = useState(false);
   const [speed, setSpeed] = useState(100);
 
-  const missions = useGetActiveMissions(planetId);
+  // const missions = useGetActiveMissions(planetId);
   const isMissionLimitReached =
     missions && techs && missions.length === Number(techs.digital) + 1;
 
@@ -231,21 +228,21 @@ function ButtonAttackPlanet({
     setCargoCapacity(calculateTotalCargoCapacity(fleet));
   }, [distance, fleet, ownPosition, speed, techs]);
 
-  const { writeAsync: attack, data: attackData } = useSendFleet(
-    fleet,
-    destinationPosition,
-    MissionCategory['Attack'],
-    speed,
-    colonyId
-  );
+  // const { writeAsync: attack, data: attackData } = useSendFleet(
+  //   fleet,
+  //   destinationPosition,
+  //   MissionCategory['Attack'],
+  //   speed,
+  //   colonyId
+  // );
 
-  const { writeAsync: transport, data: transportData } = useSendFleet(
-    fleet,
-    destinationPosition,
-    MissionCategory['Transport'],
-    speed,
-    colonyId
-  );
+  // const { writeAsync: transport, data: transportData } = useSendFleet(
+  //   fleet,
+  //   destinationPosition,
+  //   MissionCategory['Transport'],
+  //   speed,
+  //   colonyId
+  // );
 
   const ships = ['carrier', 'scraper', 'sparrow', 'frigate', 'armade'];
 
@@ -458,16 +455,6 @@ function ButtonAttackPlanet({
               </StyledButton>
             </StyledBox>
           </Modal>
-          {isButtotClicked && (
-            <TransactionStatus
-              name="Sent Fleet"
-              tx={
-                noRequirements
-                  ? transportData?.transaction_hash
-                  : attackData?.transaction_hash
-              }
-            />
-          )}
         </>
       ) : noRequirements ? (
         <StyledButton

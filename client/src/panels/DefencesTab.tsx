@@ -1,74 +1,57 @@
 import React from 'react';
+import * as deps from '.';
 import DefencesBox from '../boxes/DefencesBox';
-import {
-  DefenceProps,
-  BlasterDescription,
-  blasterImg,
-  BuildType,
-  blasterRequirements,
-  BeamCannonDescription,
-  beamImg,
-  beamRequirements,
-  AstralDescription,
-  astralLauncherImg,
-  astralRequirements,
-  PlasmaDescription,
-  plasmaImg,
-  plasmaRequirements,
-  StyledTabPanel,
-  calculEnoughResources,
-} from '.';
 
 export const DefenceTabPanel = ({
-  spendableResources,
-  defenceLevels,
+  resources,
+  defences,
   defenceCost,
-  dockyardLevel,
-  techLevels,
+  dockyard,
+  techs,
   colonyId,
   ...rest
-}: DefenceProps) => {
+}: deps.DefenceProps) => {
   const defencesConfig = [
     {
-      description: <BlasterDescription />,
-      img: blasterImg,
+      description: <deps.BlasterDescription />,
+      img: deps.blasterImg,
       title: 'Blaster',
-      functionCallName: BuildType.Blaster,
-      level: defenceLevels?.blaster,
+      functionCallName: deps.DefenceBuildType.blaster,
+      level: defences?.blaster,
       cost: defenceCost?.blaster,
-      requirements: blasterRequirements(dockyardLevel),
+      requirements: deps.blasterRequirements(dockyard),
     },
     {
-      description: <BeamCannonDescription />,
-      img: beamImg,
+      description: <deps.BeamCannonDescription />,
+      img: deps.beamImg,
       title: 'Beam',
-      functionCallName: BuildType.Beam,
-      level: defenceLevels?.beam,
+      functionCallName: deps.DefenceBuildType.beam,
+      level: defences?.beam,
       cost: defenceCost?.beam,
-      requirements: beamRequirements(dockyardLevel, techLevels),
+      requirements: deps.beamRequirements(dockyard, techs),
     },
     {
-      description: <AstralDescription />,
-      img: astralLauncherImg,
+      description: <deps.AstralDescription />,
+      img: deps.astralLauncherImg,
       title: 'Astral Launcher',
-      functionCallName: BuildType.Astral,
-      level: defenceLevels?.astral,
+      functionCallName: deps.DefenceBuildType.astral,
+      level: defences?.astral,
       cost: defenceCost?.astral,
-      requirements: astralRequirements(dockyardLevel, techLevels),
+      requirements: deps.astralRequirements(dockyard, techs),
     },
     {
-      description: <PlasmaDescription />,
-      img: plasmaImg,
+      description: <deps.PlasmaDescription />,
+      img: deps.plasmaImg,
       title: 'Plasma Projector',
-      functionCallName: BuildType.Plasma,
-      level: defenceLevels?.plasma,
+      functionCallName: deps.DefenceBuildType.plasma,
+      level: defences?.plasma,
       cost: defenceCost?.plasma,
-      requirements: plasmaRequirements(dockyardLevel, techLevels),
+      requirements: deps.plasmaRequirements(dockyard, techs),
     },
   ];
 
   return (
-    <StyledTabPanel {...rest}>
+    <deps.StyledTabPanel {...rest}>
       {defencesConfig.map((defence) => (
         <DefencesBox
           key={defence.functionCallName}
@@ -79,16 +62,16 @@ export const DefenceTabPanel = ({
           level={Number(defence.level)}
           costUpdate={defence.cost}
           hasEnoughResources={
-            spendableResources &&
+            resources &&
             defence.cost &&
-            calculEnoughResources(defence.cost, spendableResources)
+            deps.calculEnoughResources(defence.cost, resources)
           }
           requirementsMet={defence.requirements}
-          resourcesAvailable={spendableResources!}
+          resourcesAvailable={resources}
           colonyId={colonyId}
         />
       ))}
-    </StyledTabPanel>
+    </deps.StyledTabPanel>
   );
 };
 

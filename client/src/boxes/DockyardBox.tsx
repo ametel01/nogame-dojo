@@ -151,13 +151,6 @@ const DockyardBox = ({
             />
           </deps.Tooltip>
         </deps.Styled.ResourceContainer>
-        <deps.AddTransactionIcon
-          callType="ship"
-          unitName={functionCallName}
-          quantity={quantity}
-          disabled={hasRequirements || !hasEnoughResources}
-          colonyId={colonyId}
-        />
         <deps.Styled.ButtonContainer>
           <deps.ButtonBuild
             name={`Build ${quantity} ${title}`}

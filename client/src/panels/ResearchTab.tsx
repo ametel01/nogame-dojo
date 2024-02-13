@@ -1,166 +1,122 @@
 import React from 'react';
-import {
-  EnergyDescription,
-  energyTechImg,
-  ArmourDescription,
-  BeamDescription,
-  CombustionDescription,
-  ComputerDescription,
-  IonDescription,
-  PlasmaDescription,
-  ShieldDescription,
-  SpacetimeDescription,
-  StyledTabPanel,
-  ThrustDescription,
-  UpgradeType,
-  WarpDescription,
-  WeaponsDescription,
-  armourImg,
-  armourRequirements,
-  beamImg,
-  beamTechRequirements,
-  combustionImg,
-  combustionRequirements,
-  digitalImg,
-  digitalRequirements,
-  energyRequirements,
-  ionImg,
-  ionRequirements,
-  plasmaImg,
-  plasmaTechRequirements,
-  shieldImg,
-  shieldRequirements,
-  spacetimeImg,
-  spacetimeRequirements,
-  thrustImg,
-  thrustRequirements,
-  warpEnginImg,
-  warpRequirements,
-  weaponsImg,
-  weaponsRequirements,
-  LabProps,
-  ResearchConfigType,
-  ExoDescription,
-  exoImg,
-  exoRequirements,
-} from '.';
+import * as deps from '.';
 import ResearchBox from '../boxes/ResearchBox';
 
 export const ResearchTabPanel = ({
-  spendableResources,
+  resources,
   techLevels,
   labLevel,
   ...rest
-}: LabProps) => {
-  const researchConfig: ResearchConfigType[] = [
+}: deps.LabProps) => {
+  const researchConfig: deps.ResearchConfigType[] = [
     {
-      description: <EnergyDescription />,
-      img: energyTechImg,
+      description: <deps.EnergyDescription />,
+      img: deps.energyTechImg,
       title: 'Energy Innovation',
-      functionCallName: UpgradeType.EnergyTech,
+      functionCallName: deps.TechUpgradeType.energy,
       techName: 'energy',
-      requirements: energyRequirements(labLevel),
+      requirements: deps.energyRequirements(labLevel),
     },
     {
-      description: <ComputerDescription />,
-      img: digitalImg,
+      description: <deps.ComputerDescription />,
+      img: deps.digitalImg,
       title: 'Digital Systems',
-      functionCallName: UpgradeType.Digital,
+      functionCallName: deps.TechUpgradeType.digital,
       techName: 'digital',
-      requirements: digitalRequirements(labLevel),
+      requirements: deps.digitalRequirements(labLevel),
     },
     {
-      description: <BeamDescription />,
-      img: beamImg,
+      description: <deps.BeamDescription />,
+      img: deps.beamImg,
       title: 'Beam Technology',
-      functionCallName: UpgradeType.BeamTech,
+      functionCallName: deps.TechUpgradeType.beam,
       techName: 'beam',
-      requirements: beamTechRequirements(labLevel, techLevels),
+      requirements: deps.beamTechRequirements(labLevel, techLevels),
     },
     {
-      description: <IonDescription />,
-      img: ionImg,
+      description: <deps.IonDescription />,
+      img: deps.ionImg,
       title: 'Ion Systems',
-      functionCallName: UpgradeType.Ion,
+      functionCallName: deps.TechUpgradeType.ion,
       techName: 'ion',
-      requirements: ionRequirements(labLevel, techLevels),
+      requirements: deps.ionRequirements(labLevel, techLevels),
     },
     {
-      description: <ExoDescription />,
-      img: exoImg,
+      description: <deps.ExoDescription />,
+      img: deps.exoImg,
       title: 'Exocraft Technology',
-      functionCallName: UpgradeType.Exocraft,
+      functionCallName: deps.TechUpgradeType.exocraft,
       techName: 'exocraft',
-      requirements: exoRequirements(labLevel, techLevels),
+      requirements: deps.exoRequirements(labLevel, techLevels),
     },
     {
-      description: <PlasmaDescription />,
-      img: plasmaImg,
+      description: <deps.PlasmaDescription />,
+      img: deps.plasmaImg,
       title: 'Plasma Engineering',
-      functionCallName: UpgradeType.PlasmaTech,
+      functionCallName: deps.TechUpgradeType.plasma,
       techName: 'plasma',
-      requirements: plasmaTechRequirements(labLevel, techLevels),
+      requirements: deps.plasmaTechRequirements(labLevel, techLevels),
     },
     {
-      description: <SpacetimeDescription />,
-      img: spacetimeImg,
+      description: <deps.SpacetimeDescription />,
+      img: deps.spacetimeImg,
       title: 'Spacetime Technology',
-      functionCallName: UpgradeType.Warp,
+      functionCallName: deps.UpgradeType.Warp,
       techName: 'spacetime',
-      requirements: spacetimeRequirements(labLevel, techLevels),
+      requirements: deps.spacetimeRequirements(labLevel, techLevels),
     },
     {
-      description: <CombustionDescription />,
-      img: combustionImg,
+      description: <deps.CombustionDescription />,
+      img: deps.combustionImg,
       title: 'Combustion Drive',
-      functionCallName: UpgradeType.Combustion,
+      functionCallName: deps.TechUpgradeType.combustion,
       techName: 'combustion',
-      requirements: combustionRequirements(labLevel, techLevels),
+      requirements: deps.combustionRequirements(labLevel, techLevels),
     },
     {
-      description: <ThrustDescription />,
-      img: thrustImg,
+      description: <deps.ThrustDescription />,
+      img: deps.thrustImg,
       title: 'Thrust Propulsion',
-      functionCallName: UpgradeType.Thrust,
+      functionCallName: deps.TechUpgradeType.thrust,
       techName: 'thrust',
-      requirements: thrustRequirements(labLevel, techLevels),
+      requirements: deps.thrustRequirements(labLevel, techLevels),
     },
     {
-      description: <WarpDescription />,
-      img: warpEnginImg,
+      description: <deps.WarpDescription />,
+      img: deps.warpEnginImg,
       title: 'Warp Drive',
-      functionCallName: UpgradeType.Warp,
+      functionCallName: deps.TechUpgradeType.warp,
       techName: 'warp',
-      requirements: warpRequirements(labLevel, techLevels),
+      requirements: deps.warpRequirements(labLevel, techLevels),
     },
     {
-      description: <ArmourDescription />,
-      img: armourImg,
+      description: <deps.ArmourDescription />,
+      img: deps.armourImg,
       title: 'Armour Innovation',
-      functionCallName: UpgradeType.Armour,
+      functionCallName: deps.TechUpgradeType.armour,
       techName: 'armour',
-      requirements: armourRequirements(labLevel),
+      requirements: deps.armourRequirements(labLevel),
     },
     {
-      description: <WeaponsDescription />,
-      img: weaponsImg,
+      description: <deps.WeaponsDescription />,
+      img: deps.weaponsImg,
       title: 'Weapons Development',
-      functionCallName: UpgradeType.Weapons,
+      functionCallName: deps.TechUpgradeType.weapons,
       techName: 'weapons',
-      requirements: weaponsRequirements(labLevel),
+      requirements: deps.weaponsRequirements(labLevel),
     },
     {
-      description: <ShieldDescription />,
-      img: shieldImg,
+      description: <deps.ShieldDescription />,
+      img: deps.shieldImg,
       title: 'Shields Technology',
-      functionCallName: UpgradeType.Shield,
+      functionCallName: deps.TechUpgradeType.shield,
       techName: 'shield',
-      requirements: shieldRequirements(labLevel, techLevels),
+      requirements: deps.shieldRequirements(labLevel, techLevels),
     },
   ];
 
   return (
-    <StyledTabPanel {...rest}>
+    <deps.StyledTabPanel {...rest}>
       {researchConfig.map((research) => (
         <ResearchBox
           key={research.functionCallName}
@@ -169,12 +125,12 @@ export const ResearchTabPanel = ({
           title={research.title}
           functionCallName={research.functionCallName}
           level={Number(techLevels?.[research.techName])}
-          resourcesAvailable={spendableResources}
+          resources={resources}
           requirementsMet={research.requirements}
           techs={techLevels!}
         />
       ))}
-    </StyledTabPanel>
+    </deps.StyledTabPanel>
   );
 };
 

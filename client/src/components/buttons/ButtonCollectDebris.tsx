@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Input } from '@mui/joy';
 import scraperImg from '../../assets/gameElements/ships/scraper4.webp';
 import { StyledButton } from '../../shared/styled/Button';
-import useSendFleet from '../../hooks/writeHooks/useSendFleet';
 import {
   MissionCategory,
   type DebrisField,
@@ -22,7 +21,6 @@ import {
   getFuelConsumption,
 } from '../../shared/utils/FleetUtils';
 import { convertSecondsToTime, numberWithCommas } from '../../shared/utils';
-import { TransactionStatus } from '../ui/TransactionStatus';
 import { SliderContainer, Text as SliderText } from './ButtonAttackPlanet';
 import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
@@ -367,9 +365,6 @@ export function ButtonCollectDebris({
           </StyledButton>
         </StyledBox>
       </Modal>
-      {isButtotClicked && (
-        <TransactionStatus name="Collect Debris" tx={data?.transaction_hash} />
-      )}
     </>
   );
 }

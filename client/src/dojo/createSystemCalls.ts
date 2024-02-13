@@ -12,6 +12,7 @@ import { DojoProvider } from '@dojoengine/core';
 import { GenerateColony } from '../components/buttons/GenerateColony';
 import { getBaseDefenceCost } from '../constants/costs';
 import { CompoundsCostUpgrade } from '../shared/types';
+import { Resources } from '../hooks/usePlanetResources';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -90,6 +91,32 @@ export function createSystemCalls(
     }
   };
 
+  const upgradeTech = async (
+    account: Account,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'techactions',
+        'process_upgrade',
+        [component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const buildShip = async (
     account: Account,
     component: BigNumberish,
@@ -142,11 +169,45 @@ export function createSystemCalls(
     }
   };
 
+  const getPlanetResources = async (planetId: number) => {
+    try {
+      const tx = await provider.call(
+        'planetactions',
+        'get_resources_available',
+        [planetId]
+      );
+      return tx.result[0];
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getColonyResources = async (planetId: number, colonyId: number) => {
+    try {
+      const tx = await provider.call(
+        'colonyactions',
+        'get_resources_available',
+        [planetId, colonyId]
+      );
+
+      return {
+        steel: parseInt(tx.result[0]),
+        quartz: parseInt(tx.result[1]),
+        tritium: parseInt(tx.result[2]),
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return {
     generatePlanet,
     generateColony,
     upgradeCompound,
+    upgradeTech,
     buildShip,
     buildDefence,
+    getPlanetResources,
+    getColonyResources,
   };
 }

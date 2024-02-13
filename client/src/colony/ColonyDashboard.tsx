@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 // import { PlanetSection } from '../components/ui/PlanetSection';
-import {
-  useGetColonyCompounds,
-  useGetColonyDefences,
-  useGetColonyResources,
 import { ColonyResourcesSection } from './ColonyResourcesSection';
 import { getBaseShipsCost } from '../constants/costs';
+import { useColonyCompounds } from '../hooks/useColonyCompounds';
+import { SystemCalls } from '../dojo/createSystemCalls';
+import { useDojo } from '../dojo/useDojo';
+import { useColonyResources } from '../hooks/useColonyResources';
+import { useColonyDefences } from '../hooks/useColonyDefences';
+import { useColonyShips } from '../hooks/useColonyShips';
+import { Resources } from '../hooks/usePlanetResources';
 
 export const GameContainer = styled.div`
   display: grid;
@@ -45,25 +48,45 @@ interface Props {
 }
 
 export default function ColonyDashboard({ planetId, colonyId }: Props) {
-  const compoundLevels = useGetColonyCompounds(planetId, colonyId);
-  const spendableResources = useSpendableResources(planetId);
-  const collectibleResource = useGetColonyResources(planetId, colonyId);
-  const defencesLevels = useGetColonyDefences(planetId, colonyId);
-  const shipsLevels = useGetColonyShips(planetId, colonyId);
-  const shipsCost = getBaseShipsCost();
-  const celestia = defencesLevels ? Number(defencesLevels.celestia) : 0;
+  const [resources, setResources] = useState<Resources>({
+    steel: undefined,
+    quartz: undefined,
+    tritium: undefined,
+  });
+  const {
+    setup: {
+      systemCalls: { getColonyResources },
+    },
+  } = useDojo();
+  useEffect(() => {
+    getColonyResources(planetId, colonyId)
+      .then((res) => {
+        if (res) {
+          setResources(res);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        // Handle the error appropriately
+      });
+  }, [planetId, colonyId]);
+  const compoundLevels = useColonyCompounds(planetId, colonyId);
+
+  const defences = useColonyDefences(planetId, colonyId);
+
+  const ships = useColonyShips(planetId, colonyId);
+
+  const celestia = defences.celestia || 0;
 
   return (
     <ColonyResourcesSection
       planetId={planetId}
       colonyId={colonyId}
-      spendableResources={spendableResources}
-      collectibleResource={collectibleResource}
-      defencesLevels={defencesLevels}
-      compoundsLevels={compoundLevels}
-      shipsLevels={shipsLevels}
-      shipsCost={shipsCost}
-      celestiaAvailable={celestia}
+      resources={resources}
+      defences={defences}
+      compounds={compoundLevels}
+      ships={ships}
+      celestia={celestia}
     />
   );
 }

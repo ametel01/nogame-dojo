@@ -5,13 +5,10 @@ import quartzImg from '../assets/gameElements/compounds/quartz4.webp';
 import tritiumImg from '../assets/gameElements/compounds/tritium4.webp';
 import energyImg from '../assets/gameElements/compounds/energy4.webp';
 import dockyardImg from '../assets/gameElements/compounds/dockyard4.webp';
-import {
-  type CompoundsLevels,
-  type EnergyCost,
-  type Resources,
-  ColonyUpgradeType,
-} from '../shared/types';
+import { ColonyCompounds } from '../hooks/useColonyCompounds';
+import { type EnergyCost, ColonyUpgradeType } from '../shared/types';
 import CompoundsBox from '../boxes/CompoundsBox';
+import { Resources } from '../hooks/usePlanetResources';
 import {
   EnergyPlantDescription,
   QuartzMineDescription,
@@ -25,27 +22,25 @@ interface CompoundConfigType {
   img: string;
   title: string;
   functionCallName: number;
-  compoundName: keyof CompoundsLevels;
+  compoundName: keyof ColonyCompounds;
   energyKey: keyof EnergyCost;
 }
 
 interface Props {
-  spendableResources?: Resources;
-  compoundsLevels: CompoundsLevels;
+  resources?: Resources;
+  compounds: ColonyCompounds;
   colonyId: number;
 }
 
 export const ColonyCompoundTabPanel = ({
-  spendableResources,
-  compoundsLevels,
+  resources,
+  compounds,
   colonyId,
   ...rest
 }: Props) => {
   const compoundsConfig: CompoundConfigType[] = [
     {
-      description: (
-        <SteelMineDescription currentLevel={Number(compoundsLevels?.steel)} />
-      ),
+      description: <SteelMineDescription currentLevel={compounds?.steel} />,
       img: steelImg,
       title: 'Steel Mine',
       functionCallName: ColonyUpgradeType.SteelMine,
@@ -53,9 +48,7 @@ export const ColonyCompoundTabPanel = ({
       energyKey: 'steel',
     },
     {
-      description: (
-        <QuartzMineDescription currentLevel={Number(compoundsLevels?.quartz)} />
-      ),
+      description: <QuartzMineDescription currentLevel={compounds?.quartz} />,
       img: quartzImg,
       title: 'Quartz Mine',
       functionCallName: ColonyUpgradeType.QuartzMine,
@@ -63,11 +56,7 @@ export const ColonyCompoundTabPanel = ({
       energyKey: 'quartz',
     },
     {
-      description: (
-        <TritiumMineDescription
-          currentLevel={Number(compoundsLevels?.tritium)}
-        />
-      ),
+      description: <TritiumMineDescription currentLevel={compounds?.tritium} />,
       img: tritiumImg,
       title: 'Tritium Mine',
       functionCallName: ColonyUpgradeType.TritiumMine,
@@ -75,11 +64,7 @@ export const ColonyCompoundTabPanel = ({
       energyKey: 'tritium',
     },
     {
-      description: (
-        <EnergyPlantDescription
-          currentLevel={Number(compoundsLevels?.energy)}
-        />
-      ),
+      description: <EnergyPlantDescription currentLevel={compounds?.energy} />,
       img: energyImg,
       title: 'Energy Plant',
       functionCallName: ColonyUpgradeType.EnergyPlant,
@@ -87,9 +72,7 @@ export const ColonyCompoundTabPanel = ({
       energyKey: 'energy',
     },
     {
-      description: (
-        <DockyardDescription currentLevel={Number(compoundsLevels?.dockyard)} />
-      ),
+      description: <DockyardDescription currentLevel={compounds?.dockyard} />,
       img: dockyardImg,
       title: 'Dockyard',
       functionCallName: ColonyUpgradeType.Dockyard,
@@ -101,7 +84,7 @@ export const ColonyCompoundTabPanel = ({
   return (
     <StyledTabPanel {...rest}>
       {compoundsConfig.map((compound) => {
-        const level = Number(compoundsLevels?.[compound.compoundName]);
+        const level = compounds[compound.compoundName] || 0;
 
         return (
           <CompoundsBox
@@ -111,7 +94,7 @@ export const ColonyCompoundTabPanel = ({
             title={compound.title}
             functionCallName={compound.functionCallName}
             level={level}
-            resourcesAvailable={spendableResources}
+            resourcesAvailable={resources}
             colonyId={colonyId}
           />
         );
