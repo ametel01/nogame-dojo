@@ -3,7 +3,7 @@ use nogame::data::types::ERC20s;
 #[starknet::interface]
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
-    fn calculate_production(self: @TContractState, planet_id: u32) -> ERC20s;
+    fn get_resources_available(self: @TContractState, planet_id: u32) -> ERC20s;
 }
 
 
@@ -62,7 +62,7 @@ mod planetactions {
             set!(world, PlanetResourceTimer { planet_id, last_collection: get_block_timestamp() });
         }
 
-        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
+        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
             let world = self.world_dispatcher.read();
             let compounds = CompoundsLevels {
                 steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
@@ -74,6 +74,7 @@ mod planetactions {
                     .level,
             };
             shared::calculate_production(world, planet_id, compounds)
+                + shared::get_resources_available(world, planet_id)
         }
     }
 }
