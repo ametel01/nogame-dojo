@@ -11,7 +11,7 @@ import {
   type Resources,
   ColonyUpgradeType,
 } from '../shared/types';
-import CompoundsBox from '../components/boxes/CompoundsBox';
+import CompoundsBox from '../boxes/CompoundsBox';
 import {
   EnergyPlantDescription,
   QuartzMineDescription,

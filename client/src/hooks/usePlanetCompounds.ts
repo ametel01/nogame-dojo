@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
-type Compounds = {
+export type Compounds = {
   steel: number | undefined;
   quartz: number | undefined;
   tritium: number | undefined;

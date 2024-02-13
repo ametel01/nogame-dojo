@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import WarningIcon from '@mui/icons-material/Warning';
 import { type HostileMission } from '../../shared/types';
-import { usePlanetPosition } from '../../hooks/ usePlanetPosition';
+import { usePlanetPosition } from '../../hooks/usePlanetPosition';
 
 // Styled components
 const Container = styled(Box)(({ theme }) => ({

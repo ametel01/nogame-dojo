@@ -9,7 +9,7 @@ import { Typography } from '@mui/material';
 import { RowCentered } from '../components/ui/Row';
 import { HostileMissions } from '../components/ui/HostileMissions';
 import { getPlanetImage, type ImageId } from '../shared/utils/getPlanetImage';
-import { usePlanetPosition } from '../hooks/ usePlanetPosition';
+import { usePlanetPosition } from '../hooks/usePlanetPosition';
 
 // pink-capable-snake-964.mypinata.cloud/ipfs/QmZkpEbRphWPcZEmLZV7Z9C5jUvMUvPbRHYE42NMrgArQQ/
 const IPFS_BASE_URL = 'https://pink-capable-snake-964.mypinata.cloud/ipfs';

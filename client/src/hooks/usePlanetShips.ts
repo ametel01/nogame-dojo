@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
-type Fleet = {
+export type Fleet = {
   carrier: number | undefined;
   scraper: number | undefined;
   sparrow: number | undefined;

@@ -2,55 +2,60 @@ import React, { ReactNode, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Input } from '@mui/joy';
 import Tooltip from '@mui/material/Tooltip';
-import * as Styled from '../../shared/styled/Box';
-import { useAccount } from '@starknet-react/core';
+import * as Styled from '../shared/styled/Box';
 import {
   numberWithCommas,
   calculEnoughResources,
   convertPositionToNumbers,
-} from '../../shared/utils';
-import DescriptionModal from '../modals/Description';
+} from '../shared/utils';
+import DescriptionModal from '../components/modals/Description';
 import AddTransactionIcon from '../../multicall/AddTransactionIcon';
-import {
-  DefenceLevels,
-  Position,
-  Resources,
-  ShipsLevels,
-  TechLevels,
-} from '../../shared/types';
+
+import { Resources } from '../hooks/usePlanetResources';
+export type { Resources } from '../hooks/usePlanetResources';
+
+import { Compounds } from '../hooks/usePlanetCompounds';
+export type { Compounds } from '../hooks/usePlanetCompounds';
+
+import { Techs } from '../hooks/usePlanetTechs';
+export type { Techs } from '../hooks/usePlanetTechs';
+
+import { Defences } from '../hooks/usePlanetDefences';
+export type { Defences } from '../hooks/usePlanetDefences';
+
+import { Fleet } from '../hooks/usePlanetShips';
+export type { Fleet } from '../hooks/usePlanetShips';
+
+import { Position } from '../hooks/usePlanetPosition';
+export type { Position } from '../hooks/usePlanetPosition';
+
 import { CircularProgress } from '@mui/material';
-import PlanetModal from '../modals/PlanetOverview';
-import DebrisFieldView from '../ui/DebrisFieldView';
-import ButtonAttackPlanet from '../buttons/ButtonAttackPlanet';
+import PlanetModal from '../components/modals/PlanetOverview';
+import DebrisFieldView from '../components/ui/DebrisFieldView';
+import ButtonAttackPlanet from '../components/buttons/ButtonAttackPlanet';
+import { BigNumberish } from 'starknet';
+export { usePlanetPosition } from '../hooks/usePlanetPosition';
 
-export { useCompoundUpgrade } from '../../hooks/writeHooks/useUpgrade';
-export { useTechUpgrade } from '../../hooks/writeHooks/useUpgrade';
-export { useShipBuild } from '../../hooks/writeHooks/useBuild';
-export { useDefenceBuild } from '../../hooks/writeHooks/useBuild';
-export { usePlanetPosition } from '../../hooks/usePlanetPosition';
-
-export { ButtonUpgrade } from '../ui/Button';
-export { ButtonBuild } from '../ui/Button';
-export { getCumulativeTechCost } from '../../shared/utils/Formulas';
-export { baseTechCost } from '../../constants/costs';
+export { ButtonUpgrade } from '../components/ui/Button';
+export { ButtonBuild } from '../components/ui/Button';
+export { getCumulativeTechCost } from '../shared/utils/Formulas';
+export { baseTechCost } from '../constants/costs';
 export {
-  type Resources,
   type TechLevels,
   type ShipsLevels,
   type DefenceLevels,
-} from '../../shared/types';
+} from '../shared/types';
 export {
   getCompoundCost,
   getCumulativeEnergyChange,
-} from '../../shared/utils/Formulas';
+} from '../shared/utils/Formulas';
 
 export {
   React,
-  ReactNode,
+  type ReactNode,
   useMemo,
   useState,
   useEffect,
-  useAccount,
   DescriptionModal,
   AddTransactionIcon,
   Tooltip,
@@ -70,7 +75,7 @@ export interface CompoundsBoxProps {
   img: string;
   title: string;
   level: number;
-  functionCallName: number;
+  functionCallName: BigNumberish;
   description: React.ReactNode;
   resourcesAvailable?: Resources;
   colonyId: number;
@@ -83,8 +88,8 @@ export interface LabBoxProps {
   level?: number;
   requirementsMet?: boolean;
   description: ReactNode;
-  techs: TechLevels;
-  resourcesAvailable: Resources;
+  techs: Techs;
+  resources: Resources;
 }
 
 export interface DockyardBoxProps {
@@ -123,11 +128,11 @@ export interface UniverseBoxProps {
   highlighted: boolean;
   spendable?: Resources;
   collectible?: Resources;
-  fleet?: ShipsLevels;
-  defences?: DefenceLevels;
+  fleet?: Fleet;
+  defences?: Defences;
   ownPlanetId: number;
-  ownFleet?: ShipsLevels;
-  ownTechs?: TechLevels;
+  ownFleet?: Fleet;
+  ownTechs?: Techs;
   isNoobProtected?: boolean;
   lastActive: number;
   winLoss: [number, number];

@@ -5,7 +5,7 @@ import { TransactionStatus } from './TransactionStatus';
 interface Props {
   name: string;
   callback?: () => void;
-  tx: string | undefined;
+  tx?: string | undefined;
   disabled?: boolean;
   noRequirements?: boolean;
 }

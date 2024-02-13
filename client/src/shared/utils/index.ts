@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import BigNumber from 'bignumber.js';
 import { type Position, type TechLevels } from '../types';
+import { Resources } from '../../hooks/usePlanetResources';
 
 export const dataToNumber = (value: unknown[] | string | number | undefined) =>
   new BigNumber(value as unknown as number).toNumber();
@@ -11,13 +12,14 @@ export const calculEnoughResources = (
     quartz: requiredQuartz,
     tritium: requiredTritium,
   }: { steel: number; quartz: number; tritium: number },
-  available?: { steel: number; quartz: number; tritium: number }
+  available?: Resources
 ) => {
   if (!available) return false;
   return (
-    available.steel >= requiredSteel &&
-    available.quartz >= requiredQuartz &&
-    available.tritium >= requiredTritium
+    available.steel ||
+    (0 >= requiredSteel && available.quartz) ||
+    (0 >= requiredQuartz && available.tritium) ||
+    0 >= requiredTritium
   );
 };
 

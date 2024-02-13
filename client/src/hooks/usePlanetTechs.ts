@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
-type Techs = {
+export type Techs = {
   energy: number | undefined;
   digital: number | undefined;
   beam: number | undefined;
