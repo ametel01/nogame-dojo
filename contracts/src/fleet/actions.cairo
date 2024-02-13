@@ -235,9 +235,9 @@ mod fleetactions {
             }
             fleet_return_planet(world, mission.origin, f1);
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
-            set!(
-                world, PlanetResourcesSpent { planet_id: mission.origin, spent: Zeroable::zero() }
-            );
+            // set!(
+            //     world, PlanetResourcesSpent { planet_id: mission.origin, spent: Zeroable::zero() }
+            // );
 
             remove_incoming_mission(world, mission.destination, mission_id);
 
