@@ -9,6 +9,7 @@ import { useDojo } from '../dojo/useDojo';
 import { useComponentValue } from '@dojoengine/react';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Entity } from '@dojoengine/recs';
+import { Position } from '../shared/types';
 
 export const GameContainer = styled.div`
   display: grid;
@@ -73,8 +74,8 @@ export default function Dashboard({ planetId }: Props) {
         handleChange={handleChange}
         planetPosition={
           selectedColonyId === 0
-            ? planetPosition?.position
-            : colonyPosition?.position
+            ? (planetPosition?.position as Position)
+            : (colonyPosition?.position as Position)
         }
       />
       {/* <GameContainer>
