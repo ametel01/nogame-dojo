@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import SideBar from '../components/ui/SideBar';
-import { PlanetSection } from '../components/ui/PlanetSection';
-import { ResourcesSection } from '../panels/MainTabPanel';
+import SideBar from '../sidebar/SideBar';
+// import { PlanetSection } from '../components/ui/PlanetSection';
+// import { ResourcesSection } from '../panels/MainTabPanel';
 import { SelectChangeEvent } from '@mui/material';
-import ColonyDashboard from '../colony/ColonyDashboard';
-import { usePlanetPosition } from '../hooks/usePlanetPosition';
+// import ColonyDashboard from '../colony/ColonyDashboard';
+import { useDojo } from '../dojo/useDojo';
+import { useComponentValue } from '@dojoengine/react';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Entity } from '@dojoengine/recs';
 
 export const GameContainer = styled.div`
   display: grid;
@@ -43,15 +46,24 @@ interface Props {
 }
 
 export default function Dashboard({ planetId }: Props) {
+  const {
+    setup: {
+      clientComponents: { PlanetPosition, ColonyPosition },
+    },
+  } = useDojo();
   const [selectedColonyId, setSelectedColonyId] = useState<number>(0);
 
   const handleChange = (event: SelectChangeEvent<unknown>) => {
     setSelectedColonyId(Number(event.target.value));
   };
 
-  const position = usePlanetPosition(planetId);
+  const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
+  const planetPosition = useComponentValue(PlanetPosition, planteIdEntity);
 
-  const colonyPosition = usePlanetPosition(planetId * 1000 + selectedColonyId);
+  const colonyIdEntity = getEntityIdFromKeys([
+    BigInt(planetId * 1000 + selectedColonyId),
+  ]);
+  const colonyPosition = useComponentValue(ColonyPosition, colonyIdEntity);
 
   return (
     <DashboardMainContainer>
@@ -59,9 +71,13 @@ export default function Dashboard({ planetId }: Props) {
         planetId={planetId}
         selectedColonyId={selectedColonyId}
         handleChange={handleChange}
-        planetPosition={selectedColonyId === 0 ? position : colonyPosition}
+        planetPosition={
+          selectedColonyId === 0
+            ? planetPosition?.position
+            : colonyPosition?.position
+        }
       />
-      <GameContainer>
+      {/* <GameContainer>
         <DashboardSubBodyContainer>
           <PlanetSection
             planetId={planetId}
@@ -78,7 +94,7 @@ export default function Dashboard({ planetId }: Props) {
             <ResourcesSection planetId={planetId} colonyId={selectedColonyId} />
           )}
         </DashboardSubBodyContainer>
-      </GameContainer>
+      </GameContainer> */}
     </DashboardMainContainer>
   );
 }

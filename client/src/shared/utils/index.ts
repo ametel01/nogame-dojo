@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import BigNumber from 'bignumber.js';
 import { type Position, type TechLevels } from '../types';
-import { DefaultPosition } from '../../hooks/usePlanetPosition';
 
 export const dataToNumber = (value: unknown[] | string | number | undefined) =>
   new BigNumber(value as unknown as number).toNumber();
@@ -272,6 +271,8 @@ export function convertTechLevelsToNumbers(techLevels: TechLevels): {
   }
   return converted;
 }
+
+const DefaultPosition = { system: 0, orbit: 0 };
 
 export function convertPositionToNumbers(
   position?: Position

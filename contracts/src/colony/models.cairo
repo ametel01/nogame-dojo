@@ -37,7 +37,7 @@ struct ColonyResource {
     #[key]
     colony_id: u8,
     #[key]
-    name: felt252,
+    name: u8,
     amount: u128,
 }
 
@@ -57,7 +57,7 @@ struct ColonyCompounds {
     #[key]
     colony_id: u8,
     #[key]
-    name: felt252,
+    name: u8,
     level: u8,
 }
 
@@ -68,7 +68,7 @@ struct ColonyShips {
     #[key]
     colony_id: u8,
     #[key]
-    name: felt252,
+    name: u8,
     count: u32,
 }
 
@@ -79,6 +79,6 @@ struct ColonyDefences {
     #[key]
     colony_id: u8,
     #[key]
-    name: felt252,
+    name: u8,
     count: u32,
 }

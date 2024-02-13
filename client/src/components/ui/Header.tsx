@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
 import WalletHeader from './WalletHeader';
-import { useBurner } from '@dojoengine/create-burner';
+import ConnectWallet from '../auth/ConnectWallet';
 // import { MultiCallTransaction } from '../../multicall/MultiCallTransaction';
 import { useDojo } from '../../dojo/useDojo';
 
@@ -32,15 +32,15 @@ const Spacer = styled('div')({
   flex: '1',
 });
 
-interface Props {
-  planetId: number;
-}
+// interface Props {
+//   planetId: number;
+// }
 
-const Header = ({ planetId }: Props) => {
+const Header = () => {
   const { account } = useDojo();
 
   const handleLogoutClick = () => {
-    account.();
+    account?.clear();
   };
 
   return (
@@ -65,6 +65,8 @@ const Header = ({ planetId }: Props) => {
             DashBoard
           </Link>
         </HeaderButton>
+        <ConnectWallet />
+
         {/* <HeaderButton>
           <Link
             to="/pioneer"

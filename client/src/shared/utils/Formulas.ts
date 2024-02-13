@@ -40,8 +40,8 @@ export const CompoundsFormulas = {
     );
   },
 
-  energyProduction(level: number) {
-    if (level === 0) {
+  energyProduction(level: number | undefined) {
+    if (!level || level === 0) {
       return 0;
     }
     return Math.round(
@@ -79,8 +79,8 @@ export const CompoundsFormulas = {
     return { steel, quartz, tritium };
   },
 
-  steelConsumption(level: number) {
-    if (level === 0) {
+  steelConsumption(level: number | undefined) {
+    if (!level || level === 0) {
       return 0;
     }
     return Math.round(
@@ -88,8 +88,8 @@ export const CompoundsFormulas = {
     );
   },
 
-  quartzConsumption(level: number) {
-    if (level === 0) {
+  quartzConsumption(level: number | undefined) {
+    if (!level || level === 0) {
       return 0;
     }
     return Math.round(
@@ -97,8 +97,8 @@ export const CompoundsFormulas = {
     );
   },
 
-  tritiumConsumption(level: number) {
-    if (level === 0) {
+  tritiumConsumption(level: number | undefined) {
+    if (!level || level === 0) {
       return 0;
     }
     return Math.round(

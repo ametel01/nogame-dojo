@@ -34,7 +34,7 @@ const StyledLogo = styled('img')`
   margin-top: 100px;
 `;
 
-const TopRightButtonContainer = styled('div')`
+export const TopRightButtonContainer = styled('div')`
   position: absolute;
   top: 20px; /* Adjust the top position as needed */
   right: 20px; /* Adjust the right position as needed */
@@ -92,9 +92,14 @@ const AuthScreen = ({
   hasGeneratedPlanets = true,
 }: AuthScreenProps) => {
   console.log('auth screen hasGenerated: ', hasGeneratedPlanets);
-  // if (address && !hasGeneratedPlanets) {
-  //   return <GeneratePlanetView address={address} />;
-  // }
+  if (!hasGeneratedPlanets) {
+    return (
+      <>
+        <ConnectWalletButton />
+        <GeneratePlanetView address={address!} />
+      </>
+    );
+  }
 
   return <ConnectWalletView address={address} />;
 };
@@ -109,11 +114,7 @@ const ConnectWalletText = styled(SubTextBefore)`
   max-width: 60%;
 `;
 
-const ConnectWalletView: FC<ConnectWalletViewProps> = ({ address }) => {
-  const renderButton = () => {
-    <ConnectWalletButton />;
-  };
-
+const ConnectWalletView: FC<ConnectWalletViewProps> = () => {
   return (
     <MainWrapper>
       <ConnectWalletLogo src={NoGameLogo} alt="No Game Logo" />
@@ -122,9 +123,6 @@ const ConnectWalletView: FC<ConnectWalletViewProps> = ({ address }) => {
         the vastness of the cosmos, powered by Starknet technology. Connect your
         digital wallet to initiate the creation of your very own celestial body!
       </ConnectWalletText>
-      <TopRightButtonContainer>
-        <ConnectWalletButton />
-      </TopRightButtonContainer>
     </MainWrapper>
   );
 };

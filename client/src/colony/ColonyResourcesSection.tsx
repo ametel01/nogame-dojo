@@ -7,7 +7,6 @@ import {
   ResourcesTabs,
   ResourcesTabList,
 } from '../shared/styled/Tabs';
-import { useTechLevels } from '../hooks/LevelsHooks';
 import {
   type CompoundsLevels,
   type Resources,

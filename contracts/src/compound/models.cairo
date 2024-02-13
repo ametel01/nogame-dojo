@@ -3,6 +3,7 @@ struct PlanetCompounds {
     #[key]
     planet_id: u32,
     #[key]
-    name: felt252,
+    name: u8,
     level: u8,
 }
+

@@ -1,0 +1,170 @@
+query getPlanetResource($planet_id: u32!, $name: u8!) {
+  planetResourceModels(where: { planet_id: $planet_id, name: $name }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetResource {
+              planet_id
+              name
+              amount
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getPlanetCompound($planet_id: u32!, $name: u8!) {
+  planetCompoundsModels(where: { planet_id: $planet_id, name: $name }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetCompounds {
+              planet_id
+              name
+              level
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getPlanetPosition($planet_id: u32!) {
+  planetPositionModels(where: { planet_id: $planet_id }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetPosition {
+              planet_id
+              position {
+                system
+                orbit
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getPlanetShip($planet_id: u32!, $name: u8!) {
+  planetShipsModels(where: { planet_id: $planet_id, name: $name }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetShips {
+              planet_id
+              name
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getPlanetDefence($planet_id: u32!, $name: u8!) {
+  planetDefencesModels(where: { planet_id: $planet_id, name: $name }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetDefences {
+              planet_id
+              name
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getColonyResource($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+  colonyResourceModels(
+    where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ColonyResource {
+              planet_id
+              colony_id
+              name
+              amount
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getColonyCompound($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+  colonyCompoundsModels(
+    where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ColonyCompounds {
+              planet_id
+              colony_id
+              name
+              level
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getColonyDefence($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+  colonyDefencesModels(
+    where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ColonyDefences {
+              planet_id
+              colony_id
+              name
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}

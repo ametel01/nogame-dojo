@@ -2,9 +2,8 @@ import { useComponentValue } from '@dojoengine/react';
 import { Entity } from '@dojoengine/recs';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import AuthScreen from '../../views/LoginOrGenerate';
-// import Dashboard from '../../views/DashBoard';
+import Dashboard from '../../views/DashBoard';
 import Header from '../ui/Header';
-import { DestinationProvider } from '../../context/DestinationContext';
 import { useDojo } from '../../dojo/useDojo';
 
 const AuthController = () => {
@@ -34,10 +33,8 @@ const AuthController = () => {
     />
   ) : (
     <>
-      <DestinationProvider>
-        <Header planetId={planetId?.planet_id} />
-        {/* <Dashboard planetId={planetId?.planet_id} /> */}
-      </DestinationProvider>
+      <Header />
+      <Dashboard planetId={planetId?.planet_id} />
     </>
   );
 };

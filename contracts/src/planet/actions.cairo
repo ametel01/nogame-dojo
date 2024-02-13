@@ -3,6 +3,7 @@ use nogame::data::types::ERC20s;
 #[starknet::interface]
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
+    fn calculate_production(self: @TContractState, planet_id: u32) -> ERC20s;
 }
 
 
@@ -16,15 +17,15 @@ mod planetactions {
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
-    use nogame::data::types::{Position, ERC20s};
+    use nogame::data::types::{Position, ERC20s, CompoundsLevels};
     use nogame::defence::models::PlanetDefences;
-    use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet};
+    use nogame::game::models::{
+        GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
+    };
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
-    use nogame::libraries::{
-        {auction::{LinearVRGDA, LinearVRGDATrait}}, names::Names, position, constants
-    };
+    use nogame::libraries::{names::Names, position, constants, shared};
     use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
     use debug::PrintTrait;
 
@@ -34,11 +35,13 @@ mod planetactions {
             // Access the world dispatcher for reading.
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
-            assert!(get!(world, caller, GameOwnerPlanet).planet_id == 0, "Game Actions: You already have a planet");
+            assert!(
+                get!(world, caller, GameOwnerPlanet).planet_id == 0,
+                "Game Actions: You already have a planet"
+            );
 
             let planets = get!(world, constants::GAME_ID, GamePlanetCount);
             let game_setup = get!(world, constants::GAME_ID, GameSetup);
-            
 
             let planet_id = planets.count + 1;
             set!(world, GamePlanet { owner: caller, planet_id });
@@ -57,6 +60,20 @@ mod planetactions {
             set!(world, PlanetResource { planet_id, name: Names::Resource::ENERGY, amount: 0 });
 
             set!(world, PlanetResourceTimer { planet_id, last_collection: get_block_timestamp() });
+        }
+
+        fn calculate_production(self: @ContractState, planet_id: u32) -> ERC20s {
+            let world = self.world_dispatcher.read();
+            let compounds = CompoundsLevels {
+                steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
+                quartz: get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds).level,
+                tritium: get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level,
+                energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
+                lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
+                dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
+                    .level,
+            };
+            shared::calculate_production(world, planet_id, compounds)
         }
     }
 }

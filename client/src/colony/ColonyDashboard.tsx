@@ -5,11 +5,8 @@ import {
   useGetColonyCompounds,
   useGetColonyDefences,
   useGetColonyResources,
-} from '../hooks/ColoniesHooks';
-import { useSpendableResources } from '../hooks/ResourcesHooks';
 import { ColonyResourcesSection } from './ColonyResourcesSection';
 import { getBaseShipsCost } from '../constants/costs';
-import { useGetColonyShips } from '../hooks/ColoniesHooks';
 
 export const GameContainer = styled.div`
   display: grid;
