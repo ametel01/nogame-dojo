@@ -30,11 +30,11 @@ const SideBar = ({
   return (
     <BodyContainer>
       <LogoAndRankContainer planetId={planetId} />
-      {/* <ColonySelect
+      <ColonySelect
         planetId={planetId}
         selectedColonyId={selectedColonyId}
         handleChange={handleChange}
-      /> */}
+      />
       <ResourcesContainer
         planetId={planetId}
         selectedColonyId={selectedColonyId}

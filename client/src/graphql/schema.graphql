@@ -38,6 +38,26 @@ query getPlanetCompound($planet_id: u32!, $name: u8!) {
   }
 }
 
+query getPlanetTech($planet_id: u32!, $name: u8!) {
+  planetTechsModels(where: { planet_id: $planet_id, name: $name }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetTechs {
+              planet_id
+              name
+              level
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query getPlanetPosition($planet_id: u32!) {
   planetPositionModels(where: { planet_id: $planet_id }) {
     edges {
@@ -161,6 +181,50 @@ query getColonyDefence($planet_id: u32!, $colony_id: u8!, $name: u8!) {
               colony_id
               name
               count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getPlanetColoniesCount($planet_id: u32!) {
+  planetColoniesCountModels(where: { planet_id: $planet_id }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetColoniesCount {
+              planet_id
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getColonyPosition($planet_id: u32!, $colony_id: u8!) {
+  colonyPositionModels(
+    where: { planet_id: $planet_id, colony_id: $colony_id }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ColonyPosition {
+              planet_id
+              colony_id
+              position {
+                system
+                orbit
+              }
             }
           }
         }

@@ -1,16 +1,16 @@
 import React from 'react';
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { useGetPlanetColonies } from '../hooks/ColoniesHooks';
-import { ColonyArray } from '../hooks/ColoniesHooks';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
 import { GenerateColony } from '../components/buttons/GenerateColony';
 import { TechLevels } from '../shared/types/index';
-import { useTechLevels } from '../panels';
+// import { useTechLevels } from '../panels';
 import { useDojo } from '../dojo/useDojo';
 import { useComponentValue } from '@dojoengine/react';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Entity } from '@dojoengine/recs';
+import { usePlanetColonies } from '../hooks/usePlanetColonies';
+import { usePlanetTechs } from '../hooks/usePlanetTechs';
 
 interface Props {
   planetId: number;
@@ -59,15 +59,14 @@ const ColonySelect = ({ planetId, selectedColonyId, handleChange }: Props) => {
   } = useDojo();
 
   const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
-  const coloniesArray: ColonyArray = useGetPlanetColonies(planetId);
-  const currentColoniesCount = useComponentValue(ColonyCount, planteIdEntity);
-  const techs: TechLevels = useTechLevels(planetId);
+  const coloniesArray = usePlanetColonies(planetId);
+  const techs = usePlanetTechs(planetId);
   const maxColonies = techs
     ? Math.floor(Number(techs.exocraft) / 2) +
       (Number(techs.exocraft) % 2 === 1 ? 1 : 0)
     : 0;
   const isActivated =
-    coloniesArray && techs ? currentColoniesCount < maxColonies : false;
+    coloniesArray && techs ? coloniesArray.length < maxColonies : false;
 
   const menuItems = Array.isArray(coloniesArray)
     ? coloniesArray.map((colony, index) => {

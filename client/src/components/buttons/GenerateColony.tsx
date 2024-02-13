@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/system';
 import { TransactionStatus } from '../ui/TransactionStatus';
-import { GAMEADDRESS } from '../../constants/addresses';
-import game from '../../constants/nogame.json';
-import { useContractWrite, useContract } from '@starknet-react/core';
 import { StyledButton } from '../../shared/styled/Button';
+import { useDojo } from '../../dojo/useDojo';
 
 const StyledBox = styled(Box)(() => ({
   position: 'relative',
@@ -20,18 +18,16 @@ interface Props {
 }
 
 export function GenerateColony({ isActivated }: Props) {
+  const {
+    setup: {
+      systemCalls: { generateColony },
+    },
+    account,
+  } = useDojo();
   const [isClicked, setIsClicked] = useState(false);
 
-  const { contract } = useContract({
-    abi: game.abi,
-    address: GAMEADDRESS,
-  });
-  const { writeAsync, data } = useContractWrite({
-    calls: [contract?.populateTransaction.generate_colony?.()],
-  });
-
   const handleOnClick = () => {
-    void writeAsync();
+    void generateColony(account?.account);
     setIsClicked(true);
   };
 
@@ -59,14 +55,14 @@ export function GenerateColony({ isActivated }: Props) {
           </StyledButton>
         )}
       </StyledBox>
-      {isClicked ? (
+      {/* {isClicked ? (
         <TransactionStatus
           name="Collect Resources"
           tx={data?.transaction_hash}
         />
       ) : (
         <></>
-      )}
+      )} */}
     </>
   );
 }

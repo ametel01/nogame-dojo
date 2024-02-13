@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import SideBar from '../sidebar/SideBar';
-// import { PlanetSection } from '../components/ui/PlanetSection';
+import { PlanetSection } from '../planetSection/PlanetSection';
 // import { ResourcesSection } from '../panels/MainTabPanel';
 import { SelectChangeEvent } from '@mui/material';
 // import ColonyDashboard from '../colony/ColonyDashboard';
@@ -78,14 +78,14 @@ export default function Dashboard({ planetId }: Props) {
             : (colonyPosition?.position as Position)
         }
       />
-      {/* <GameContainer>
+      <GameContainer>
         <DashboardSubBodyContainer>
           <PlanetSection
             planetId={planetId}
             selctedColonyId={selectedColonyId}
           />
         </DashboardSubBodyContainer>
-        <DashboardSubBodyContainer>
+        {/* <DashboardSubBodyContainer>
           {selectedColonyId !== 0 && selectedColonyId !== null ? (
             <ColonyDashboard
               planetId={planetId}
@@ -93,9 +93,9 @@ export default function Dashboard({ planetId }: Props) {
             />
           ) : (
             <ResourcesSection planetId={planetId} colonyId={selectedColonyId} />
-          )}
-        </DashboardSubBodyContainer>
-      </GameContainer> */}
+          )} */}
+        {/* </DashboardSubBodyContainer> */}
+      </GameContainer>
     </DashboardMainContainer>
   );
 }

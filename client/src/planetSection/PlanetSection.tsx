@@ -1,19 +1,15 @@
 import React, { type FC, useEffect, useState } from 'react';
-import { useAccount } from '@starknet-react/core';
 import axios from 'axios';
 import Tooltip from '@mui/material/Tooltip';
-import { ImageIcon } from '../icons/Image';
-import { dataToNumber, numberWithCommas } from '../../shared/utils';
+import { ImageIcon } from '../components/icons/Image';
+import { dataToNumber, numberWithCommas } from '../shared/utils';
 
 import { styled, Box } from '@mui/system';
 import { Typography } from '@mui/material';
-import { RowCentered } from './Row';
-import { usePlanetPosition } from '../../hooks/usePlanetPosition';
-import { HostileMissions } from './HostileMissions';
-import {
-  getPlanetImage,
-  type ImageId,
-} from '../../shared/utils/getPlanetImage';
+import { RowCentered } from '../components/ui/Row';
+import { HostileMissions } from '../components/ui/HostileMissions';
+import { getPlanetImage, type ImageId } from '../shared/utils/getPlanetImage';
+import { usePlanetPosition } from '../hooks/ usePlanetPosition';
 
 // pink-capable-snake-964.mypinata.cloud/ipfs/QmZkpEbRphWPcZEmLZV7Z9C5jUvMUvPbRHYE42NMrgArQQ/
 const IPFS_BASE_URL = 'https://pink-capable-snake-964.mypinata.cloud/ipfs';
@@ -141,7 +137,6 @@ interface PlanetImageArgs {
 }
 
 const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
-  const { address } = useAccount();
   const [metadata, setMetadata] = useState<Metadata | null>(null);
   const [metadataUrl, setMetadataUrl] = useState('');
 
@@ -149,7 +144,7 @@ const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
   const colonyPosition = usePlanetPosition(planetId * 1000 + selectedColonyId);
 
   useEffect(() => {
-    if (address && !metadata) {
+    if (!metadata) {
       const url = `${METADATA_URL}/${planetId}.json`;
       setMetadataUrl(url);
       axios
@@ -160,7 +155,7 @@ const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
         })
         .catch(console.error);
     }
-  }, [planetId, metadata, address]);
+  }, [planetId, metadata]);
 
   const imgId =
     selectedColonyId === 0
@@ -229,7 +224,7 @@ const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
           </RadarTextStyle>
         </PlanetPositionGroup>
       </PlanetInfoContainer>
-      <HostileMissions planetId={planetId} />
+      {/* <HostileMissions planetId={planetId} /> */}
     </>
   );
 };

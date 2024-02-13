@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { keyframes, styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useGetHostileMissions } from '../../hooks/FleetHooks';
 import WarningIcon from '@mui/icons-material/Warning';
-import { usePlanetPosition } from '../../hooks/usePlanetPosition';
 import { type HostileMission } from '../../shared/types';
+import { usePlanetPosition } from '../../hooks/ usePlanetPosition';
 
 // Styled components
 const Container = styled(Box)(({ theme }) => ({
@@ -105,7 +104,7 @@ const MissionRow = ({ mission }: RowProps) => {
   const [countdown, setCountdown] = useState(
     getTimeDifference(Number(mission.time_arrival))
   );
-  const position = usePlanetPosition(Number(mission.origin));
+  const position = usePlanetPosition(mission.origin);
   const originCoordinates = position
     ? `${position.system} / ${position.orbit}`
     : 'Unknown';

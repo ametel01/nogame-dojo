@@ -9,6 +9,8 @@ import {
 import { ContractComponents } from './generated/contractComponents';
 import type { IWorld } from './generated/generated';
 import { DojoProvider } from '@dojoengine/core';
+import { GenerateColony } from '../components/buttons/GenerateColony';
+import { getBaseDefenceCost } from '../constants/costs';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -39,28 +41,30 @@ export function createSystemCalls(
     }
   };
 
-  // const getColoniesForPlanet = async (account: Account, planetId: number) => {
-  //   try {
-  //     const { transaction_hash } = await provider.call({
-  //       account,
-  //       planetId,
-  //     });
+  const generateColony = async (account: Account) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'colonyactions',
+        'generate_colony',
+        []
+      );
 
-  //     setComponentsFromEvents(
-  //       contractComponents,
-  //       getEvents(
-  //         await account.waitForTransaction(transaction_hash, {
-  //           retryInterval: 100,
-  //         })
-  //       )
-  //     );
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return {
     generatePlanet,
-    // getColoniesForPlanet,
+    generateColony,
   };
 }

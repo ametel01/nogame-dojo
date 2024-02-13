@@ -1,41 +1,14 @@
-
 import { Box, Button } from '@mui/material';
 import { useDojo } from '../../dojo/useDojo';
-
 
 export const GeneratePlanet = () => {
   const {
     setup: {
-        systemCalls: { generatePlanet },
-        // clientComponents: { GameOwnerPlanet },
+      systemCalls: { generatePlanet },
+      // clientComponents: { GameOwnerPlanet },
     },
     account,
-} = useDojo();
-
-  // const { contract: nogame } = useContract({
-  //   abi: game.abi,
-  //   address: GAMEADDRESS,
-  // });
-
-  // const { contract: eth } = useContract({
-  //   abi: erc20.abi,
-  //   address: ETH_ADDRESS,
-  // });
-
-  // const { writeAsync, isPending, data } = useContractWrite({
-  //   calls: [
-  //     eth?.populateTransaction.approve!(GAMEADDRESS, {
-  //       low: Number(price),
-  //       high: 0,
-  //     }),
-  //     nogame?.populateTransaction.generate_planet!(),
-  //   ],
-  // });
-
-  // const handleOnClick = () => {
-  //   writeAsync();
-  //   setIsClicked(true);
-  // };
+  } = useDojo();
 
   return (
     <Box position="relative" display="inline-flex">
@@ -67,7 +40,8 @@ export const GeneratePlanet = () => {
             background: '#212530', // Slightly lighter than #1B1E2A for a subtle hover effect
           },
         }}
-        onClick={() => {generatePlanet(account.account);
+        onClick={() => {
+          generatePlanet(account.account);
         }}
       >
         Mint Planet
