@@ -1,4 +1,4 @@
-import { Styled, styled } from '.';
+import { Styled, styled } from './deps';
 
 export const InfoContainer = styled(Styled.InfoContainer)({
   width: '45%',

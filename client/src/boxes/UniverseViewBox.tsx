@@ -10,7 +10,7 @@ import {
   DebrisFieldView,
   ButtonAttackPlanet,
   UniverseBoxProps as Props,
-} from '.';
+} from './deps';
 import { InfoContainer } from './styled';
 
 const UniverseViewBox = ({

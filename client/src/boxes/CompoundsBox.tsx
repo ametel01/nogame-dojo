@@ -1,4 +1,4 @@
-import * as deps from '.';
+import * as deps from './deps';
 import { InfoContainer } from './styled';
 import { useDojo } from '../dojo/useDojo';
 import { updateComponent } from '@dojoengine/recs';

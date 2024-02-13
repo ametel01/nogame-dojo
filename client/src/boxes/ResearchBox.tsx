@@ -15,7 +15,7 @@ import {
   ButtonUpgrade,
   LabBoxProps as Props,
   ButtonState,
-} from '.';
+} from './deps';
 import { InfoContainer } from './styled';
 
 const ResearchBox = ({

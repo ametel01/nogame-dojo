@@ -90,6 +90,32 @@ export function createSystemCalls(
     }
   };
 
+  const buildShip = async (
+    account: Account,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'dockyardactions',
+        'process_ship_build',
+        [component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const buildDefence = async (
     account: Account,
     component: BigNumberish,
@@ -120,6 +146,7 @@ export function createSystemCalls(
     generatePlanet,
     generateColony,
     upgradeCompound,
+    buildShip,
     buildDefence,
   };
 }

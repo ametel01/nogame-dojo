@@ -1,19 +1,6 @@
-import {
-  React,
-  useMemo,
-  useState,
-  Styled,
-  useShipBuild,
-  numberWithCommas,
-  DescriptionModal,
-  Tooltip,
-  Input,
-  AddTransactionIcon,
-  ButtonBuild,
-  DockyardBoxProps as Props,
-  ButtonState,
-} from '.';
+import * as deps from './deps';
 import { InfoContainer } from './styled';
+import { useDojo } from '../dojo/useDojo';
 
 const DockyardBox = ({
   img,
@@ -26,17 +13,19 @@ const DockyardBox = ({
   description,
   resourcesAvailable,
   colonyId,
-}: Props) => {
-  const [quantity, setQuantity] = useState(1);
-  const [showTooltip, setShowTooltip] = useState(true);
+}: deps.DockyardBoxProps) => {
+  const [quantity, setQuantity] = deps.useState(1);
+  const [showTooltip, setShowTooltip] = deps.useState(true);
+  const {
+    setup: {
+      systemCalls: { buildShip },
+    },
+    account,
+  } = useDojo();
 
-  const { tx, writeAsync: build } = useShipBuild(
-    functionCallName,
-    quantity,
-    colonyId
-  );
+  const build = () => buildShip(account.account, functionCallName, quantity);
 
-  const buttonState = useMemo((): ButtonState => {
+  const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {
       return 'noRequirements';
     } else if (!hasEnoughResources) {
@@ -68,18 +57,20 @@ const DockyardBox = ({
     : 0;
 
   // Format the calculated costs to display with commas
-  const steelDisplay = adjustedSteel ? numberWithCommas(adjustedSteel) : 0;
-  const quartzDisplay = adjustedQuartz ? numberWithCommas(adjustedQuartz) : 0;
+  const steelDisplay = adjustedSteel ? deps.numberWithCommas(adjustedSteel) : 0;
+  const quartzDisplay = adjustedQuartz
+    ? deps.numberWithCommas(adjustedQuartz)
+    : 0;
   const tritiumDisplay = adjustedTritium
-    ? numberWithCommas(adjustedTritium)
+    ? deps.numberWithCommas(adjustedTritium)
     : 0;
 
   const shouldShowTooltip = ['Armade'].includes(title) && showTooltip;
 
   const boxContent = (
-    <Styled.Box>
-      <Styled.ImageContainer>
-        <DescriptionModal
+    <deps.Styled.Box>
+      <deps.Styled.ImageContainer>
+        <deps.DescriptionModal
           onClick={() => {
             setShowTooltip(false);
           }}
@@ -88,60 +79,62 @@ const DockyardBox = ({
           description={description}
         />
         <img src={img} alt={title} />
-      </Styled.ImageContainer>
-      <Styled.SubBox>
-        <Styled.Title>{title}</Styled.Title>
+      </deps.Styled.ImageContainer>
+      <deps.Styled.SubBox>
+        <deps.Styled.Title>{title}</deps.Styled.Title>
         <InfoContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>READY</Styled.ResourceTitle>
-            <Styled.NumberContainer>{String(level)}</Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>STEEL</Styled.ResourceTitle>
-            <Styled.NumberContainer
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>READY</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer>
+              {String(level)}
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
                 color: resourcesAvailable
-                  ? resourcesAvailable.steel < adjustedSteel
+                  ? resourcesAvailable.steel || 0 < adjustedSteel
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
               {steelDisplay}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>QUARTZ</Styled.ResourceTitle>
-            <Styled.NumberContainer
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>QUARTZ</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
                 color: resourcesAvailable
-                  ? resourcesAvailable.quartz < adjustedQuartz
+                  ? resourcesAvailable.quartz || 0 < adjustedQuartz
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
               {quartzDisplay}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
-          <Styled.ResourceContainer>
-            <Styled.ResourceTitle>TRITIUM</Styled.ResourceTitle>
-            <Styled.NumberContainer
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
+          <deps.Styled.ResourceContainer>
+            <deps.Styled.ResourceTitle>TRITIUM</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer
               style={{
                 color: resourcesAvailable
-                  ? resourcesAvailable.tritium < adjustedTritium
+                  ? resourcesAvailable.tritium || 0 < adjustedTritium
                     ? '#AB3836'
                     : 'inherit'
                   : 'inherit',
               }}
             >
               {tritiumDisplay}
-            </Styled.NumberContainer>
-          </Styled.ResourceContainer>
+            </deps.Styled.NumberContainer>
+          </deps.Styled.ResourceContainer>
         </InfoContainer>
-        <Styled.ResourceContainer>
-          <Tooltip title="Select the number of units to build" arrow>
-            <Input
+        <deps.Styled.ResourceContainer>
+          <deps.Tooltip title="Select the number of units to build" arrow>
+            <deps.Input
               type="number"
               value={quantity}
               defaultValue={1}
@@ -156,32 +149,36 @@ const DockyardBox = ({
                 }
               }}
             />
-          </Tooltip>
-        </Styled.ResourceContainer>
-        <AddTransactionIcon
+          </deps.Tooltip>
+        </deps.Styled.ResourceContainer>
+        <deps.AddTransactionIcon
           callType="ship"
           unitName={functionCallName}
           quantity={quantity}
           disabled={hasRequirements || !hasEnoughResources}
           colonyId={colonyId}
         />
-        <Styled.ButtonContainer>
-          <ButtonBuild
+        <deps.Styled.ButtonContainer>
+          <deps.ButtonBuild
             name={`Build ${quantity} ${title}`}
             callback={build}
-            tx={tx?.transaction_hash}
+            // tx={tx?.transaction_hash}
             disabled={isDisabled}
             noRequirements={hasRequirements}
           />
-        </Styled.ButtonContainer>
-      </Styled.SubBox>
-    </Styled.Box>
+        </deps.Styled.ButtonContainer>
+      </deps.Styled.SubBox>
+    </deps.Styled.Box>
   );
 
   return shouldShowTooltip ? (
-    <Tooltip title="Non available on testnet release" placement="top" arrow>
+    <deps.Tooltip
+      title="Non available on testnet release"
+      placement="top"
+      arrow
+    >
       {boxContent}
-    </Tooltip>
+    </deps.Tooltip>
   ) : (
     boxContent
   );
