@@ -14,13 +14,12 @@ export const calculEnoughResources = (
     tritium: requiredTritium,
   }: { steel: number; quartz: number; tritium: number },
   available?: Resources
-) => {
+): boolean => {
   if (!available) return false;
   return (
-    available.steel ||
-    (0 >= requiredSteel && available.quartz) ||
-    (0 >= requiredQuartz && available.tritium) ||
-    0 >= requiredTritium
+    (available.steel || 0) >= requiredSteel &&
+    (available.quartz || 0) >= requiredQuartz &&
+    (available.tritium || 0) >= requiredTritium
   );
 };
 

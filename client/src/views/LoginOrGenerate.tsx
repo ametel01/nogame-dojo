@@ -91,7 +91,6 @@ const AuthScreen = ({
   address,
   hasGeneratedPlanets = true,
 }: AuthScreenProps) => {
-  console.log('auth screen hasGenerated: ', hasGeneratedPlanets);
   if (!hasGeneratedPlanets) {
     return (
       <>

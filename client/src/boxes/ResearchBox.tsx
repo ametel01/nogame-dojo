@@ -23,11 +23,12 @@ const ResearchBox = ({
   const upgrade = () =>
     upgradeTech(account.account, functionCallName, quantity);
 
-  const baseCosts = deps.baseTechCost[functionCallName as number];
-  const isExo = functionCallName === 18;
+  console.log('levels', level);
+  const baseCosts = deps.baseTechCost[(functionCallName as number) + 1];
+  const isExo = functionCallName === 13;
   // Calculate the cumulative cost of the upgrade
   const upgradeCost = deps.useMemo(() => {
-    if (quantity > 0 && level != undefined) {
+    if (quantity > 0 && level != undefined && baseCosts) {
       const cost = deps.getCumulativeTechCost(
         level,
         quantity,
@@ -82,17 +83,18 @@ const ResearchBox = ({
         <InfoContainer>
           <deps.Styled.ResourceContainer>
             <deps.Styled.ResourceTitle>STAGE</deps.Styled.ResourceTitle>
-            <deps.Styled.NumberContainer>{level}</deps.Styled.NumberContainer>
+            <deps.Styled.NumberContainer>
+              {level || 0}
+            </deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
           <deps.Styled.ResourceContainer>
             <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resources
-                  ? resources.steel || 0 < upgradeCost.steel
+                color:
+                  (resources.steel || 0) < upgradeCost.steel
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(upgradeCost.steel)}
@@ -102,11 +104,10 @@ const ResearchBox = ({
             <deps.Styled.ResourceTitle>QUARTZ</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resources
-                  ? resources.quartz || 0 < upgradeCost.quartz
+                color:
+                  (resources.quartz || 0) < upgradeCost.quartz
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(upgradeCost.quartz)}
@@ -116,11 +117,10 @@ const ResearchBox = ({
             <deps.Styled.ResourceTitle>TRITIUM</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resources
-                  ? resources.tritium || 0 < upgradeCost.tritium
+                color:
+                  (resources.tritium || 0) < upgradeCost.tritium
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(upgradeCost.tritium)}

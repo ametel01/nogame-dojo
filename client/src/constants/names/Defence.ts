@@ -1,7 +1,5 @@
-export const Defence = {
-  CELESTIA: 1,
-  BLASTER: 2,
-  BEAM: 3,
-  ASTRAL: 4,
-  PLASMA: 5,
-};
+export const Celestia = 1;
+export const Blaster = 2;
+export const Beam = 3;
+export const Astral = 4;
+export const Plasma = 5;

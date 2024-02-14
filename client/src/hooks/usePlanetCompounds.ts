@@ -40,9 +40,7 @@ export function usePlanetCompounds(planetId: number): Compounds {
           (model) => model?.__typename === 'PlanetCompounds'
         );
         if (planetCompound && 'level' in planetCompound) {
-          const amountHex = planetCompound.level;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
+          setter(planetCompound.level);
         }
       }
     }

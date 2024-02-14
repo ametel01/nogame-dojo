@@ -162,8 +162,8 @@ export interface ResearchConfigType {
 
 export interface LabProps {
   resources: Resources;
-  techLevels?: Techs;
-  labLevel?: number;
+  techLevels: Techs;
+  labLevel: number;
 }
 
 export interface ShipConfigType {

@@ -1,5 +1,10 @@
-import { BigNumberish, CairoCustomEnum } from 'starknet';
-import { astralRequirements, frigateRequirements } from '../shared/utils/index';
+import { BigNumberish } from 'starknet';
+
+export type Resources = {
+  steel: number | undefined;
+  quartz: number | undefined;
+  tritium: number | undefined;
+};
 
 export const CompoundUpgradeType = {
   SteelMine: 0 as BigNumberish,

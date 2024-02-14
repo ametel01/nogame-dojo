@@ -70,30 +70,37 @@ export const DockyardTabPanel = ({
 
   return (
     <deps.StyledTabPanel {...rest}>
-      {shipsConfig.map((ship) => (
-        <DockyardBox
-          key={ship.functionCallName}
-          description={ship.description}
-          img={ship.img}
-          title={ship.title}
-          functionCallName={ship.functionCallName}
-          level={
-            ship.title === 'Celestia'
-              ? celestia
-              : ships?.[ship.shipName] || 
-          }
-          costUpdate={shipsCost?.[ship.shipName]}
-          hasEnoughResources={
-            resources &&
-            shipsCost?.[ship.shipName] &&
-            calculEnoughResources(shipsCost[ship.shipName], resources)
-          }
-          requirementsMet={ship.requirements}
-          resourcesAvailable={resources!}
-          colonyId={colonyId}
-        />
-      ))}
-    </StyledTabPanel>
+      {shipsConfig.map((ship) => {
+        const isCelestia = ship.title === 'Celestia';
+        const fleetKey = isCelestia
+          ? undefined
+          : (ship.shipName as keyof deps.Fleet);
+
+        return (
+          <DockyardBox
+            key={ship.functionCallName}
+            description={ship.description}
+            img={ship.img}
+            title={ship.title}
+            functionCallName={ship.functionCallName}
+            level={
+              isCelestia ? celestia : fleetKey ? ships?.[fleetKey] : undefined
+            }
+            costUpdate={fleetKey ? shipsCost?.[fleetKey] : undefined}
+            hasEnoughResources={
+              !isCelestia &&
+              resources &&
+              fleetKey &&
+              shipsCost?.[fleetKey] &&
+              deps.calculEnoughResources(shipsCost[fleetKey], resources)
+            }
+            requirementsMet={ship.requirements}
+            resourcesAvailable={resources!}
+            colonyId={colonyId}
+          />
+        );
+      })}
+    </deps.StyledTabPanel>
   );
 };
 

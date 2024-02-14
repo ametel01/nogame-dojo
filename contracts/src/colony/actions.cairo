@@ -13,7 +13,7 @@ trait IColonyActions<TState> {
     fn process_defence_build(
         ref self: TState, colony_id: u8, name: DefenceBuildType, quantity: u32,
     );
-    fn get_resources_available(ref self: TState, colony_id: u8) -> ERC20s;
+    fn get_resources_available(ref self: TState, planet_id: u32, colony_id: u8) -> ERC20s;
 }
 
 #[dojo::contract]

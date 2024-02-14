@@ -1,25 +1,51 @@
 import * as deps from '.';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePlanetCompounds } from '../hooks/usePlanetCompounds';
 import { usePlanetTechs } from '../hooks/usePlanetTechs';
-import { usePlanetResources } from '../hooks/usePlanetResources';
 import { usePlanetShips } from '../hooks/usePlanetShips';
 import { useDestination } from '../context/DestinationContext';
 import { usePlanetDefences } from '../hooks/usePlanetDefences';
+import { useDojo } from '../dojo/useDojo';
+import { Resources } from '../types';
 
 export const ResourcesSection = ({
   planetId,
   colonyId,
 }: deps.ResourcesSectionArgs) => {
+  const {
+    setup: {
+      systemCalls: { getPlanetResources },
+    },
+  } = useDojo();
+  const [planetResources, setPlanetResources] = useState<Resources | null>(
+    null
+  );
+
+  useEffect(() => {
+    getPlanetResources(planetId)
+      .then((resources) => {
+        setPlanetResources(resources);
+      })
+      .catch((error) => {
+        console.error('Error fetching planet resources:', error);
+      });
+  }, [planetId, getPlanetResources, setPlanetResources]);
+
   const [activeTab, setActiveTab] = deps.useState(1);
+
   const compoundsLevels = usePlanetCompounds(planetId);
+
   const techLevels = usePlanetTechs(planetId);
-  const resources = usePlanetResources(planetId);
+
   const shipsLevels = usePlanetShips(planetId);
+
   const shipsCost = deps.getBaseShipsCost();
+
   const defencesLevels = usePlanetDefences(planetId);
+
   const celestiaAvailable = defencesLevels.celestia;
+
   const defencesCost = deps.getBaseDefenceCost();
 
   const { selectedDestination } = useDestination();
@@ -30,7 +56,7 @@ export const ResourcesSection = ({
     }
   }, [selectedDestination, setActiveTab]);
 
-  if (!compoundsLevels || !techLevels || !resources || !shipsLevels) {
+  if (!compoundsLevels || !techLevels || !planetResources || !shipsLevels) {
     // Centered CircularProgress
     return (
       <div
@@ -118,12 +144,17 @@ export const ResourcesSection = ({
           </deps.RowCentered>
         </deps.ResourceTab>
       </deps.ResourcesTabList>
-      {activeTab === 1 && renderCompounds(colonyId, resources, compoundsLevels)}
+      {activeTab === 1 &&
+        renderCompounds(colonyId, planetResources, compoundsLevels)}
       {activeTab === 2 &&
-        renderLabPanel(resources, techLevels, Number(compoundsLevels.lab))}
+        renderLabPanel(
+          planetResources,
+          techLevels,
+          Number(compoundsLevels.lab)
+        )}
       {activeTab === 3 &&
         renderDockyardTab(
-          resources,
+          planetResources,
           shipsLevels,
           shipsCost,
           compoundsLevels?.dockyard || 0,
@@ -133,7 +164,7 @@ export const ResourcesSection = ({
         )}
       {activeTab === 4 &&
         renderDefencesPanel(
-          resources,
+          planetResources,
           defencesLevels,
           defencesCost,
           compoundsLevels.dockyard || 0,

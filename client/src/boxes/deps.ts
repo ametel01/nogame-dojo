@@ -70,7 +70,7 @@ export interface CompoundsBoxProps {
   level: number;
   functionCallName: BigNumberish;
   description: React.ReactNode;
-  resourcesAvailable?: Resources;
+  resourcesAvailable: Resources;
   colonyId: number;
 }
 
@@ -78,7 +78,7 @@ export interface LabBoxProps {
   img: string;
   title: string;
   functionCallName: BigNumberish;
-  level?: number;
+  level: number;
   requirementsMet?: boolean;
   description: ReactNode;
   techs: Techs;

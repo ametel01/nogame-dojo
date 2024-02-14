@@ -7,12 +7,8 @@ import {
   setComponentsFromEvents,
 } from '@dojoengine/utils';
 import { ContractComponents } from './generated/contractComponents';
-import type { IWorld } from './generated/generated';
+// import type { IWorld } from './generated/generated';
 import { DojoProvider } from '@dojoengine/core';
-import { GenerateColony } from '../components/buttons/GenerateColony';
-import { getBaseDefenceCost } from '../constants/costs';
-import { CompoundsCostUpgrade } from '../shared/types';
-import { Resources } from '../hooks/usePlanetResources';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -169,16 +165,30 @@ export function createSystemCalls(
     }
   };
 
-  const getPlanetResources = async (planetId: number) => {
+  interface PlanetResourcesResponse {
+    steel: bigint;
+    quartz: bigint;
+    tritium: bigint;
+  }
+
+  const getPlanetResources = async (
+    planetId: number
+  ): Promise<{ steel: number; quartz: number; tritium: number }> => {
     try {
-      const tx = await provider.call(
+      const tx = (await provider.callContract(
         'planetactions',
         'get_resources_available',
-        [planetId]
-      );
-      return tx.result[0];
+        [planetId.toString()]
+      )) as PlanetResourcesResponse;
+
+      return {
+        steel: Number(tx.steel),
+        quartz: Number(tx.quartz),
+        tritium: Number(tx.tritium),
+      };
     } catch (e) {
       console.log(e);
+      throw e; // Rethrow the error after logging it
     }
   };
 

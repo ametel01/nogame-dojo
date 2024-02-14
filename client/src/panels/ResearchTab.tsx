@@ -117,19 +117,22 @@ export const ResearchTabPanel = ({
 
   return (
     <deps.StyledTabPanel {...rest}>
-      {researchConfig.map((research) => (
-        <ResearchBox
-          key={research.functionCallName}
-          description={research.description}
-          img={research.img}
-          title={research.title}
-          functionCallName={research.functionCallName}
-          level={Number(techLevels?.[research.techName])}
-          resources={resources}
-          requirementsMet={research.requirements}
-          techs={techLevels!}
-        />
-      ))}
+      {researchConfig.map((research) => {
+        const level = techLevels[research.techName] || 0;
+        return (
+          <ResearchBox
+            key={research.functionCallName}
+            description={research.description}
+            img={research.img}
+            title={research.title}
+            functionCallName={research.functionCallName}
+            level={level}
+            resources={resources}
+            requirementsMet={research.requirements}
+            techs={techLevels!}
+          />
+        );
+      })}
     </deps.StyledTabPanel>
   );
 };

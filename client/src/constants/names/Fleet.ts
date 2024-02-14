@@ -1,7 +1,5 @@
-export const Fleet = {
-  CARRIER: 1,
-  SCRAPER: 2,
-  SPARROW: 3,
-  FRIGATE: 4,
-  ARMADE: 5,
-};
+export const Carrier = 1;
+export const Scraper = 2;
+export const Sparrow = 3;
+export const Frigate = 4;
+export const Armade = 5;

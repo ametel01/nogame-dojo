@@ -1,15 +1,13 @@
-export const Tech = {
-  ENERGY: 1,
-  DIGITAL: 2,
-  BEAM: 3,
-  ARMOUR: 4,
-  ION: 5,
-  PLASMA: 6,
-  WEAPONS: 7,
-  SHIELD: 8,
-  SPACETIME: 9,
-  COMBUSTION: 10,
-  THRUST: 11,
-  WARP: 12,
-  EXOCRAFT: 13,
-};
+export const Energy = 1;
+export const Digital = 2;
+export const Beam = 3;
+export const Armour = 4;
+export const Ion = 5;
+export const Plasma = 6;
+export const Weapons = 7;
+export const Shield = 8;
+export const Spacetime = 9;
+export const Combustion = 10;
+export const Thrust = 11;
+export const Warp = 12;
+export const Exocraft = 13;

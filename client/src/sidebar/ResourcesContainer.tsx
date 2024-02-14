@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import { numberWithCommas } from '../shared/utils';
@@ -11,12 +11,13 @@ import CompoundsFormulas, {
   getCelestiaProduction,
 } from '../shared/utils/Formulas';
 import { Position } from '../shared/types';
-import { usePlanetResources } from '../hooks/usePlanetResources';
 import { usePlanetCompounds } from '../hooks/usePlanetCompounds';
 import { useColonyCompounds } from '../hooks/useColonyCompounds';
 import { useColonyResources } from '../hooks/useColonyResources';
 import { usePlanetDefences } from '../hooks/usePlanetDefences';
 import { useColonyDefences } from '../hooks/useColonyDefences';
+import { useDojo } from '../dojo/useDojo';
+import { Resources } from '../types';
 
 const Container = styled.div`
   display: flex;
@@ -74,16 +75,15 @@ const TotalResourceWrapper = styled.div`
   flex-direction: column;
 `;
 
-interface Props {
+interface EnergyProps {
   img: string;
   title: string;
-  available?: number;
-  solar?: number;
-  celestia?: number;
+  solar: number;
+  celestia: number;
 }
 
-const Energy = ({ solar, celestia, img, title }: Props) => {
-  const available = solar && celestia ? solar + celestia : 0;
+const Energy = ({ solar, celestia, img, title }: EnergyProps) => {
+  const available = solar + celestia;
   const availableStyle = {
     color: available < 0 ? '#AB3836' : '#23CE6B', // Apply red color if available is negative
   };
@@ -115,7 +115,13 @@ const Energy = ({ solar, celestia, img, title }: Props) => {
   );
 };
 
-const Resource = ({ available, img, title }: Props) => {
+interface ResourceProps {
+  available?: number;
+  img: string;
+  title: string;
+}
+
+const Resource = ({ available, img, title }: ResourceProps) => {
   return (
     <Container>
       <div>
@@ -150,7 +156,24 @@ const ResourcesContainer = ({
   selectedColonyId,
   planetPosition,
 }: ResourceContainerArgs) => {
-  const planetResources = usePlanetResources(planetId);
+  const {
+    setup: {
+      systemCalls: { getPlanetResources },
+    },
+  } = useDojo();
+  const [planetResources, setPlanetResources] = useState<Resources | null>(
+    null
+  );
+
+  useEffect(() => {
+    getPlanetResources(planetId)
+      .then((resources) => {
+        setPlanetResources(resources);
+      })
+      .catch((error) => {
+        console.error('Error fetching planet resources:', error);
+      });
+  }, [planetId, getPlanetResources, setPlanetResources]);
 
   const compoundsLevels = usePlanetCompounds(planetId);
 
@@ -190,7 +213,7 @@ const ResourcesContainer = ({
   );
 
   const netEnergy =
-    solarEnergy + (steelConsumption + quartzConsumption + tritiumConsumption);
+    solarEnergy - (steelConsumption + quartzConsumption + tritiumConsumption);
 
   return (
     <div>

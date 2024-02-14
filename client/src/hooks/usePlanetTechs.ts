@@ -54,9 +54,7 @@ export function usePlanetTechs(planetId: number): Techs {
           (model) => model?.__typename === 'PlanetTechs'
         );
         if (planetTech && 'level' in planetTech) {
-          const amountHex = planetTech.level;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
+          setter(planetTech.level);
         }
       }
     }

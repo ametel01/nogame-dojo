@@ -1,7 +1,6 @@
 import * as deps from './deps';
 import { InfoContainer } from './styled';
 import { useDojo } from '../dojo/useDojo';
-import { updateComponent } from '@dojoengine/recs';
 
 const CompoundsBox = ({
   img,
@@ -12,7 +11,6 @@ const CompoundsBox = ({
   resourcesAvailable,
   colonyId,
 }: deps.CompoundsBoxProps) => {
-  console.log('level', level);
   const [quantity, setQuantity] = deps.useState(1);
   const [, setShowTooltip] = deps.useState(true);
   const [costUpdate, setCostUpdate] = deps.useState({
@@ -84,11 +82,10 @@ const CompoundsBox = ({
             <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.steel || 0 < costUpdate.steel
+                color:
+                  (resourcesAvailable.steel ?? 0) < costUpdate.steel
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(costUpdate.steel)}
@@ -98,11 +95,10 @@ const CompoundsBox = ({
             <deps.Styled.ResourceTitle>QUARTZ</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.quartz || 0 < costUpdate.quartz
+                color:
+                  (resourcesAvailable.quartz ?? 0) < costUpdate.quartz
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(costUpdate.quartz)}
@@ -112,11 +108,10 @@ const CompoundsBox = ({
             <deps.Styled.ResourceTitle>TRITIUM</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.tritium || 0 < costUpdate.tritium
+                color:
+                  (resourcesAvailable.tritium ?? 0) < costUpdate.tritium
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {deps.numberWithCommas(costUpdate.tritium)}
