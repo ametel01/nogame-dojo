@@ -76,6 +76,8 @@ export const DockyardTabPanel = ({
           ? undefined
           : (ship.shipName as keyof deps.Fleet);
 
+        const shipLevel = fleetKey ? ships[fleetKey] || 0 : 0;
+
         return (
           <DockyardBox
             key={ship.functionCallName}
@@ -83,10 +85,8 @@ export const DockyardTabPanel = ({
             img={ship.img}
             title={ship.title}
             functionCallName={ship.functionCallName}
-            level={
-              isCelestia ? celestia : fleetKey ? ships?.[fleetKey] : undefined
-            }
-            costUpdate={fleetKey ? shipsCost?.[fleetKey] : undefined}
+            level={isCelestia ? celestia : shipLevel}
+            costUpdate={shipsCost[fleetKey]}
             hasEnoughResources={
               !isCelestia &&
               resources &&

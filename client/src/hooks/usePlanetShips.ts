@@ -38,9 +38,8 @@ export function usePlanetShips(planetId: number): Fleet {
           (model) => model?.__typename === 'PlanetShips'
         );
         if (planetShip && 'count' in planetShip) {
-          const amountHex = planetShip.count;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
+          console.log('planetShip', planetShip.count);
+          setter(planetShip.count);
         }
       }
     }

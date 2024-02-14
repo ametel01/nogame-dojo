@@ -177,11 +177,11 @@ export interface ShipConfigType {
 
 export interface DockyardProps {
   resources: Resources;
-  ships?: Fleet;
+  ships: Fleet;
   shipsCost: ShipsCost;
   dockyard: number;
   techs: Techs;
-  celestia?: number;
+  celestia: number;
   colonyId: number;
 }
 

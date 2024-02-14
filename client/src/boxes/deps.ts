@@ -89,8 +89,8 @@ export interface DockyardBoxProps {
   img: string;
   title: string;
   functionCallName: BigNumberish;
-  level?: number;
-  costUpdate?: { steel: number; quartz: number; tritium: number };
+  level: number;
+  costUpdate: { steel: number; quartz: number; tritium: number };
   hasEnoughResources?: boolean;
   requirementsMet?: boolean;
   description: ReactNode;

@@ -215,10 +215,13 @@ export const plasmaRequirements = (
     : false;
 };
 
-export const numberWithCommas = (num: number) =>
-  num > 999
+export const numberWithCommas = (num: number | undefined): string => {
+  if (num === undefined) return '';
+
+  return num > 999
     ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     : num.toString();
+};
 
 export function convertTechsToNumbers(Techs: Techs): {
   [K in keyof Techs]: number;

@@ -116,7 +116,7 @@ const Energy = ({ solar, celestia, img, title }: EnergyProps) => {
 };
 
 interface ResourceProps {
-  available?: number;
+  available: string;
   img: string;
   title: string;
 }
@@ -222,8 +222,8 @@ const ResourcesContainer = ({
         img={ironImg}
         available={
           selectedColonyId === 0
-            ? planetResources?.steel
-            : colonyResources?.steel
+            ? numberWithCommas(planetResources?.steel)
+            : numberWithCommas(colonyResources?.steel)
         }
       />
       <Resource
@@ -231,8 +231,8 @@ const ResourcesContainer = ({
         img={quartzImg}
         available={
           selectedColonyId === 0
-            ? planetResources?.quartz
-            : colonyResources?.quartz
+            ? numberWithCommas(planetResources?.quartz)
+            : numberWithCommas(colonyResources?.quartz)
         }
       />
       <Resource
@@ -240,8 +240,8 @@ const ResourcesContainer = ({
         img={tritiumImg}
         available={
           selectedColonyId === 0
-            ? planetResources?.tritium
-            : colonyResources?.tritium
+            ? numberWithCommas(planetResources?.tritium)
+            : numberWithCommas(colonyResources?.tritium)
         }
       />
       <Energy
