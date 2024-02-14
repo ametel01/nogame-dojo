@@ -12,7 +12,6 @@ const ResearchBox = ({
   resources,
 }: deps.LabBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
-  const [showTooltip, setShowTooltip] = deps.useState(true);
   const {
     setup: {
       systemCalls: { upgradeTech },
@@ -58,21 +57,11 @@ const ResearchBox = ({
 
   const isDisabled = buttonState === 'noResource';
 
-  const shouldShowTooltip =
-    [
-      'Ion Systems',
-      'Plasma Engineering',
-      'Spacetime Technology',
-      'Warp Drive',
-    ].includes(title) && showTooltip;
-
   const boxContent = (
     <deps.Styled.Box>
       <deps.Styled.ImageContainer>
         <deps.DescriptionModal
-          onClick={() => {
-            setShowTooltip(false);
-          }}
+          onClick={() => {}}
           image={img}
           title={title}
           description={description}
@@ -159,17 +148,7 @@ const ResearchBox = ({
     </deps.Styled.Box>
   );
 
-  return shouldShowTooltip ? (
-    <deps.Tooltip
-      title="Non available on testnet release"
-      placement="top"
-      arrow
-    >
-      {boxContent}
-    </deps.Tooltip>
-  ) : (
-    boxContent
-  );
+  return boxContent;
 };
 
 export default ResearchBox;

@@ -12,10 +12,9 @@ const DockyardBox = ({
   requirementsMet,
   description,
   resourcesAvailable,
-  colonyId,
-}: deps.DockyardBoxProps) => {
+}: // colonyId,
+deps.DockyardBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
-  const [showTooltip, setShowTooltip] = deps.useState(true);
   const {
     setup: {
       systemCalls: { buildShip },
@@ -65,15 +64,11 @@ const DockyardBox = ({
     ? deps.numberWithCommas(adjustedTritium)
     : 0;
 
-  const shouldShowTooltip = ['Armade'].includes(title) && showTooltip;
-
   const boxContent = (
     <deps.Styled.Box>
       <deps.Styled.ImageContainer>
         <deps.DescriptionModal
-          onClick={() => {
-            setShowTooltip(false);
-          }}
+          onClick={() => {}}
           image={img}
           title={title}
           description={description}
@@ -161,17 +156,7 @@ const DockyardBox = ({
     </deps.Styled.Box>
   );
 
-  return shouldShowTooltip ? (
-    <deps.Tooltip
-      title="Non available on testnet release"
-      placement="top"
-      arrow
-    >
-      {boxContent}
-    </deps.Tooltip>
-  ) : (
-    boxContent
-  );
+  return boxContent;
 };
 
 export default DockyardBox;

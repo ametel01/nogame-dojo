@@ -37,10 +37,8 @@ export const ResourcesSection = ({
   const compoundsLevels = usePlanetCompounds(planetId);
 
   const techLevels = usePlanetTechs(planetId);
-  console.log('techLevels', techLevels);
 
   const shipsLevels = usePlanetShips(planetId);
-  console.log('shipsLevels', shipsLevels);
 
   const shipsCost = deps.getBaseShipsCost();
 

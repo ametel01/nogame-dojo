@@ -75,8 +75,7 @@ export const DockyardTabPanel = ({
         const fleetKey = isCelestia
           ? undefined
           : (ship.shipName as keyof deps.Fleet);
-
-        const shipLevel = fleetKey ? ships[fleetKey] || 0 : 0;
+        const shipLevel = fleetKey ? ships[fleetKey] || 0 : celestia;
 
         return (
           <DockyardBox
@@ -85,17 +84,20 @@ export const DockyardTabPanel = ({
             img={ship.img}
             title={ship.title}
             functionCallName={ship.functionCallName}
-            level={isCelestia ? celestia : shipLevel}
-            costUpdate={shipsCost[fleetKey]}
+            level={shipLevel}
+            costUpdate={
+              fleetKey
+                ? shipsCost[fleetKey]
+                : { steel: 0, quartz: 0, tritium: 0 }
+            }
             hasEnoughResources={
-              !isCelestia &&
-              resources &&
               fleetKey &&
-              shipsCost?.[fleetKey] &&
+              resources &&
+              shipsCost[fleetKey] &&
               deps.calculEnoughResources(shipsCost[fleetKey], resources)
             }
             requirementsMet={ship.requirements}
-            resourcesAvailable={resources!}
+            resourcesAvailable={resources}
             colonyId={colonyId}
           />
         );

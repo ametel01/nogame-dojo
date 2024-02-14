@@ -59,7 +59,7 @@ export const DefenceTabPanel = ({
           img={defence.img}
           title={defence.title}
           functionCallName={defence.functionCallName}
-          level={Number(defence.level)}
+          level={defence.level || 0}
           costUpdate={defence.cost}
           hasEnoughResources={
             resources &&

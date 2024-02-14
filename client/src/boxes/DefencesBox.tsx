@@ -12,10 +12,8 @@ const DefencesBox = ({
   requirementsMet,
   description,
   resourcesAvailable,
-  colonyId,
 }: deps.DefenceBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
-  const [showTooltip, setShowTooltip] = deps.useState(true);
   const {
     setup: {
       systemCalls: { buildDefence },
@@ -42,18 +40,18 @@ const DefencesBox = ({
   // Calculate the cost based on the quantity
   const adjustedSteel = costUpdate
     ? quantity === 0
-      ? Number(costUpdate.steel)
-      : Number(costUpdate.steel) * quantity
+      ? costUpdate.steel
+      : costUpdate.steel * quantity
     : 0;
   const adjustedQuartz = costUpdate
     ? quantity === 0
-      ? Number(costUpdate.quartz)
-      : Number(costUpdate.quartz) * quantity
+      ? costUpdate.quartz
+      : costUpdate.quartz * quantity
     : 0;
   const adjustedTritium = costUpdate
     ? quantity === 0
-      ? Number(costUpdate.tritium)
-      : Number(costUpdate.tritium) * quantity
+      ? costUpdate.tritium
+      : costUpdate.tritium * quantity
     : 0;
 
   // Format the calculated costs to display with commas
@@ -65,16 +63,11 @@ const DefencesBox = ({
     ? deps.numberWithCommas(adjustedTritium)
     : 0;
 
-  const shouldShowTooltip =
-    ['Astral Launcher', 'Plasma Projector'].includes(title) && showTooltip;
-
   const boxContent = (
     <deps.Styled.Box>
       <deps.Styled.ImageContainer>
         <deps.DescriptionModal
-          onClick={() => {
-            setShowTooltip(false);
-          }}
+          onClick={() => {}}
           image={img}
           title={title}
           description={description}
@@ -98,11 +91,10 @@ const DefencesBox = ({
             <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.steel || 0 < adjustedSteel
+                color:
+                  (resourcesAvailable.steel || 0) < adjustedSteel
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {steelDisplay}
@@ -112,11 +104,10 @@ const DefencesBox = ({
             <deps.Styled.ResourceTitle>QUARTZ</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.quartz || 0 < adjustedQuartz
+                color:
+                  (resourcesAvailable.quartz || 0) < adjustedQuartz
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {quartzDisplay}
@@ -126,11 +117,10 @@ const DefencesBox = ({
             <deps.Styled.ResourceTitle>TRITIUM</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
-                color: resourcesAvailable
-                  ? resourcesAvailable.tritium || 0 < adjustedTritium
+                color:
+                  (resourcesAvailable.tritium || 0) < adjustedTritium
                     ? '#AB3836'
-                    : 'inherit'
-                  : 'inherit',
+                    : 'inherit',
               }}
             >
               {tritiumDisplay}
