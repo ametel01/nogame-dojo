@@ -89,7 +89,7 @@ deps.DockyardBoxProps) => {
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resourcesAvailable.steel || 0) < adjustedSteel
+                  resourcesAvailable.steel < adjustedSteel
                     ? '#AB3836'
                     : 'inherit',
               }}
@@ -102,7 +102,7 @@ deps.DockyardBoxProps) => {
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resourcesAvailable.quartz || 0) < adjustedQuartz
+                  resourcesAvailable.quartz < adjustedQuartz
                     ? '#AB3836'
                     : 'inherit',
               }}
@@ -115,7 +115,7 @@ deps.DockyardBoxProps) => {
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resourcesAvailable.tritium || 0) < adjustedTritium
+                  resourcesAvailable.tritium < adjustedTritium
                     ? '#AB3836'
                     : 'inherit',
               }}

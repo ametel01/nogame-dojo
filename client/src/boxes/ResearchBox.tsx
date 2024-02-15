@@ -22,7 +22,6 @@ const ResearchBox = ({
   const upgrade = () =>
     upgradeTech(account.account, functionCallName, quantity);
 
-  console.log('levels', level);
   const baseCosts = deps.baseTechCost[(functionCallName as number) + 1];
   const isExo = functionCallName === 13;
   // Calculate the cumulative cost of the upgrade
@@ -72,18 +71,14 @@ const ResearchBox = ({
         <InfoContainer>
           <deps.Styled.ResourceContainer>
             <deps.Styled.ResourceTitle>STAGE</deps.Styled.ResourceTitle>
-            <deps.Styled.NumberContainer>
-              {level || 0}
-            </deps.Styled.NumberContainer>
+            <deps.Styled.NumberContainer>{level}</deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
           <deps.Styled.ResourceContainer>
             <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resources.steel || 0) < upgradeCost.steel
-                    ? '#AB3836'
-                    : 'inherit',
+                  resources.steel < upgradeCost.steel ? '#AB3836' : 'inherit',
               }}
             >
               {deps.numberWithCommas(upgradeCost.steel)}
@@ -94,9 +89,7 @@ const ResearchBox = ({
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resources.quartz || 0) < upgradeCost.quartz
-                    ? '#AB3836'
-                    : 'inherit',
+                  resources.quartz < upgradeCost.quartz ? '#AB3836' : 'inherit',
               }}
             >
               {deps.numberWithCommas(upgradeCost.quartz)}
@@ -107,7 +100,7 @@ const ResearchBox = ({
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  (resources.tritium || 0) < upgradeCost.tritium
+                  resources.tritium < upgradeCost.tritium
                     ? '#AB3836'
                     : 'inherit',
               }}

@@ -2,20 +2,18 @@ import { Tooltip, Box, IconButton, Modal } from '@mui/material';
 import DebrisIcon from '../../assets/uiIcons/debris.svg';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ButtonCollectDebris } from '../buttons/ButtonCollectDebris';
-import {
-  type DebrisField,
-  type ShipsLevels,
-  type TechLevels,
-  type Position,
-} from '../../shared/types';
 import React from 'react';
 import { numberWithCommas } from '../../shared/utils';
+import { Fleet } from '../../hooks/usePlanetShips';
+import { Techs } from '../../hooks/usePlanetTechs';
+import { Position } from '../../hooks/usePlanetPosition';
+import { Debris, usePlanetDebris } from '../../hooks/usePlanetDebris';
 
 interface Props {
-  planetId?: number;
+  planetId: number;
   position?: string;
-  ownFleet?: ShipsLevels;
-  techs?: TechLevels;
+  ownFleet?: Fleet;
+  techs?: Techs;
   ownPosition?: Position;
   colonyId: number;
 }
@@ -30,7 +28,7 @@ function DebrisFieldView({
 }: Props) {
   const [modalOpen, setModalOpen] = React.useState(false);
 
-  const debris: DebrisField = useGetDebrisField(Number(planetId));
+  const debris: Debris = usePlanetDebris(planetId);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -53,7 +51,9 @@ function DebrisFieldView({
     );
   }
 
-  const debrisPresent = debris ? debris.steel > 0 || debris.quartz > 0 : false;
+  const debrisPresent = debris
+    ? (debris.steel || 0) > 0 || (debris.quartz || 0) > 0
+    : false;
   return (
     <Box
       sx={{

@@ -3,19 +3,19 @@ import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
 export type Techs = {
-  energy: number | undefined;
-  digital: number | undefined;
-  beam: number | undefined;
-  armour: number | undefined;
-  ion: number | undefined;
-  plasma: number | undefined;
-  weapons: number | undefined;
-  shield: number | undefined;
-  spacetime: number | undefined;
-  combustion: number | undefined;
-  thrust: number | undefined;
-  warp: number | undefined;
-  exocraft: number | undefined;
+  energy: number;
+  digital: number;
+  beam: number;
+  armour: number;
+  ion: number;
+  plasma: number;
+  weapons: number;
+  shield: number;
+  spacetime: number;
+  combustion: number;
+  thrust: number;
+  warp: number;
+  exocraft: number;
 };
 
 export function usePlanetTechs(planetId: number): Techs {
@@ -74,18 +74,18 @@ export function usePlanetTechs(planetId: number): Techs {
   }, [graphSdk, planetId]);
 
   return {
-    energy,
-    digital,
-    beam,
-    armour,
-    ion,
-    plasma,
-    weapons,
-    shield,
-    spacetime,
-    combustion,
-    thrust,
-    warp,
-    exocraft,
+    energy: energy ?? 0,
+    digital: digital ?? 0,
+    beam: beam ?? 0,
+    armour: armour ?? 0,
+    ion: ion ?? 0,
+    plasma: plasma ?? 0,
+    weapons: weapons ?? 0,
+    shield: shield ?? 0,
+    spacetime: spacetime ?? 0,
+    combustion: combustion ?? 0,
+    thrust: thrust ?? 0,
+    warp: warp ?? 0,
+    exocraft: exocraft ?? 0,
   };
 }

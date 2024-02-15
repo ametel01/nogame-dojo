@@ -3,8 +3,8 @@ import { useDojo } from '../dojo/useDojo';
 import { ModelUnion } from '../generated/graphql';
 
 export type Position = {
-  system: number | undefined;
-  orbit: number | undefined;
+  system: number;
+  orbit: number;
 };
 
 type PlanetPositionModel = {
@@ -50,7 +50,7 @@ export function usePlanetPosition(planetId: number): Position {
     fetchPlanetPosition(planetId);
   }, [graphSdk, planetId]);
 
-  return { system, orbit };
+  return { system: system ?? 0, orbit: orbit ?? 0 };
 }
 
 function isPlanetPositionModel(

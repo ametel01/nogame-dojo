@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import { GetPlanetColoniesCountQuery } from '../generated/graphql';
@@ -16,23 +17,6 @@ type EdgeType = {
     };
   };
 };
-
-// Update this type according to the actual structure of the response
-// type CountResponseType = {
-//   data: {
-//     planetColoniesCountModels: {
-//       edges: [
-//         {
-//           node: {
-//             entity: {
-//               count: number; // Assuming this is the correct structure
-//             };
-//           };
-//         }
-//       ];
-//     };
-//   };
-// };
 
 export function usePlanetColonies(planetId: number): Array<[number, Position]> {
   const [colonies, setColonies] = useState<Array<[number, Position]>>([]);

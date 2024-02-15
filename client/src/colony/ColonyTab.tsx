@@ -27,7 +27,7 @@ interface CompoundConfigType {
 }
 
 interface Props {
-  resources?: Resources;
+  resources: Resources;
   compounds: ColonyCompounds;
   colonyId: number;
 }

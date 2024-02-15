@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GraphQLClient, RequestOptions } from 'graphql-request';
 import { GraphQLError, print } from 'graphql';
 import gql from 'graphql-tag';
@@ -29,16 +31,16 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  ContractAddress: { input: unknown; output: unknown };
-  Cursor: { input: unknown; output: unknown };
-  DateTime: { input: unknown; output: unknown };
-  felt252: { input: unknown; output: unknown };
-  u8: { input: unknown; output: unknown };
-  u16: { input: unknown; output: unknown };
-  u32: { input: unknown; output: unknown };
-  u64: { input: unknown; output: unknown };
-  u128: { input: unknown; output: unknown };
-  usize: { input: unknown; output: unknown };
+  ContractAddress: { input: any; output: any };
+  Cursor: { input: any; output: any };
+  DateTime: { input: any; output: any };
+  felt252: { input: any; output: any };
+  u8: { input: any; output: any };
+  u16: { input: any; output: any };
+  u32: { input: any; output: any };
+  u64: { input: any; output: any };
+  u128: { input: any; output: any };
+  usize: { input: any; output: any };
 };
 
 export type ActiveMission = {
@@ -2245,9 +2247,9 @@ export type GetPlanetResourceQuery = {
             | { __typename: 'PlanetPosition' }
             | {
                 __typename: 'PlanetResource';
-                planet_id?: unknown | null;
-                name?: unknown | null;
-                amount?: unknown | null;
+                planet_id?: any | null;
+                name?: any | null;
+                amount?: any | null;
               }
             | { __typename: 'PlanetResourceTimer' }
             | { __typename: 'PlanetResourcesSpent' }
@@ -2300,9 +2302,9 @@ export type GetPlanetCompoundQuery = {
             | { __typename: 'PlanetColoniesCount' }
             | {
                 __typename: 'PlanetCompounds';
-                planet_id?: unknown | null;
-                name?: unknown | null;
-                level?: unknown | null;
+                planet_id?: any | null;
+                name?: any | null;
+                level?: any | null;
               }
             | { __typename: 'PlanetDebrisField' }
             | { __typename: 'PlanetDefences' }
@@ -2367,9 +2369,9 @@ export type GetPlanetTechQuery = {
             | { __typename: 'PlanetShips' }
             | {
                 __typename: 'PlanetTechs';
-                planet_id?: unknown | null;
-                name?: unknown | null;
-                level?: unknown | null;
+                planet_id?: any | null;
+                name?: any | null;
+                level?: any | null;
               }
             | { __typename: 'PositionToPlanet' }
             | null
@@ -2420,11 +2422,11 @@ export type GetPlanetPositionQuery = {
             | { __typename: 'PlanetDefences' }
             | {
                 __typename: 'PlanetPosition';
-                planet_id?: unknown | null;
+                planet_id?: any | null;
                 position?: {
                   __typename?: 'PlanetPosition_Position';
-                  system?: unknown | null;
-                  orbit?: unknown | null;
+                  system?: any | null;
+                  orbit?: any | null;
                 } | null;
               }
             | { __typename: 'PlanetResource' }
@@ -2486,10 +2488,71 @@ export type GetPlanetShipQuery = {
             | { __typename: 'PlanetResourcesSpent' }
             | {
                 __typename: 'PlanetShips';
-                planet_id?: unknown | null;
-                name?: unknown | null;
-                count?: unknown | null;
+                planet_id?: any | null;
+                name?: any | null;
+                count?: any | null;
               }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
+export type GetPlanetDebrisQueryVariables = Exact<{
+  planet_id: Scalars['u32']['input'];
+}>;
+
+export type GetPlanetDebrisQuery = {
+  __typename?: 'World__Query';
+  planetDebrisFieldModels?: {
+    __typename?: 'PlanetDebrisFieldConnection';
+    edges?: Array<{
+      __typename?: 'PlanetDebrisFieldEdge';
+      node?: {
+        __typename?: 'PlanetDebrisField';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | {
+                __typename: 'PlanetDebrisField';
+                planet_id?: any | null;
+                debris?: {
+                  __typename?: 'PlanetDebrisField_Debris';
+                  steel?: any | null;
+                  quartz?: any | null;
+                } | null;
+              }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
             | { __typename: 'PlanetTechs' }
             | { __typename: 'PositionToPlanet' }
             | null
@@ -2540,9 +2603,9 @@ export type GetPlanetDefenceQuery = {
             | { __typename: 'PlanetDebrisField' }
             | {
                 __typename: 'PlanetDefences';
-                planet_id?: unknown | null;
-                name?: unknown | null;
-                count?: unknown | null;
+                planet_id?: any | null;
+                name?: any | null;
+                count?: any | null;
               }
             | { __typename: 'PlanetPosition' }
             | { __typename: 'PlanetResource' }
@@ -2586,10 +2649,10 @@ export type GetColonyResourceQuery = {
             | { __typename: 'ColonyPosition' }
             | {
                 __typename: 'ColonyResource';
-                planet_id?: unknown | null;
-                colony_id?: unknown | null;
-                name?: unknown | null;
-                amount?: unknown | null;
+                planet_id?: any | null;
+                colony_id?: any | null;
+                name?: any | null;
+                amount?: any | null;
               }
             | { __typename: 'ColonyResourceTimer' }
             | { __typename: 'ColonyShips' }
@@ -2642,10 +2705,10 @@ export type GetColonyCompoundQuery = {
             | { __typename: 'ActiveMissionLen' }
             | {
                 __typename: 'ColonyCompounds';
-                planet_id?: unknown | null;
-                colony_id?: unknown | null;
-                name?: unknown | null;
-                level?: unknown | null;
+                planet_id?: any | null;
+                colony_id?: any | null;
+                name?: any | null;
+                level?: any | null;
               }
             | { __typename: 'ColonyCount' }
             | { __typename: 'ColonyDefences' }
@@ -2710,10 +2773,10 @@ export type GetColonyShipQuery = {
             | { __typename: 'ColonyResourceTimer' }
             | {
                 __typename: 'ColonyShips';
-                planet_id?: unknown | null;
-                colony_id?: unknown | null;
-                name?: unknown | null;
-                count?: unknown | null;
+                planet_id?: any | null;
+                colony_id?: any | null;
+                name?: any | null;
+                count?: any | null;
               }
             | { __typename: 'GameOwnerPlanet' }
             | { __typename: 'GamePlanet' }
@@ -2766,10 +2829,10 @@ export type GetColonyDefenceQuery = {
             | { __typename: 'ColonyCount' }
             | {
                 __typename: 'ColonyDefences';
-                planet_id?: unknown | null;
-                colony_id?: unknown | null;
-                name?: unknown | null;
-                count?: unknown | null;
+                planet_id?: any | null;
+                colony_id?: any | null;
+                name?: any | null;
+                count?: any | null;
               }
             | { __typename: 'ColonyOwner' }
             | { __typename: 'ColonyPosition' }
@@ -2808,6 +2871,7 @@ export type GetPlanetColoniesCountQueryVariables = Exact<{
 }>;
 
 export type GetPlanetColoniesCountQuery = {
+  data: any;
   __typename?: 'World__Query';
   planetColoniesCountModels?: {
     __typename?: 'PlanetColoniesCountConnection';
@@ -2839,8 +2903,8 @@ export type GetPlanetColoniesCountQuery = {
             | { __typename: 'LastActive' }
             | {
                 __typename: 'PlanetColoniesCount';
-                planet_id?: unknown | null;
-                count?: unknown | null;
+                planet_id?: any | null;
+                count?: any | null;
               }
             | { __typename: 'PlanetCompounds' }
             | { __typename: 'PlanetDebrisField' }
@@ -2885,12 +2949,12 @@ export type GetColonyPositionQuery = {
             | { __typename: 'ColonyOwner' }
             | {
                 __typename: 'ColonyPosition';
-                planet_id?: unknown | null;
-                colony_id?: unknown | null;
+                planet_id?: any | null;
+                colony_id?: any | null;
                 position?: {
                   __typename?: 'ColonyPosition_Position';
-                  system?: unknown | null;
-                  orbit?: unknown | null;
+                  system?: any | null;
+                  orbit?: any | null;
                 } | null;
               }
             | { __typename: 'ColonyResource' }
@@ -3038,6 +3102,29 @@ export const GetPlanetShipDocument = gql`
                 planet_id
                 name
                 count
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetPlanetDebrisDocument = gql`
+  query getPlanetDebris($planet_id: u32!) {
+    planetDebrisFieldModels(where: { planet_id: $planet_id }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetDebrisField {
+                planet_id
+                debris {
+                  steel
+                  quartz
+                }
               }
             }
           }
@@ -3227,20 +3314,21 @@ export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
   operationName: string,
   operationType?: string,
-  variables?: unknown
+  variables?: any
 ) => Promise<T>;
 
 const defaultWrapper: SdkFunctionWrapper = (
-  action
-  // _operationName,
-  // _operationType,
-  // _variables
+  action,
+  _operationName,
+  _operationType,
+  _variables
 ) => action();
 const GetPlanetResourceDocumentString = print(GetPlanetResourceDocument);
 const GetPlanetCompoundDocumentString = print(GetPlanetCompoundDocument);
 const GetPlanetTechDocumentString = print(GetPlanetTechDocument);
 const GetPlanetPositionDocumentString = print(GetPlanetPositionDocument);
 const GetPlanetShipDocumentString = print(GetPlanetShipDocument);
+const GetPlanetDebrisDocumentString = print(GetPlanetDebrisDocument);
 const GetPlanetDefenceDocumentString = print(GetPlanetDefenceDocument);
 const GetColonyResourceDocumentString = print(GetColonyResourceDocument);
 const GetColonyCompoundDocumentString = print(GetColonyCompoundDocument);
@@ -3262,7 +3350,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetResourceQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3284,7 +3372,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetCompoundQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3306,7 +3394,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetTechQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3328,7 +3416,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetPositionQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3350,7 +3438,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetShipQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3366,13 +3454,35 @@ export function getSdk(
         variables
       );
     },
+    getPlanetDebris(
+      variables: GetPlanetDebrisQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetDebrisQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetDebrisQuery>(
+            GetPlanetDebrisDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetDebris',
+        'query',
+        variables
+      );
+    },
     getPlanetDefence(
       variables: GetPlanetDefenceQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<{
       data: GetPlanetDefenceQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3394,7 +3504,7 @@ export function getSdk(
     ): Promise<{
       data: GetColonyResourceQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3416,7 +3526,7 @@ export function getSdk(
     ): Promise<{
       data: GetColonyCompoundQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3438,7 +3548,7 @@ export function getSdk(
     ): Promise<{
       data: GetColonyShipQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3460,7 +3570,7 @@ export function getSdk(
     ): Promise<{
       data: GetColonyDefenceQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3482,7 +3592,7 @@ export function getSdk(
     ): Promise<{
       data: GetPlanetColoniesCountQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3504,7 +3614,7 @@ export function getSdk(
     ): Promise<{
       data: GetColonyPositionQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {
@@ -3526,7 +3636,7 @@ export function getSdk(
     ): Promise<{
       data: GetGeneratedPlanetsQuery;
       errors?: GraphQLError[];
-      extensions?: unknown;
+      extensions?: any;
       headers: Headers;
       status: number;
     }> {

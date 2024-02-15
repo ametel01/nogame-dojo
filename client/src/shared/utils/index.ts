@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import BigNumber from 'bignumber.js';
-import { type Position } from '../types';
+import { Position } from '../../hooks/usePlanetPosition';
 import { Resources } from '../../hooks/usePlanetResources';
 import { Techs } from '../../hooks/usePlanetTechs';
 

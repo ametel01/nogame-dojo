@@ -6,13 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Input } from '@mui/joy';
 import scraperImg from '../../assets/gameElements/ships/scraper4.webp';
 import { StyledButton } from '../../shared/styled/Button';
-import {
-  MissionCategory,
-  type DebrisField,
-  type Position,
-  type ShipsLevels,
-  type TechLevels,
-} from '../../shared/types';
+import { MissionCategory } from '../../shared/types';
 import {
   SCRAPER,
   getDistance,
@@ -24,6 +18,11 @@ import { convertSecondsToTime, numberWithCommas } from '../../shared/utils';
 import { SliderContainer, Text as SliderText } from './ButtonAttackPlanet';
 import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { Fleet } from '../../hooks/usePlanetShips';
+import { Techs } from '../../hooks/usePlanetTechs';
+import { Position } from '../../hooks/usePlanetPosition';
+import { Debris } from '../../hooks/usePlanetDebris';
+import { useDojo } from '../../dojo/useDojo';
 
 export const StyledBox = styled(Box)({
   fontWeight: 400,
@@ -80,7 +79,7 @@ const StyledUl = styled('ul')({
 
 interface TextProps {
   totalShips: number;
-  ownFleet: { scraper: number; [key: string]: number };
+  ownFleet: Fleet;
 }
 
 const Text = styled('span')<TextProps>(({ totalShips, ownFleet }) => ({
@@ -154,10 +153,10 @@ const ShipImage = styled('img')({
 interface Props {
   onClose: () => void;
   position: string;
-  ownFleet: ShipsLevels;
-  techs: TechLevels;
+  ownFleet: Fleet;
+  techs: Techs;
   ownPosition: Position;
-  debrisField: DebrisField;
+  debrisField: Debris;
   colonyId: number;
 }
 
@@ -170,13 +169,18 @@ export function ButtonCollectDebris({
   debrisField,
   colonyId,
 }: Props) {
+  const {
+    setup: {
+      systemCalls: { sendFleet },
+    },
+    account,
+  } = useDojo();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [travelTime, setTravelTime] = useState(0);
   const [fuelConsumption, setFuelConsumption] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(true);
-  const [isButtotClicked, setIsButtonClicked] = useState(false);
+  const [isModalOpen] = useState(true);
   const [speed, setSpeed] = useState(100);
-  const totalShips = quantities.scraper || 0;
+  const totalShips = quantities.scraper;
 
   const handleInputChange = (e: { target: { value: string } }) => {
     const inputValue =
@@ -193,8 +197,7 @@ export function ButtonCollectDebris({
   };
 
   // Calculate the available scrapers after considering the input value
-  const availableScrapers =
-    Number(ownFleet.scraper) - (quantities.scraper || 0);
+  const availableScrapers = ownFleet.scraper - quantities.scraper;
 
   const destinationArray = positionString.split('/');
   const position: Position = {
@@ -221,13 +224,15 @@ export function ButtonCollectDebris({
     setFuelConsumption(getFuelConsumption(fleet, distance, speedFactor));
   }, [distance, fleet, speed, techs]);
 
-  const { writeAsync, data } = useSendFleet(
-    fleet,
-    position,
-    MissionCategory['Debris'],
-    speed,
-    colonyId
-  );
+  const sendFleetCallBack = () =>
+    sendFleet(
+      account.account,
+      fleet,
+      position,
+      MissionCategory['Debris'],
+      speed,
+      colonyId
+    );
 
   const isShipOverLimit = totalShips > ownFleet.scraper;
 
@@ -240,10 +245,6 @@ export function ButtonCollectDebris({
       setTimeOfArrival(arrival);
     }
   }, [travelTime]);
-
-  const handleButtonClick = () => {
-    writeAsync(), setIsModalOpen(false), setIsButtonClicked(true);
-  };
 
   const handleSpeedChange = (newValue: number | number[]) => {
     if (typeof newValue === 'number') {
@@ -278,7 +279,7 @@ export function ButtonCollectDebris({
                 <InputButtonContainer>
                   <Input
                     type="number"
-                    value={quantities.scraper || 0}
+                    value={quantities.scraper}
                     onChange={handleInputChange}
                     size="sm"
                     color="neutral"
@@ -354,7 +355,7 @@ export function ButtonCollectDebris({
             />
           </SliderContainer>
           <StyledButton
-            onClick={handleButtonClick}
+            onClick={sendFleetCallBack}
             fullWidth
             style={{
               background: isShipOverLimit ? '#3B3F53' : '#4A63AA',

@@ -130,7 +130,7 @@ export const ColonyResourcesSection = ({
           resources,
           ships,
           shipsCost,
-          compounds.dockyard || 0,
+          compounds.dockyard,
           techLevels,
           celestia,
           colonyId
@@ -140,11 +140,12 @@ export const ColonyResourcesSection = ({
           resources,
           defences,
           defencesCost,
-          compounds.dockyard || 0,
+          compounds.dockyard,
           techLevels,
           colonyId
         )}
-      {activeTab === 4 && renderUniversePanel(planetId, techLevels, colonyId)}
+      {activeTab === 4 &&
+        renderUniversePanel(planetId, techLevels, colonyId, resources)}
     </ResourcesTabs>
   );
 };
@@ -174,11 +175,11 @@ function renderDockyardTab(
 ) {
   return (
     <DockyardTabPanel
-      spendableResources={spendable}
-      shipsLevels={ships}
+      resources={spendable}
+      ships={ships}
       shipsCost={shipCost}
-      dockyardLevel={dockyard}
-      techLevels={techs}
+      dockyard={dockyard}
+      techs={techs}
       celestia={celestia}
       colonyId={colonyId}
     />
@@ -195,11 +196,11 @@ function renderDefencesPanel(
 ) {
   return (
     <DefenceTabPanel
-      spendableResources={spendable}
-      defenceLevels={defences}
+      resources={spendable}
+      defences={defences}
       defenceCost={defencesCost}
-      dockyardLevel={dockyard}
-      techLevels={techs}
+      dockyard={dockyard}
+      techs={techs}
       colonyId={colonyId}
     />
   );
@@ -208,10 +209,12 @@ function renderDefencesPanel(
 function renderUniversePanel(
   planetId: number,
   techLevels: Techs,
-  colonyId: number
+  colonyId: number,
+  resources: Resources
 ) {
   return (
     <UniverseViewTabPanel
+      resources={resources}
       ownPlanetId={planetId}
       ownTechs={techLevels}
       colonyId={colonyId}

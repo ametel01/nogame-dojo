@@ -44,7 +44,13 @@ export function useColonyShips(planetId: number, colonyId: number): Fleet {
     fetchShipLevel('Sparrow', setSparrow);
     fetchShipLevel('Frigate', setFrigate);
     fetchShipLevel('Armade', setArmade);
-  }, [graphSdk, planetId]);
+  }, [colonyId, graphSdk, planetId]);
 
-  return { carrier, scraper, sparrow, frigate, armade };
+  return {
+    carrier: carrier ?? 0,
+    scraper: scraper ?? 0,
+    sparrow: sparrow ?? 0,
+    frigate: frigate ?? 0,
+    armade: armade ?? 0,
+  };
 }

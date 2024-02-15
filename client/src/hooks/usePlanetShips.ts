@@ -3,11 +3,11 @@ import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
 export type Fleet = {
-  carrier: number | undefined;
-  scraper: number | undefined;
-  sparrow: number | undefined;
-  frigate: number | undefined;
-  armade: number | undefined;
+  carrier: number;
+  scraper: number;
+  sparrow: number;
+  frigate: number;
+  armade: number;
 };
 
 export function usePlanetShips(planetId: number): Fleet {
@@ -51,5 +51,11 @@ export function usePlanetShips(planetId: number): Fleet {
     fetchShipLevels('Armade', setArmade);
   }, [graphSdk, planetId]);
 
-  return { carrier, scraper, sparrow, frigate, armade };
+  return {
+    carrier: carrier ?? 0,
+    scraper: scraper ?? 0,
+    sparrow: sparrow ?? 0,
+    frigate: frigate ?? 0,
+    armade: armade ?? 0,
+  };
 }

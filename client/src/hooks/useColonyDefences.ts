@@ -49,5 +49,11 @@ export function useColonyDefences(
     fetchDefenceLevels('Plasma', setPlasma);
   }, [colonyId, graphSdk, planetId]);
 
-  return { celestia, blaster, beam, astral, plasma };
+  return {
+    celestia: celestia ?? 0,
+    blaster: blaster ?? 0,
+    beam: beam ?? 0,
+    astral: astral ?? 0,
+    plasma: plasma ?? 0,
+  };
 }

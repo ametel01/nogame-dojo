@@ -3,12 +3,12 @@ import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
 export type Compounds = {
-  steel: number | undefined;
-  quartz: number | undefined;
-  tritium: number | undefined;
-  energy: number | undefined;
-  lab: number | undefined;
-  dockyard: number | undefined;
+  steel: number;
+  quartz: number;
+  tritium: number;
+  energy: number;
+  lab: number;
+  dockyard: number;
 };
 
 export function usePlanetCompounds(planetId: number): Compounds {
@@ -40,7 +40,7 @@ export function usePlanetCompounds(planetId: number): Compounds {
           (model) => model?.__typename === 'PlanetCompounds'
         );
         if (planetCompound && 'level' in planetCompound) {
-          setter(planetCompound.level);
+          setter(planetCompound.level as number);
         }
       }
     }
@@ -53,5 +53,12 @@ export function usePlanetCompounds(planetId: number): Compounds {
     fetchCompoundLevels('Dockyard', setDockyard);
   }, [graphSdk, planetId]);
 
-  return { steel, quartz, tritium, energy, lab, dockyard };
+  return {
+    steel: steel ?? 0,
+    quartz: quartz ?? 0,
+    tritium: tritium ?? 0,
+    energy: energy ?? 0,
+    lab: lab ?? 0,
+    dockyard: dockyard ?? 0,
+  };
 }

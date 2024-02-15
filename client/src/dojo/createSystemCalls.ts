@@ -7,12 +7,15 @@ import {
   setComponentsFromEvents,
 } from '@dojoengine/utils';
 import { ContractComponents } from './generated/contractComponents';
-// import type { IWorld } from './generated/generated';
+import type { IWorld } from './generated/generated';
 import { DojoProvider } from '@dojoengine/core';
+import { Fleet } from '../hooks/usePlanetShips';
+import { Position } from '../hooks/usePlanetPosition';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
 export function createSystemCalls(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   { client }: { client: IWorld },
   contractComponents: ContractComponents,
   provider: DojoProvider
@@ -165,6 +168,47 @@ export function createSystemCalls(
     }
   };
 
+  const sendFleet = async (
+    account: Account,
+    fleet: Fleet,
+    destination: Position,
+    missionType: number,
+    speedModifier: number,
+    colonyId: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'fleetactions',
+        'send_fleet',
+        [
+          fleet.carrier,
+          fleet.scraper,
+          fleet.sparrow,
+          fleet.frigate,
+          fleet.armade,
+          destination.orbit,
+          destination.system,
+          destination.orbit,
+          missionType,
+          speedModifier,
+          colonyId,
+        ]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   interface PlanetResourcesResponse {
     steel: bigint;
     quartz: bigint;
@@ -217,6 +261,7 @@ export function createSystemCalls(
     upgradeTech,
     buildShip,
     buildDefence,
+    sendFleet,
     getPlanetResources,
     getColonyResources,
   };

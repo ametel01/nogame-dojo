@@ -3,11 +3,11 @@ import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
 export type ColonyCompounds = {
-  steel: number | undefined;
-  quartz: number | undefined;
-  tritium: number | undefined;
-  energy: number | undefined;
-  dockyard: number | undefined;
+  steel: number;
+  quartz: number;
+  tritium: number;
+  energy: number;
+  dockyard: number;
 };
 
 export function useColonyCompounds(
@@ -42,9 +42,7 @@ export function useColonyCompounds(
           (model) => model?.__typename === 'ColonyCompounds'
         );
         if (colonyCompound && 'level' in colonyCompound) {
-          const amountHex = colonyCompound.level;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
+          setter(colonyCompound.level);
         }
       }
     }
@@ -56,5 +54,11 @@ export function useColonyCompounds(
     fetchColonyCompoundLevels('Dockyard', setDockyard);
   }, [colonyId, graphSdk, planetId]);
 
-  return { steel, quartz, tritium, energy, dockyard };
+  return {
+    steel: steel ?? 0,
+    quartz: quartz ?? 0,
+    tritium: tritium ?? 0,
+    energy: energy ?? 0,
+    dockyard: dockyard ?? 0,
+  };
 }

@@ -3,11 +3,11 @@ import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
 
 export type Defences = {
-  celestia: number | undefined;
-  blaster: number | undefined;
-  beam: number | undefined;
-  astral: number | undefined;
-  plasma: number | undefined;
+  celestia: number;
+  blaster: number;
+  beam: number;
+  astral: number;
+  plasma: number;
 };
 
 export function usePlanetDefences(planetId: number): Defences {
@@ -52,5 +52,11 @@ export function usePlanetDefences(planetId: number): Defences {
     fetchDefenceLevels('Plasma', setPlasma);
   }, [graphSdk, planetId]);
 
-  return { celestia, blaster, beam, astral, plasma };
+  return {
+    celestia: celestia ?? 0,
+    blaster: blaster ?? 0,
+    beam: beam ?? 0,
+    astral: astral ?? 0,
+    plasma: plasma ?? 0,
+  };
 }

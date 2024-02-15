@@ -100,6 +100,28 @@ query getPlanetShip($planet_id: u32!, $name: u8!) {
   }
 }
 
+query getPlanetDebris($planet_id: u32!) {
+  planetDebrisFieldModels(where: { planet_id: $planet_id }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on PlanetDebrisField {
+              planet_id
+              debris {
+                steel
+                quartz
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query getPlanetDefence($planet_id: u32!, $name: u8!) {
   planetDefencesModels(where: { planet_id: $planet_id, name: $name }) {
     edges {

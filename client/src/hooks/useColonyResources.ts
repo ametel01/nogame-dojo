@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import * as Names from '../constants/names/Names';
-
-export type Resources = {
-  steel: number | undefined;
-  quartz: number | undefined;
-  tritium: number | undefined;
-};
+import { Resources } from './usePlanetResources';
 
 export function useColonyResources(
   planetId: number,
@@ -38,9 +33,7 @@ export function useColonyResources(
           (model) => model?.__typename === 'ColonyResource'
         );
         if (colonyResource && 'amount' in colonyResource) {
-          const amountHex = colonyResource.amount;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
+          setter(colonyResource.amount as number);
         }
       }
     }
@@ -50,5 +43,5 @@ export function useColonyResources(
     fetchResourceAmount('Tritium', setTritium);
   }, [colonyId, graphSdk, planetId]);
 
-  return { steel, quartz, tritium };
+  return { steel: steel ?? 0, quartz: quartz ?? 0, tritium: tritium ?? 0 };
 }

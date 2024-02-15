@@ -7,7 +7,7 @@ import {
   PlanetModal,
   CircularProgress,
   numberWithCommas,
-  // DebrisFieldView,
+  DebrisFieldView,
   // ButtonAttackPlanet,
   UniverseBoxProps as Props,
 } from './deps';
@@ -21,8 +21,8 @@ const UniverseViewBox = ({
   points,
   highlighted,
   ownPlanetId,
-  // ownFleet,
-  // ownTechs,
+  ownFleet,
+  ownTechs,
   // isNoobProtected,
   lastActive,
   winLoss,
@@ -76,9 +76,9 @@ const UniverseViewBox = ({
     return `${Math.floor(differenceInSeconds / 86400)} days ago`;
   }, [lastActive, oneWeekInSeconds, timeDifference]);
 
-  const isDisable =
-    position.system === ownPlanetPosition?.system &&
-    position.orbit === ownPlanetPosition?.orbit;
+  // const isDisable =
+  //   position.system === ownPlanetPosition?.system &&
+  //   position.orbit === ownPlanetPosition?.orbit;
 
   return (
     <Styled.Box style={boxStyle}>
@@ -133,7 +133,7 @@ const UniverseViewBox = ({
             </Styled.NumberContainer>
           </Styled.ResourceContainer>
         </InfoContainer>
-        {/* <DebrisFieldView
+        <DebrisFieldView
           planetId={planetId}
           position={formattedPosition}
           ownFleet={ownFleet}
@@ -141,7 +141,7 @@ const UniverseViewBox = ({
           ownPosition={ownPlanetPosition}
           colonyId={colonyId}
         />
-        <Styled.ButtonContainer>
+        {/* <Styled.ButtonContainer>
           <ButtonAttackPlanet
             disabled={isDisable}
             noRequirements={highlighted}

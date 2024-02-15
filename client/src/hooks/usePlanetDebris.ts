@@ -1,33 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
 
-export type Resources = {
+export type Debris = {
   steel: number;
   quartz: number;
-  tritium: number;
 };
 
-export function usePlanetResources(planetId: number): Resources {
+export function usePlanetDebris(planetId: number): Debris {
   const [steel, setSteel] = useState<number | undefined>();
   const [quartz, setQuartz] = useState<number | undefined>();
-  const [tritium, setTritium] = useState<number | undefined>();
 
   const {
     setup: { graphSdk },
   } = useDojo();
 
   useEffect(() => {
-    async function fetchResourceAmount(
-      resourceName: string,
+    async function fetchDebrisAmount(
       setter: React.Dispatch<React.SetStateAction<number | undefined>>
     ) {
-      const response = await graphSdk.getPlanetResource({
+      const response = await graphSdk.getPlanetDebris({
         planet_id: planetId,
-        name: Names.Resource[resourceName as keyof typeof Names.Resource],
       });
 
-      const edges = response.data.planetResourceModels?.edges;
+      const edges = response.data.planetDebrisFieldModels?.edges;
       const models = edges?.[0]?.node?.entity?.models;
       if (models) {
         const planetResource = models.find(
@@ -41,10 +36,9 @@ export function usePlanetResources(planetId: number): Resources {
       }
     }
 
-    fetchResourceAmount('Steel', setSteel);
-    fetchResourceAmount('Quartz', setQuartz);
-    fetchResourceAmount('Tritium', setTritium);
+    fetchDebrisAmount(setSteel);
+    fetchDebrisAmount(setQuartz);
   }, [graphSdk, planetId]);
 
-  return { steel: steel ?? 0, quartz: quartz ?? 0, tritium: tritium ?? 0 };
+  return { steel: steel ?? 0, quartz: quartz ?? 0 };
 }
