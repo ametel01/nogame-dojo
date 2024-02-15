@@ -21,13 +21,26 @@ mod dockyardactions {
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
 
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        FleetSpent: FleetSpent,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct FleetSpent {
+        planet_id: u32,
+        quantity: u32,
+        spent: ERC20s
+    }
+
     #[abi(embed_v0)]
     impl DockyardActionsImpl of super::IDockyardActions<ContractState> {
         fn process_ship_build(ref self: ContractState, component: ShipBuildType, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            build_component(world, planet_id, component, quantity);
+            let cost = build_component(world, planet_id, component, quantity);
+            emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
     }
 

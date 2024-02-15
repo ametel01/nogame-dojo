@@ -164,7 +164,7 @@ export const UniverseViewTabPanel = ({
   };
 
   return (
-    <StyledTabPanel {...rest}>
+    <deps.StyledTabPanel {...rest}>
       {selectedPlanets.map((planet, index) => (
         <UniverseBoxItem
           ownPlanetId={ownPlanetId}
@@ -175,7 +175,7 @@ export const UniverseViewTabPanel = ({
         />
       ))}
       <PaginationContainer>
-        <Pagination
+        <deps.Pagination
           count={pageCount}
           page={currentPage}
           onChange={handlePageChange}
@@ -199,7 +199,7 @@ export const UniverseViewTabPanel = ({
           size="small"
         />
       </PaginationContainer>
-    </StyledTabPanel>
+    </deps.StyledTabPanel>
   );
 };
 

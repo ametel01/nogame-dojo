@@ -22,13 +22,26 @@ mod techactions {
     use nogame::tech::library as tech;
     use starknet::{get_caller_address};
 
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        TechSpent: TechSpent
+    }
+    #[derive(Drop, starknet::Event)]
+    struct TechSpent {
+        planet_id: u32,
+        quantity: u8,
+        spent: ERC20s
+    }
+
     #[abi(embed_v0)]
     impl TechActionsImpl of super::ITechActions<ContractState> {
         fn process_upgrade(ref self: ContractState, component: TechUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            upgrade_component(world, planet_id, component, quantity);
+            let cost = upgrade_component(world, planet_id, component, quantity);
+            emit!(world, TechSpent { planet_id, quantity, spent: cost });
         }
     }
 

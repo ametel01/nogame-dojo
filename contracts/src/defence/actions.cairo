@@ -20,6 +20,18 @@ mod defenceactions {
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
 
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        DefenceSpent: DefenceSpent,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct DefenceSpent {
+        planet_id: u32,
+        quantity: u32,
+        spent: ERC20s
+    }
+
     #[abi(embed_v0)]
     impl DefenceActionsImpl of super::IDefenceActions<ContractState> {
         fn process_defence_build(
@@ -28,7 +40,8 @@ mod defenceactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            build_component(world, planet_id, component, quantity);
+            let cost = build_component(world, planet_id, component, quantity);
+            emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
         }
     }
 

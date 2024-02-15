@@ -17,7 +17,18 @@ mod compoundactions {
     use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
     use nogame::libraries::shared;
     use starknet::{ContractAddress, get_caller_address};
-    use debug::PrintTrait;
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        CompoundSpent: CompoundSpent,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct CompoundSpent {
+        planet_id: u32,
+        quantity: u8,
+        spent: ERC20s
+    }
 
     #[abi(embed_v0)]
     impl CompoundActionsImpl of super::ICompoundActions<ContractState> {
@@ -25,7 +36,8 @@ mod compoundactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            upgrade_component(world, planet_id, component, quantity);
+            let cost = upgrade_component(world, planet_id, component, quantity);
+            emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }
     }
 

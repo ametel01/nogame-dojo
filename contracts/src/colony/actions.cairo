@@ -35,8 +35,41 @@ mod colonyactions {
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
-    use starknet::{get_block_timestamp, get_caller_address};
+    use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        PlanetGenerated: PlanetGenerated,
+        CompoundSpent: CompoundSpent,
+        FleetSpent: FleetSpent,
+        DefenceSpent: DefenceSpent,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct PlanetGenerated {
+        planet_id: u32,
+        position: Position,
+        account: ContractAddress,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct CompoundSpent {
+        planet_id: u32,
+        quantity: u8,
+        spent: ERC20s
+    }
+    #[derive(Drop, starknet::Event)]
+    struct FleetSpent {
+        planet_id: u32,
+        quantity: u32,
+        spent: ERC20s
+    }
+    #[derive(Drop, starknet::Event)]
+    struct DefenceSpent {
+        planet_id: u32,
+        quantity: u32,
+        spent: ERC20s
+    }
 
     #[abi(embed_v0)]
     impl ColonyActionsImpl of super::IColonyActions<ContractState> {
@@ -71,6 +104,8 @@ mod colonyactions {
             );
             set!(world, PlanetColoniesCount { planet_id, count: colony_id });
             set!(world, ColonyCount { game_id: constants::GAME_ID, count: current_count + 1 });
+
+            emit!(world, PlanetGenerated { planet_id, position, account: get_caller_address() });
         }
 
         fn process_colony_compound_upgrade(
@@ -79,7 +114,8 @@ mod colonyactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            upgrade_component(world, planet_id, colony_id, name, quantity);
+            let cost = upgrade_component(world, planet_id, colony_id, name, quantity);
+            emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }
 
         fn process_ship_build(
@@ -88,7 +124,8 @@ mod colonyactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            build_ship(world, planet_id, colony_id, name, quantity);
+            let cost = build_ship(world, planet_id, colony_id, name, quantity);
+            emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
 
         fn process_defence_build(
@@ -97,7 +134,8 @@ mod colonyactions {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            build_defence(world, planet_id, colony_id, name, quantity);
+            let cost = build_defence(world, planet_id, colony_id, name, quantity);
+            emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
         }
 
         fn get_resources_available(
@@ -119,13 +157,14 @@ mod colonyactions {
         colony_id: u8,
         component: CompoundUpgradeType,
         quantity: u8
-    ) {
+    ) -> ERC20s {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
+        let mut cost: ERC20s = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
-                let cost = compound::cost::steel(compounds.steel, quantity);
+                cost = compound::cost::steel(compounds.steel, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
                 );
@@ -141,7 +180,7 @@ mod colonyactions {
                 );
             },
             CompoundUpgradeType::QuartzMine => {
-                let cost = compound::cost::quartz(compounds.quartz, quantity);
+                cost = compound::cost::quartz(compounds.quartz, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade quartz mine"
@@ -158,7 +197,7 @@ mod colonyactions {
                 );
             },
             CompoundUpgradeType::TritiumMine => {
-                let cost = compound::cost::tritium(compounds.tritium, quantity);
+                cost = compound::cost::tritium(compounds.tritium, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade tritium mine"
@@ -175,7 +214,7 @@ mod colonyactions {
                 );
             },
             CompoundUpgradeType::EnergyPlant => {
-                let cost = compound::cost::energy(compounds.energy, quantity);
+                cost = compound::cost::energy(compounds.energy, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade energy plant"
@@ -193,7 +232,7 @@ mod colonyactions {
             },
             CompoundUpgradeType::Lab => {},
             CompoundUpgradeType::Dockyard => {
-                let cost = compound::cost::dockyard(compounds.dockyard, quantity);
+                cost = compound::cost::dockyard(compounds.dockyard, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
                 );
@@ -209,6 +248,7 @@ mod colonyactions {
                 );
             },
         }
+        cost
     }
 
     fn build_ship(
@@ -223,11 +263,10 @@ mod colonyactions {
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
+        let mut cost: ERC20s = Default::default();
         match component {
             ShipBuildType::Carrier => {
-                let cost = dockyard::get_ships_cost(
-                    quantity, dockyard::get_ships_unit_cost().carrier
-                );
+                cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().carrier);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::carrier_requirements_check(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -245,9 +284,7 @@ mod colonyactions {
                 return cost;
             },
             ShipBuildType::Scraper => {
-                let cost = dockyard::get_ships_cost(
-                    quantity, dockyard::get_ships_unit_cost().scraper
-                );
+                cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().scraper);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::scraper_requirements_check(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -265,9 +302,7 @@ mod colonyactions {
                 return cost;
             },
             ShipBuildType::Sparrow => {
-                let cost = dockyard::get_ships_cost(
-                    quantity, dockyard::get_ships_unit_cost().sparrow
-                );
+                cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().sparrow);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::sparrow_requirements_check(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -285,9 +320,7 @@ mod colonyactions {
                 return cost;
             },
             ShipBuildType::Frigate => {
-                let cost = dockyard::get_ships_cost(
-                    quantity, dockyard::get_ships_unit_cost().frigate
-                );
+                cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().frigate);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::frigate_requirements_check(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -305,9 +338,7 @@ mod colonyactions {
                 return cost;
             },
             ShipBuildType::Armade => {
-                let cost = dockyard::get_ships_cost(
-                    quantity, dockyard::get_ships_unit_cost().armade
-                );
+                cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().armade);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::armade_requirements_check(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -325,6 +356,7 @@ mod colonyactions {
                 return cost;
             },
         }
+        cost
     }
 
     fn build_defence(
@@ -340,9 +372,10 @@ mod colonyactions {
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
+        let mut cost: ERC20s = Default::default();
         match component {
             DefenceBuildType::Celestia => {
-                let cost = defence::get_defences_cost(quantity, costs.celestia);
+                cost = defence::get_defences_cost(quantity, costs.celestia);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::celestia(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -360,7 +393,7 @@ mod colonyactions {
                 return cost;
             },
             DefenceBuildType::Blaster => {
-                let cost = defence::get_defences_cost(quantity, costs.blaster);
+                cost = defence::get_defences_cost(quantity, costs.blaster);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::blaster(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -378,7 +411,7 @@ mod colonyactions {
                 return cost;
             },
             DefenceBuildType::Beam => {
-                let cost = defence::get_defences_cost(quantity, costs.beam);
+                cost = defence::get_defences_cost(quantity, costs.beam);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::beam(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -396,7 +429,7 @@ mod colonyactions {
                 return cost;
             },
             DefenceBuildType::Astral => {
-                let cost = defence::get_defences_cost(quantity, costs.astral);
+                cost = defence::get_defences_cost(quantity, costs.astral);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::astral(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -414,7 +447,7 @@ mod colonyactions {
                 return cost;
             },
             DefenceBuildType::Plasma => {
-                let cost = defence::get_defences_cost(quantity, costs.plasma);
+                cost = defence::get_defences_cost(quantity, costs.plasma);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::plasma(compounds.dockyard, techs);
                 pay_resources(world, planet_id, colony_id, resource_available, cost);
@@ -432,6 +465,7 @@ mod colonyactions {
                 return cost;
             },
         }
+        cost
     }
 
     fn get_colony_resources(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> ERC20s {

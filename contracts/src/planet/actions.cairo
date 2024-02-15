@@ -26,8 +26,19 @@ mod planetactions {
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
     use nogame::libraries::{names::Names, position, constants, shared};
-    use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
-    use debug::PrintTrait;
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        PlanetGenerated: PlanetGenerated,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct PlanetGenerated {
+        planet_id: u32,
+        position: Position,
+        account: ContractAddress,
+    }
 
     #[external(v0)]
     impl PlanetActionsImpl of IPlanetActions<ContractState> {
@@ -60,6 +71,8 @@ mod planetactions {
             set!(world, PlanetResource { planet_id, name: Names::Resource::ENERGY, amount: 0 });
 
             set!(world, PlanetResourceTimer { planet_id, last_collection: get_block_timestamp() });
+
+            emit!(world, PlanetGenerated { planet_id, position, account: caller, });
         }
 
         fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
