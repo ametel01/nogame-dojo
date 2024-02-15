@@ -5,13 +5,13 @@ import DialogContent from '@mui/material/DialogContent';
 import CloseIcon from '@mui/icons-material/Close';
 import styled from 'styled-components';
 import { CircularProgress } from '@mui/material';
-import {
-  type DefenceLevels,
-  type Resources,
-  type ShipsLevels,
-} from '../../shared/types';
 import { getPlanetAndColonyIds, numberWithCommas } from '../../shared/utils';
-import { usePlanetShips } from '../../hooks/usePlanetShips';
+import { Fleet, usePlanetShips } from '../../hooks/usePlanetShips';
+import { Resources, usePlanetResources } from '../../hooks/usePlanetResources';
+import { useColonyShips } from '../../hooks/useColonyShips';
+import { Defences, usePlanetDefences } from '../../hooks/usePlanetDefences';
+import { useColonyDefences } from '../../hooks/useColonyDefences';
+import { useColonyResources } from '../../hooks/useColonyResources';
 
 export const StyledBox = styled(Box)({
   fontWeight: 400,
@@ -114,23 +114,27 @@ interface Props {
 }
 
 export default function PlanetModal({ planetId, image, position }: Props) {
-  const spendableResources = useSpendableResources(Number(planetId));
-  const collectibleResources = useCollectibleResources(Number(planetId));
   const [planet, colony] = getPlanetAndColonyIds(planetId);
 
-  const shipsLevels = usePlanetShips(planetId);
-  const colonyShips = useGetColonyShips(planet, colony);
+  const planetResources = usePlanetResources(planetId);
+
+  const colonyResources = useColonyResources(planet, colony);
+
+  const planetShips = usePlanetShips(planetId);
+
+  const colonyShips = useColonyShips(planet, colony);
+
   const actualShips =
-    colonyShips && shipsLevels && colony === 0 ? shipsLevels : colonyShips;
+    colonyShips && planetShips && colony === 0 ? planetShips : colonyShips;
 
-  const defencesLevels = useDefencesLevels(Number(planetId));
-  const colonyDefences = useGetColonyDefences(planet, colony);
+  const planetDefences = usePlanetDefences(Number(planetId));
+
+  const colonyDefences = useColonyDefences(planet, colony);
+
   const actualDefences =
-    defencesLevels && colony === 0
-      ? defencesLevels
+    planetDefences && colony === 0
+      ? planetDefences
       : colonyDefences && colonyDefences;
-
-  const colonyResources = useGetColonyResources(planet, colony);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -165,23 +169,9 @@ export default function PlanetModal({ planetId, image, position }: Props) {
           </GridSection>
           <StyledDialogContent>
             <GridSection>
-              <SubTitle>Spendable Resources</SubTitle>
-              {Object.keys(spendableResources ?? {}).map((key) => (
-                <h6 key={key}>
-                  {key}:{' '}
-                  <Value>
-                    {numberWithCommas(
-                      spendableResources[key as keyof Resources]
-                    )}
-                  </Value>
-                </h6>
-              ))}
-            </GridSection>
-
-            <GridSection>
-              <SubTitle>Collectible Resources</SubTitle>
+              <SubTitle>Resources</SubTitle>
               {Object.keys(
-                (planetId > 500 ? colonyResources : collectibleResources) ?? {}
+                (planetId > 500 ? colonyResources : planetResources) ?? {}
               ).map((key) => (
                 <h6 key={key}>
                   {key}:{' '}
@@ -189,9 +179,9 @@ export default function PlanetModal({ planetId, image, position }: Props) {
                     {numberWithCommas(
                       Math.round(
                         Number(
-                          (planetId > 500
-                            ? colonyResources
-                            : collectibleResources)[key as keyof Resources]
+                          (planetId > 500 ? colonyResources : planetResources)[
+                            key as keyof Resources
+                          ]
                         )
                       )
                     )}
@@ -204,13 +194,13 @@ export default function PlanetModal({ planetId, image, position }: Props) {
               <SubTitle>Fleet</SubTitle>
               <DetailGrid>
                 {Object.keys(
-                  (planetId > 500 ? shipsLevels : colonyShips) ?? {}
+                  (planetId > 500 ? planetShips : colonyShips) ?? {}
                 ).map((key) => (
                   <h6 key={key}>
                     {key}:{' '}
                     <Value>
                       {numberWithCommas(
-                        actualShips ? actualShips[key as keyof ShipsLevels] : 0
+                        actualShips ? actualShips[key as keyof Fleet] : 0
                       )}
                     </Value>
                   </h6>
@@ -222,14 +212,12 @@ export default function PlanetModal({ planetId, image, position }: Props) {
               <SubTitle>Defences</SubTitle>
               <DetailGrid>
                 {Object.keys(
-                  (planetId > 500 ? colonyDefences : defencesLevels) ?? {}
+                  (planetId > 500 ? colonyDefences : planetDefences) ?? {}
                 ).map((key) => (
                   <h6 key={key}>
                     {key}:{' '}
                     <Value>
-                      {numberWithCommas(
-                        actualDefences[key as keyof DefenceLevels]
-                      )}
+                      {numberWithCommas(actualDefences[key as keyof Defences])}
                     </Value>
                   </h6>
                 ))}

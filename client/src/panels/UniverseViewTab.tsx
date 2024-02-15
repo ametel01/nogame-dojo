@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import * as deps from '.';
-import { useDestination } from '../context/DestinationContext';
+// import { useDestination } from '../context/DestinationContext';
 import TextField from '@mui/material/TextField';
 import { styled as muiStyled } from '@mui/material/styles';
 import { usePlanetShips } from '../hooks/usePlanetShips';
 import { useColonyShips } from '../hooks/useColonyShips';
+import { useGeneratedPlanets, Planet } from '../hooks/useGeneratedPlanets';
+import { useDojo } from '../dojo/useDojo';
 
 const PaginationContainer = muiStyled('div')({
   display: 'flex',
@@ -40,20 +42,23 @@ const UniverseBoxItem = ({
   ownTechs,
   colonyId,
 }: deps.UniverseProps) => {
-  const highlighted = parseInt(address, 16) === parseInt(planet.account, 16);
+  const { account } = useDojo();
 
-  const motherPlanet =
-    planet.planetId > 500
-      ? Math.floor(Number(planet.planetId) / 1000)
-      : planet.planetId;
+  const highlighted =
+    parseInt(account?.account.address, 16) === parseInt(planet.account, 16);
 
-  const planetRanking = useGetPlanetRanking(motherPlanet);
-  const winLoss = useCalculateWinsAndLosses(motherPlanet);
-  const lastActive = useLastActive(motherPlanet);
-  const isNoobProtected = useGetIsNoobProtected(
-    Number(ownPlanetId),
-    motherPlanet
-  );
+  // const motherPlanet =
+  //   planet.planetId > 500
+  //     ? Math.floor(Number(planet.planetId) / 1000)
+  //     : planet.planetId;
+
+  // const planetRanking = useGetPlanetRanking(motherPlanet);
+  // const winLoss = useCalculateWinsAndLosses(motherPlanet);
+  // const lastActive = useLastActive(motherPlanet);
+  // const isNoobProtected = useGetIsNoobProtected(
+  //   Number(ownPlanetId),
+  //   motherPlanet
+  // );
 
   const ownFleetData = usePlanetShips(ownPlanetId);
   const ownFleet: deps.Fleet = ownFleetData || {
@@ -74,7 +79,7 @@ const UniverseBoxItem = ({
   };
 
   const img = deps.getPlanetImage(
-    planet.position.orbit.toString() as unknown as deps.ImageId
+    planet.position.orbit?.toString() as unknown as deps.ImageId
   );
 
   const shortenedAddress = `${planet.account.slice(
@@ -88,14 +93,14 @@ const UniverseBoxItem = ({
       img={img}
       owner={shortenedAddress}
       position={planet.position}
-      points={planetRanking}
+      points={0}
       highlighted={highlighted}
       ownPlanetId={ownPlanetId}
       ownFleet={colonyId === 0 ? ownFleet : colonyFleet}
       ownTechs={ownTechs}
-      isNoobProtected={isNoobProtected}
-      lastActive={Number(lastActive)}
-      winLoss={[winLoss.wins, winLoss.losses]}
+      isNoobProtected={false}
+      lastActive={Number(0)}
+      winLoss={[0, 0]}
       colonyId={colonyId}
     />
   );
@@ -116,14 +121,22 @@ export const UniverseViewTabPanel = ({
   colonyId,
   ...rest
 }: UniverseViewTabPanelProps) => {
-  const [planetsData, setPlanetsData] = useState<deps.PlanetDetails[]>([]);
+  const [planetsData, setPlanetsData] = useState<Planet[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [inputPage, setInputPage] = useState('');
   const [pageError, setPageError] = useState(false);
   const itemsPerPage = 6;
   const pageCount = Math.ceil(planetsData.length / itemsPerPage);
+  console.log('planetsData', planetsData);
+  // Fetch planets using the custom hook
+  const fetchedPlanets = useGeneratedPlanets();
 
-  const { selectedDestination } = useDestination();
+  useEffect(() => {
+    // Assuming PlanetDetails can be directly set from Planet type
+    setPlanetsData(fetchedPlanets);
+  }, [fetchedPlanets]);
+
+  // const { selectedDestination } = useDestination();
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const selectedPlanets = planetsData.slice(

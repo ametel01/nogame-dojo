@@ -54,7 +54,7 @@ export function usePlanetTechs(planetId: number): Techs {
           (model) => model?.__typename === 'PlanetTechs'
         );
         if (planetTech && 'level' in planetTech) {
-          setter(planetTech.level);
+          setter(planetTech.level as number);
         }
       }
     }

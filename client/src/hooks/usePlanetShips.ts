@@ -39,7 +39,7 @@ export function usePlanetShips(planetId: number): Fleet {
         );
         if (planetShip && 'count' in planetShip) {
           console.log('planetShip', planetShip.count);
-          setter(planetShip.count);
+          setter(planetShip.count as number);
         }
       }
     }

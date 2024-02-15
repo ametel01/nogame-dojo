@@ -34,7 +34,7 @@ export function usePlanetResources(planetId: number): Resources {
           (model) => model?.__typename === 'PlanetResource'
         );
         if (planetResource && 'amount' in planetResource) {
-          const amountHex = planetResource.amount;
+          const amountHex = planetResource.amount as string;
           const amountNumber = parseInt(amountHex, 16);
           setter(amountNumber);
         }

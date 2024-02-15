@@ -118,7 +118,6 @@ import {
   EnergyCost,
   ShipsCost,
   DefenceCost,
-  PlanetDetails,
 } from '../shared/types';
 
 import { Compounds } from '../hooks/usePlanetCompounds';
@@ -196,7 +195,7 @@ export interface DefenceProps {
 
 export interface UniverseProps {
   ownPlanetId: number;
-  planet: PlanetDetails;
+  planet: Planet;
   ownTechs?: Techs;
   colonyId: number;
 }
@@ -204,7 +203,6 @@ export interface UniverseProps {
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import UniverseViewBox from '../boxes/UniverseViewBox';
-import fetchPlanetsData from '../api/fetchPlanetsData';
 
 export { getPlanetImage, type ImageId } from '../shared/utils/getPlanetImage';
 export { useGetPlanetRanking } from '../components/leaderboards/utils';
@@ -232,6 +230,7 @@ import {
 
 import { Typography } from '@mui/material';
 import DefencesBox from '../boxes/DefencesBox';
+import { Planet } from '../hooks/useGeneratedPlanets';
 export { getBaseShipsCost, getBaseDefenceCost } from '../constants/costs';
 
 export {
@@ -247,7 +246,6 @@ export {
   Pagination,
   Stack,
   UniverseViewBox,
-  fetchPlanetsData,
   steelImg,
   quartzImg,
   tritiumImg,

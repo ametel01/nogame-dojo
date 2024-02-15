@@ -7,8 +7,8 @@ import {
   PlanetModal,
   CircularProgress,
   numberWithCommas,
-  DebrisFieldView,
-  ButtonAttackPlanet,
+  // DebrisFieldView,
+  // ButtonAttackPlanet,
   UniverseBoxProps as Props,
 } from './deps';
 import { InfoContainer } from './styled';
@@ -21,9 +21,9 @@ const UniverseViewBox = ({
   points,
   highlighted,
   ownPlanetId,
-  ownFleet,
-  ownTechs,
-  isNoobProtected,
+  // ownFleet,
+  // ownTechs,
+  // isNoobProtected,
   lastActive,
   winLoss,
   colonyId,
@@ -41,8 +41,8 @@ const UniverseViewBox = ({
   const oneWeekInSeconds = 7 * 24 * 60 * 60;
 
   // Override isNoobProtected based on the lastActive time
-  const updatedIsNoobProtected =
-    isNoobProtected && timeDifference < oneWeekInSeconds;
+  // const updatedIsNoobProtected =
+  //   isNoobProtected && timeDifference < oneWeekInSeconds;
 
   const planetIdForOwnPosition =
     colonyId === 0 ? ownPlanetId : ownPlanetId * 1000 + colonyId;
@@ -77,8 +77,8 @@ const UniverseViewBox = ({
   }, [lastActive, oneWeekInSeconds, timeDifference]);
 
   const isDisable =
-    Number(position.system) === ownPlanetPosition?.system &&
-    Number(position.orbit) === ownPlanetPosition?.orbit;
+    position.system === ownPlanetPosition?.system &&
+    position.orbit === ownPlanetPosition?.orbit;
 
   return (
     <Styled.Box style={boxStyle}>
@@ -133,7 +133,7 @@ const UniverseViewBox = ({
             </Styled.NumberContainer>
           </Styled.ResourceContainer>
         </InfoContainer>
-        <DebrisFieldView
+        {/* <DebrisFieldView
           planetId={planetId}
           position={formattedPosition}
           ownFleet={ownFleet}
@@ -154,7 +154,7 @@ const UniverseViewBox = ({
             planetId={planetId}
             colonyId={colonyId}
           />
-        </Styled.ButtonContainer>
+        </Styled.ButtonContainer> */}
       </Styled.SubBox>
     </Styled.Box>
   );

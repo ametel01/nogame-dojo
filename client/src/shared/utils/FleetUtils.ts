@@ -1,5 +1,6 @@
-import { type Fleet, type Position, type TechLevels } from '../types';
+import { type Fleet, type TechLevels } from '../types';
 import { ShipsStats, DefencesStats } from '../../constants/Stats';
+import { Position } from '../../hooks/usePlanetPosition';
 
 export function getDistance(start: Position, end: Position): number {
   const orbitDistance = Math.abs(start.orbit - end.orbit);

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { usePlanetCompounds } from '../hooks/usePlanetCompounds';
 import { usePlanetTechs } from '../hooks/usePlanetTechs';
 import { usePlanetShips } from '../hooks/usePlanetShips';
-import { useDestination } from '../context/DestinationContext';
 import { usePlanetDefences } from '../hooks/usePlanetDefences';
 import { useDojo } from '../dojo/useDojo';
 import { Resources } from '../types';
@@ -48,13 +47,13 @@ export const ResourcesSection = ({
 
   const defencesCost = deps.getBaseDefenceCost();
 
-  const { selectedDestination } = useDestination();
+  // const { selectedDestination } = useDestination();
 
-  useEffect(() => {
-    if (selectedDestination !== null) {
-      setActiveTab(5); // Set to Universe tab
-    }
-  }, [selectedDestination, setActiveTab]);
+  // useEffect(() => {
+  //   if (selectedDestination !== null) {
+  //     setActiveTab(5); // Set to Universe tab
+  //   }
+  // }, [selectedDestination, setActiveTab]);
 
   if (!compoundsLevels || !techLevels || !planetResources || !shipsLevels) {
     // Centered CircularProgress
@@ -171,7 +170,8 @@ export const ResourcesSection = ({
           techLevels,
           colonyId
         )}
-      {/* {activeTab === 5 && renderUniversePanel(planetId, techLevels, colonyId)} */}
+      {activeTab === 5 &&
+        renderUniversePanel(planetId, techLevels, colonyId, planetResources)}
     </deps.ResourcesTabs>
   );
 };
@@ -246,16 +246,18 @@ function renderDefencesPanel(
   );
 }
 
-// function renderUniversePanel(
-//   planetId: number,
-//   techLevels: deps.Techs,
-//   colonyId: number
-// ) {
-//   return (
-//     <deps.UniverseViewTabPanel
-//       ownPlanetId={planetId}
-//       ownTechs={techLevels}
-//       colonyId={colonyId}
-//     />
-//   );
-// }
+function renderUniversePanel(
+  planetId: number,
+  techLevels: deps.Techs,
+  colonyId: number,
+  resources: deps.Resources
+) {
+  return (
+    <deps.UniverseViewTabPanel
+      ownPlanetId={planetId}
+      ownTechs={techLevels}
+      colonyId={colonyId}
+      resources={resources}
+    />
+  );
+}

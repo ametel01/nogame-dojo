@@ -255,3 +255,15 @@ query getColonyPosition($planet_id: u32!, $colony_id: u8!) {
     }
   }
 }
+
+query getGeneratedPlanets {
+  events(
+    keys: ["0x166c64e5e6cde79e1bc7d23a31ebe5be13be5d7b1c23c72ec2fbfae5678be1"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+}

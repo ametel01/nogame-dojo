@@ -1,31 +1,44 @@
 import { GraphQLClient, RequestOptions } from 'graphql-request';
-import { GraphQLError, print } from 'graphql'
+import { GraphQLError, print } from 'graphql';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  ContractAddress: { input: any; output: any; }
-  Cursor: { input: any; output: any; }
-  DateTime: { input: any; output: any; }
-  felt252: { input: any; output: any; }
-  u8: { input: any; output: any; }
-  u16: { input: any; output: any; }
-  u32: { input: any; output: any; }
-  u64: { input: any; output: any; }
-  u128: { input: any; output: any; }
-  usize: { input: any; output: any; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  ContractAddress: { input: unknown; output: unknown };
+  Cursor: { input: unknown; output: unknown };
+  DateTime: { input: unknown; output: unknown };
+  felt252: { input: unknown; output: unknown };
+  u8: { input: unknown; output: unknown };
+  u16: { input: unknown; output: unknown };
+  u32: { input: unknown; output: unknown };
+  u64: { input: unknown; output: unknown };
+  u128: { input: unknown; output: unknown };
+  usize: { input: unknown; output: unknown };
 };
 
 export type ActiveMission = {
@@ -76,7 +89,7 @@ export type ActiveMissionLenOrder = {
 
 export enum ActiveMissionLenOrderField {
   Lenght = 'LENGHT',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ActiveMissionLenWhereInput = {
@@ -104,7 +117,7 @@ export type ActiveMissionOrder = {
 export enum ActiveMissionOrderField {
   Mission = 'MISSION',
   MissionId = 'MISSION_ID',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ActiveMissionWhereInput = {
@@ -175,7 +188,7 @@ export enum ColonyCompoundsOrderField {
   ColonyId = 'COLONY_ID',
   Level = 'LEVEL',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyCompoundsWhereInput = {
@@ -236,7 +249,7 @@ export type ColonyCountOrder = {
 
 export enum ColonyCountOrderField {
   Count = 'COUNT',
-  GameId = 'GAME_ID'
+  GameId = 'GAME_ID',
 }
 
 export type ColonyCountWhereInput = {
@@ -287,7 +300,7 @@ export enum ColonyDefencesOrderField {
   ColonyId = 'COLONY_ID',
   Count = 'COUNT',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyDefencesWhereInput = {
@@ -348,7 +361,7 @@ export type ColonyOwnerOrder = {
 
 export enum ColonyOwnerOrderField {
   ColonyPlanetId = 'COLONY_PLANET_ID',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyOwnerWhereInput = {
@@ -397,7 +410,7 @@ export type ColonyPositionOrder = {
 export enum ColonyPositionOrderField {
   ColonyId = 'COLONY_ID',
   PlanetId = 'PLANET_ID',
-  Position = 'POSITION'
+  Position = 'POSITION',
 }
 
 export type ColonyPositionWhereInput = {
@@ -454,7 +467,7 @@ export enum ColonyResourceOrderField {
   Amount = 'AMOUNT',
   ColonyId = 'COLONY_ID',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyResourceTimer = {
@@ -486,7 +499,7 @@ export type ColonyResourceTimerOrder = {
 export enum ColonyResourceTimerOrderField {
   ColonyId = 'COLONY_ID',
   LastCollection = 'LAST_COLLECTION',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyResourceTimerWhereInput = {
@@ -575,7 +588,7 @@ export enum ColonyShipsOrderField {
   ColonyId = 'COLONY_ID',
   Count = 'COUNT',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type ColonyShipsWhereInput = {
@@ -636,7 +649,7 @@ export type GameOwnerPlanetOrder = {
 
 export enum GameOwnerPlanetOrderField {
   Owner = 'OWNER',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type GameOwnerPlanetWhereInput = {
@@ -697,7 +710,7 @@ export type GamePlanetCountOrder = {
 
 export enum GamePlanetCountOrderField {
   Count = 'COUNT',
-  GameId = 'GAME_ID'
+  GameId = 'GAME_ID',
 }
 
 export type GamePlanetCountWhereInput = {
@@ -730,7 +743,7 @@ export type GamePlanetOrder = {
 
 export enum GamePlanetOrderField {
   Owner = 'OWNER',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type GamePlanetOwner = {
@@ -760,7 +773,7 @@ export type GamePlanetOwnerOrder = {
 
 export enum GamePlanetOwnerOrderField {
   Owner = 'OWNER',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type GamePlanetOwnerWhereInput = {
@@ -826,7 +839,7 @@ export type GameSetupOrder = {
 export enum GameSetupOrderField {
   GameId = 'GAME_ID',
   Speed = 'SPEED',
-  StartTime = 'START_TIME'
+  StartTime = 'START_TIME',
 }
 
 export type GameSetupWhereInput = {
@@ -880,7 +893,7 @@ export type IncomingMissionLenOrder = {
 
 export enum IncomingMissionLenOrderField {
   Lenght = 'LENGHT',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type IncomingMissionLenWhereInput = {
@@ -929,7 +942,7 @@ export type IncomingMissionsOrder = {
 export enum IncomingMissionsOrderField {
   Mission = 'MISSION',
   MissionId = 'MISSION_ID',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type IncomingMissionsWhereInput = {
@@ -985,7 +998,7 @@ export type LastActiveOrder = {
 
 export enum LastActiveOrderField {
   PlanetId = 'PLANET_ID',
-  Time = 'TIME'
+  Time = 'TIME',
 }
 
 export type LastActiveWhereInput = {
@@ -1005,11 +1018,40 @@ export type LastActiveWhereInput = {
   timeNEQ?: InputMaybe<Scalars['u64']['input']>;
 };
 
-export type ModelUnion = ActiveMission | ActiveMissionLen | ColonyCompounds | ColonyCount | ColonyDefences | ColonyOwner | ColonyPosition | ColonyResource | ColonyResourceTimer | ColonyShips | GameOwnerPlanet | GamePlanet | GamePlanetCount | GamePlanetOwner | GameSetup | IncomingMissionLen | IncomingMissions | LastActive | PlanetColoniesCount | PlanetCompounds | PlanetDebrisField | PlanetDefences | PlanetPosition | PlanetResource | PlanetResourceTimer | PlanetResourcesSpent | PlanetShips | PlanetTechs | PositionToPlanet;
+export type ModelUnion =
+  | ActiveMission
+  | ActiveMissionLen
+  | ColonyCompounds
+  | ColonyCount
+  | ColonyDefences
+  | ColonyOwner
+  | ColonyPosition
+  | ColonyResource
+  | ColonyResourceTimer
+  | ColonyShips
+  | GameOwnerPlanet
+  | GamePlanet
+  | GamePlanetCount
+  | GamePlanetOwner
+  | GameSetup
+  | IncomingMissionLen
+  | IncomingMissions
+  | LastActive
+  | PlanetColoniesCount
+  | PlanetCompounds
+  | PlanetDebrisField
+  | PlanetDefences
+  | PlanetPosition
+  | PlanetResource
+  | PlanetResourceTimer
+  | PlanetResourcesSpent
+  | PlanetShips
+  | PlanetTechs
+  | PositionToPlanet;
 
 export enum OrderDirection {
   Asc = 'ASC',
-  Desc = 'DESC'
+  Desc = 'DESC',
 }
 
 export type PlanetColoniesCount = {
@@ -1039,7 +1081,7 @@ export type PlanetColoniesCountOrder = {
 
 export enum PlanetColoniesCountOrderField {
   Count = 'COUNT',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetColoniesCountWhereInput = {
@@ -1088,7 +1130,7 @@ export type PlanetCompoundsOrder = {
 export enum PlanetCompoundsOrderField {
   Level = 'LEVEL',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetCompoundsWhereInput = {
@@ -1142,7 +1184,7 @@ export type PlanetDebrisFieldOrder = {
 
 export enum PlanetDebrisFieldOrderField {
   Debris = 'DEBRIS',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetDebrisFieldWhereInput = {
@@ -1190,7 +1232,7 @@ export type PlanetDefencesOrder = {
 export enum PlanetDefencesOrderField {
   Count = 'COUNT',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetDefencesWhereInput = {
@@ -1244,7 +1286,7 @@ export type PlanetPositionOrder = {
 
 export enum PlanetPositionOrderField {
   PlanetId = 'PLANET_ID',
-  Position = 'POSITION'
+  Position = 'POSITION',
 }
 
 export type PlanetPositionWhereInput = {
@@ -1292,7 +1334,7 @@ export type PlanetResourceOrder = {
 export enum PlanetResourceOrderField {
   Amount = 'AMOUNT',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetResourceTimer = {
@@ -1322,7 +1364,7 @@ export type PlanetResourceTimerOrder = {
 
 export enum PlanetResourceTimerOrderField {
   LastCollection = 'LAST_COLLECTION',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetResourceTimerWhereInput = {
@@ -1393,7 +1435,7 @@ export type PlanetResourcesSpentOrder = {
 
 export enum PlanetResourcesSpentOrderField {
   PlanetId = 'PLANET_ID',
-  Spent = 'SPENT'
+  Spent = 'SPENT',
 }
 
 export type PlanetResourcesSpentWhereInput = {
@@ -1442,7 +1484,7 @@ export type PlanetShipsOrder = {
 export enum PlanetShipsOrderField {
   Count = 'COUNT',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetShipsWhereInput = {
@@ -1498,7 +1540,7 @@ export type PlanetTechsOrder = {
 export enum PlanetTechsOrderField {
   Level = 'LEVEL',
   Name = 'NAME',
-  PlanetId = 'PLANET_ID'
+  PlanetId = 'PLANET_ID',
 }
 
 export type PlanetTechsWhereInput = {
@@ -1552,7 +1594,7 @@ export type PositionToPlanetOrder = {
 
 export enum PositionToPlanetOrderField {
   PlanetId = 'PLANET_ID',
-  Position = 'POSITION'
+  Position = 'POSITION',
 }
 
 export type PositionToPlanetWhereInput = {
@@ -1680,7 +1722,7 @@ export type World__ModelOrder = {
 
 export enum World__ModelOrderField {
   ClassHash = 'CLASS_HASH',
-  Name = 'NAME'
+  Name = 'NAME',
 }
 
 export type World__PageInfo = {
@@ -1732,7 +1774,6 @@ export type World__Query = {
   transactions?: Maybe<World__TransactionConnection>;
 };
 
-
 export type World__QueryActiveMissionLenModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1743,7 +1784,6 @@ export type World__QueryActiveMissionLenModelsArgs = {
   order?: InputMaybe<ActiveMissionLenOrder>;
   where?: InputMaybe<ActiveMissionLenWhereInput>;
 };
-
 
 export type World__QueryActiveMissionModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1756,7 +1796,6 @@ export type World__QueryActiveMissionModelsArgs = {
   where?: InputMaybe<ActiveMissionWhereInput>;
 };
 
-
 export type World__QueryColonyCompoundsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1767,7 +1806,6 @@ export type World__QueryColonyCompoundsModelsArgs = {
   order?: InputMaybe<ColonyCompoundsOrder>;
   where?: InputMaybe<ColonyCompoundsWhereInput>;
 };
-
 
 export type World__QueryColonyCountModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1780,7 +1818,6 @@ export type World__QueryColonyCountModelsArgs = {
   where?: InputMaybe<ColonyCountWhereInput>;
 };
 
-
 export type World__QueryColonyDefencesModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1791,7 +1828,6 @@ export type World__QueryColonyDefencesModelsArgs = {
   order?: InputMaybe<ColonyDefencesOrder>;
   where?: InputMaybe<ColonyDefencesWhereInput>;
 };
-
 
 export type World__QueryColonyOwnerModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1804,7 +1840,6 @@ export type World__QueryColonyOwnerModelsArgs = {
   where?: InputMaybe<ColonyOwnerWhereInput>;
 };
 
-
 export type World__QueryColonyPositionModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1815,7 +1850,6 @@ export type World__QueryColonyPositionModelsArgs = {
   order?: InputMaybe<ColonyPositionOrder>;
   where?: InputMaybe<ColonyPositionWhereInput>;
 };
-
 
 export type World__QueryColonyResourceModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1828,7 +1862,6 @@ export type World__QueryColonyResourceModelsArgs = {
   where?: InputMaybe<ColonyResourceWhereInput>;
 };
 
-
 export type World__QueryColonyResourceTimerModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1839,7 +1872,6 @@ export type World__QueryColonyResourceTimerModelsArgs = {
   order?: InputMaybe<ColonyResourceTimerOrder>;
   where?: InputMaybe<ColonyResourceTimerWhereInput>;
 };
-
 
 export type World__QueryColonyShipsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1852,7 +1884,6 @@ export type World__QueryColonyShipsModelsArgs = {
   where?: InputMaybe<ColonyShipsWhereInput>;
 };
 
-
 export type World__QueryEntitiesArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1863,11 +1894,9 @@ export type World__QueryEntitiesArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type World__QueryEntityArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type World__QueryEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1878,7 +1907,6 @@ export type World__QueryEventsArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type World__QueryGameOwnerPlanetModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1891,7 +1919,6 @@ export type World__QueryGameOwnerPlanetModelsArgs = {
   where?: InputMaybe<GameOwnerPlanetWhereInput>;
 };
 
-
 export type World__QueryGamePlanetCountModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1902,7 +1929,6 @@ export type World__QueryGamePlanetCountModelsArgs = {
   order?: InputMaybe<GamePlanetCountOrder>;
   where?: InputMaybe<GamePlanetCountWhereInput>;
 };
-
 
 export type World__QueryGamePlanetModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1915,7 +1941,6 @@ export type World__QueryGamePlanetModelsArgs = {
   where?: InputMaybe<GamePlanetWhereInput>;
 };
 
-
 export type World__QueryGamePlanetOwnerModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1926,7 +1951,6 @@ export type World__QueryGamePlanetOwnerModelsArgs = {
   order?: InputMaybe<GamePlanetOwnerOrder>;
   where?: InputMaybe<GamePlanetOwnerWhereInput>;
 };
-
 
 export type World__QueryGameSetupModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1939,7 +1963,6 @@ export type World__QueryGameSetupModelsArgs = {
   where?: InputMaybe<GameSetupWhereInput>;
 };
 
-
 export type World__QueryIncomingMissionLenModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1950,7 +1973,6 @@ export type World__QueryIncomingMissionLenModelsArgs = {
   order?: InputMaybe<IncomingMissionLenOrder>;
   where?: InputMaybe<IncomingMissionLenWhereInput>;
 };
-
 
 export type World__QueryIncomingMissionsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1963,7 +1985,6 @@ export type World__QueryIncomingMissionsModelsArgs = {
   where?: InputMaybe<IncomingMissionsWhereInput>;
 };
 
-
 export type World__QueryLastActiveModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1975,7 +1996,6 @@ export type World__QueryLastActiveModelsArgs = {
   where?: InputMaybe<LastActiveWhereInput>;
 };
 
-
 export type World__QueryMetadatasArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1985,11 +2005,9 @@ export type World__QueryMetadatasArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type World__QueryModelArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type World__QueryModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2000,7 +2018,6 @@ export type World__QueryModelsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order?: InputMaybe<World__ModelOrder>;
 };
-
 
 export type World__QueryPlanetColoniesCountModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2013,7 +2030,6 @@ export type World__QueryPlanetColoniesCountModelsArgs = {
   where?: InputMaybe<PlanetColoniesCountWhereInput>;
 };
 
-
 export type World__QueryPlanetCompoundsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2024,7 +2040,6 @@ export type World__QueryPlanetCompoundsModelsArgs = {
   order?: InputMaybe<PlanetCompoundsOrder>;
   where?: InputMaybe<PlanetCompoundsWhereInput>;
 };
-
 
 export type World__QueryPlanetDebrisFieldModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2037,7 +2052,6 @@ export type World__QueryPlanetDebrisFieldModelsArgs = {
   where?: InputMaybe<PlanetDebrisFieldWhereInput>;
 };
 
-
 export type World__QueryPlanetDefencesModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2048,7 +2062,6 @@ export type World__QueryPlanetDefencesModelsArgs = {
   order?: InputMaybe<PlanetDefencesOrder>;
   where?: InputMaybe<PlanetDefencesWhereInput>;
 };
-
 
 export type World__QueryPlanetPositionModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2061,7 +2074,6 @@ export type World__QueryPlanetPositionModelsArgs = {
   where?: InputMaybe<PlanetPositionWhereInput>;
 };
 
-
 export type World__QueryPlanetResourceModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2072,7 +2084,6 @@ export type World__QueryPlanetResourceModelsArgs = {
   order?: InputMaybe<PlanetResourceOrder>;
   where?: InputMaybe<PlanetResourceWhereInput>;
 };
-
 
 export type World__QueryPlanetResourceTimerModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2085,7 +2096,6 @@ export type World__QueryPlanetResourceTimerModelsArgs = {
   where?: InputMaybe<PlanetResourceTimerWhereInput>;
 };
 
-
 export type World__QueryPlanetResourcesSpentModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2096,7 +2106,6 @@ export type World__QueryPlanetResourcesSpentModelsArgs = {
   order?: InputMaybe<PlanetResourcesSpentOrder>;
   where?: InputMaybe<PlanetResourcesSpentWhereInput>;
 };
-
 
 export type World__QueryPlanetShipsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2109,7 +2118,6 @@ export type World__QueryPlanetShipsModelsArgs = {
   where?: InputMaybe<PlanetShipsWhereInput>;
 };
 
-
 export type World__QueryPlanetTechsModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2120,7 +2128,6 @@ export type World__QueryPlanetTechsModelsArgs = {
   order?: InputMaybe<PlanetTechsOrder>;
   where?: InputMaybe<PlanetTechsWhereInput>;
 };
-
 
 export type World__QueryPositionToPlanetModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2133,11 +2140,9 @@ export type World__QueryPositionToPlanetModelsArgs = {
   where?: InputMaybe<PositionToPlanetWhereInput>;
 };
 
-
 export type World__QueryTransactionArgs = {
   transactionHash: Scalars['ID']['input'];
 };
-
 
 export type World__QueryTransactionsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2161,16 +2166,13 @@ export type World__Subscription = {
   modelRegistered: World__Model;
 };
 
-
 export type World__SubscriptionEntityUpdatedArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
 
-
 export type World__SubscriptionEventEmittedArgs = {
   keys?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
-
 
 export type World__SubscriptionModelRegisteredArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
@@ -2206,47 +2208,356 @@ export type GetPlanetResourceQueryVariables = Exact<{
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetPlanetResourceQuery = { __typename?: 'World__Query', planetResourceModels?: { __typename?: 'PlanetResourceConnection', edges?: Array<{ __typename?: 'PlanetResourceEdge', node?: { __typename?: 'PlanetResource', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource', planet_id?: any | null, name?: any | null, amount?: any | null } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetResourceQuery = {
+  __typename?: 'World__Query';
+  planetResourceModels?: {
+    __typename?: 'PlanetResourceConnection';
+    edges?: Array<{
+      __typename?: 'PlanetResourceEdge';
+      node?: {
+        __typename?: 'PlanetResource';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | {
+                __typename: 'PlanetResource';
+                planet_id?: unknown | null;
+                name?: unknown | null;
+                amount?: unknown | null;
+              }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetCompoundQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetPlanetCompoundQuery = { __typename?: 'World__Query', planetCompoundsModels?: { __typename?: 'PlanetCompoundsConnection', edges?: Array<{ __typename?: 'PlanetCompoundsEdge', node?: { __typename?: 'PlanetCompounds', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds', planet_id?: any | null, name?: any | null, level?: any | null } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetCompoundQuery = {
+  __typename?: 'World__Query';
+  planetCompoundsModels?: {
+    __typename?: 'PlanetCompoundsConnection';
+    edges?: Array<{
+      __typename?: 'PlanetCompoundsEdge';
+      node?: {
+        __typename?: 'PlanetCompounds';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | {
+                __typename: 'PlanetCompounds';
+                planet_id?: unknown | null;
+                name?: unknown | null;
+                level?: unknown | null;
+              }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetTechQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetPlanetTechQuery = { __typename?: 'World__Query', planetTechsModels?: { __typename?: 'PlanetTechsConnection', edges?: Array<{ __typename?: 'PlanetTechsEdge', node?: { __typename?: 'PlanetTechs', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs', planet_id?: any | null, name?: any | null, level?: any | null } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetTechQuery = {
+  __typename?: 'World__Query';
+  planetTechsModels?: {
+    __typename?: 'PlanetTechsConnection';
+    edges?: Array<{
+      __typename?: 'PlanetTechsEdge';
+      node?: {
+        __typename?: 'PlanetTechs';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | {
+                __typename: 'PlanetTechs';
+                planet_id?: unknown | null;
+                name?: unknown | null;
+                level?: unknown | null;
+              }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetPositionQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
 }>;
 
-
-export type GetPlanetPositionQuery = { __typename?: 'World__Query', planetPositionModels?: { __typename?: 'PlanetPositionConnection', edges?: Array<{ __typename?: 'PlanetPositionEdge', node?: { __typename?: 'PlanetPosition', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition', planet_id?: any | null, position?: { __typename?: 'PlanetPosition_Position', system?: any | null, orbit?: any | null } | null } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetPositionQuery = {
+  __typename?: 'World__Query';
+  planetPositionModels?: {
+    __typename?: 'PlanetPositionConnection';
+    edges?: Array<{
+      __typename?: 'PlanetPositionEdge';
+      node?: {
+        __typename?: 'PlanetPosition';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | {
+                __typename: 'PlanetPosition';
+                planet_id?: unknown | null;
+                position?: {
+                  __typename?: 'PlanetPosition_Position';
+                  system?: unknown | null;
+                  orbit?: unknown | null;
+                } | null;
+              }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetShipQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetPlanetShipQuery = { __typename?: 'World__Query', planetShipsModels?: { __typename?: 'PlanetShipsConnection', edges?: Array<{ __typename?: 'PlanetShipsEdge', node?: { __typename?: 'PlanetShips', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips', planet_id?: any | null, name?: any | null, count?: any | null } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetShipQuery = {
+  __typename?: 'World__Query';
+  planetShipsModels?: {
+    __typename?: 'PlanetShipsConnection';
+    edges?: Array<{
+      __typename?: 'PlanetShipsEdge';
+      node?: {
+        __typename?: 'PlanetShips';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | {
+                __typename: 'PlanetShips';
+                planet_id?: unknown | null;
+                name?: unknown | null;
+                count?: unknown | null;
+              }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetDefenceQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetPlanetDefenceQuery = { __typename?: 'World__Query', planetDefencesModels?: { __typename?: 'PlanetDefencesConnection', edges?: Array<{ __typename?: 'PlanetDefencesEdge', node?: { __typename?: 'PlanetDefences', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences', planet_id?: any | null, name?: any | null, count?: any | null } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetDefenceQuery = {
+  __typename?: 'World__Query';
+  planetDefencesModels?: {
+    __typename?: 'PlanetDefencesConnection';
+    edges?: Array<{
+      __typename?: 'PlanetDefencesEdge';
+      node?: {
+        __typename?: 'PlanetDefences';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | {
+                __typename: 'PlanetDefences';
+                planet_id?: unknown | null;
+                name?: unknown | null;
+                count?: unknown | null;
+              }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetColonyResourceQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
@@ -2254,8 +2565,60 @@ export type GetColonyResourceQueryVariables = Exact<{
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetColonyResourceQuery = { __typename?: 'World__Query', colonyResourceModels?: { __typename?: 'ColonyResourceConnection', edges?: Array<{ __typename?: 'ColonyResourceEdge', node?: { __typename?: 'ColonyResource', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource', planet_id?: any | null, colony_id?: any | null, name?: any | null, amount?: any | null } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetColonyResourceQuery = {
+  __typename?: 'World__Query';
+  colonyResourceModels?: {
+    __typename?: 'ColonyResourceConnection';
+    edges?: Array<{
+      __typename?: 'ColonyResourceEdge';
+      node?: {
+        __typename?: 'ColonyResource';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | {
+                __typename: 'ColonyResource';
+                planet_id?: unknown | null;
+                colony_id?: unknown | null;
+                name?: unknown | null;
+                amount?: unknown | null;
+              }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetColonyCompoundQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
@@ -2263,8 +2626,60 @@ export type GetColonyCompoundQueryVariables = Exact<{
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetColonyCompoundQuery = { __typename?: 'World__Query', colonyCompoundsModels?: { __typename?: 'ColonyCompoundsConnection', edges?: Array<{ __typename?: 'ColonyCompoundsEdge', node?: { __typename?: 'ColonyCompounds', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds', planet_id?: any | null, colony_id?: any | null, name?: any | null, level?: any | null } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetColonyCompoundQuery = {
+  __typename?: 'World__Query';
+  colonyCompoundsModels?: {
+    __typename?: 'ColonyCompoundsConnection';
+    edges?: Array<{
+      __typename?: 'ColonyCompoundsEdge';
+      node?: {
+        __typename?: 'ColonyCompounds';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | {
+                __typename: 'ColonyCompounds';
+                planet_id?: unknown | null;
+                colony_id?: unknown | null;
+                name?: unknown | null;
+                level?: unknown | null;
+              }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetColonyShipQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
@@ -2272,8 +2687,60 @@ export type GetColonyShipQueryVariables = Exact<{
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetColonyShipQuery = { __typename?: 'World__Query', colonyShipsModels?: { __typename?: 'ColonyShipsConnection', edges?: Array<{ __typename?: 'ColonyShipsEdge', node?: { __typename?: 'ColonyShips', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips', planet_id?: any | null, colony_id?: any | null, name?: any | null, count?: any | null } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetColonyShipQuery = {
+  __typename?: 'World__Query';
+  colonyShipsModels?: {
+    __typename?: 'ColonyShipsConnection';
+    edges?: Array<{
+      __typename?: 'ColonyShipsEdge';
+      node?: {
+        __typename?: 'ColonyShips';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | {
+                __typename: 'ColonyShips';
+                planet_id?: unknown | null;
+                colony_id?: unknown | null;
+                name?: unknown | null;
+                count?: unknown | null;
+              }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetColonyDefenceQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
@@ -2281,102 +2748,275 @@ export type GetColonyDefenceQueryVariables = Exact<{
   name: Scalars['u8']['input'];
 }>;
 
-
-export type GetColonyDefenceQuery = { __typename?: 'World__Query', colonyDefencesModels?: { __typename?: 'ColonyDefencesConnection', edges?: Array<{ __typename?: 'ColonyDefencesEdge', node?: { __typename?: 'ColonyDefences', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences', planet_id?: any | null, colony_id?: any | null, name?: any | null, count?: any | null } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetColonyDefenceQuery = {
+  __typename?: 'World__Query';
+  colonyDefencesModels?: {
+    __typename?: 'ColonyDefencesConnection';
+    edges?: Array<{
+      __typename?: 'ColonyDefencesEdge';
+      node?: {
+        __typename?: 'ColonyDefences';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | {
+                __typename: 'ColonyDefences';
+                planet_id?: unknown | null;
+                colony_id?: unknown | null;
+                name?: unknown | null;
+                count?: unknown | null;
+              }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetPlanetColoniesCountQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
 }>;
 
-
-export type GetPlanetColoniesCountQuery = { __typename?: 'World__Query', planetColoniesCountModels?: { __typename?: 'PlanetColoniesCountConnection', edges?: Array<{ __typename?: 'PlanetColoniesCountEdge', node?: { __typename?: 'PlanetColoniesCount', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition' } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount', planet_id?: any | null, count?: any | null } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetPlanetColoniesCountQuery = {
+  __typename?: 'World__Query';
+  planetColoniesCountModels?: {
+    __typename?: 'PlanetColoniesCountConnection';
+    edges?: Array<{
+      __typename?: 'PlanetColoniesCountEdge';
+      node?: {
+        __typename?: 'PlanetColoniesCount';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | {
+                __typename: 'PlanetColoniesCount';
+                planet_id?: unknown | null;
+                count?: unknown | null;
+              }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export type GetColonyPositionQueryVariables = Exact<{
   planet_id: Scalars['u32']['input'];
   colony_id: Scalars['u8']['input'];
 }>;
 
+export type GetColonyPositionQuery = {
+  __typename?: 'World__Query';
+  colonyPositionModels?: {
+    __typename?: 'ColonyPositionConnection';
+    edges?: Array<{
+      __typename?: 'ColonyPositionEdge';
+      node?: {
+        __typename?: 'ColonyPosition';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | {
+                __typename: 'ColonyPosition';
+                planet_id?: unknown | null;
+                colony_id?: unknown | null;
+                position?: {
+                  __typename?: 'ColonyPosition_Position';
+                  system?: unknown | null;
+                  orbit?: unknown | null;
+                } | null;
+              }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
-export type GetColonyPositionQuery = { __typename?: 'World__Query', colonyPositionModels?: { __typename?: 'ColonyPositionConnection', edges?: Array<{ __typename?: 'ColonyPositionEdge', node?: { __typename?: 'ColonyPosition', entity?: { __typename?: 'World__Entity', keys?: Array<string | null> | null, models?: Array<{ __typename: 'ActiveMission' } | { __typename: 'ActiveMissionLen' } | { __typename: 'ColonyCompounds' } | { __typename: 'ColonyCount' } | { __typename: 'ColonyDefences' } | { __typename: 'ColonyOwner' } | { __typename: 'ColonyPosition', planet_id?: any | null, colony_id?: any | null, position?: { __typename?: 'ColonyPosition_Position', system?: any | null, orbit?: any | null } | null } | { __typename: 'ColonyResource' } | { __typename: 'ColonyResourceTimer' } | { __typename: 'ColonyShips' } | { __typename: 'GameOwnerPlanet' } | { __typename: 'GamePlanet' } | { __typename: 'GamePlanetCount' } | { __typename: 'GamePlanetOwner' } | { __typename: 'GameSetup' } | { __typename: 'IncomingMissionLen' } | { __typename: 'IncomingMissions' } | { __typename: 'LastActive' } | { __typename: 'PlanetColoniesCount' } | { __typename: 'PlanetCompounds' } | { __typename: 'PlanetDebrisField' } | { __typename: 'PlanetDefences' } | { __typename: 'PlanetPosition' } | { __typename: 'PlanetResource' } | { __typename: 'PlanetResourceTimer' } | { __typename: 'PlanetResourcesSpent' } | { __typename: 'PlanetShips' } | { __typename: 'PlanetTechs' } | { __typename: 'PositionToPlanet' } | null> | null } | null } | null } | null> | null } | null };
+export type GetGeneratedPlanetsQueryVariables = Exact<{ [key: string]: never }>;
 
+export type GetGeneratedPlanetsQuery = {
+  __typename?: 'World__Query';
+  events?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        data?: Array<string | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
 
 export const GetPlanetResourceDocument = gql`
-    query getPlanetResource($planet_id: u32!, $name: u8!) {
-  planetResourceModels(where: {planet_id: $planet_id, name: $name}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetResource {
-              planet_id
-              name
-              amount
+  query getPlanetResource($planet_id: u32!, $name: u8!) {
+    planetResourceModels(where: { planet_id: $planet_id, name: $name }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetResource {
+                planet_id
+                name
+                amount
+              }
             }
           }
         }
       }
     }
   }
-}
-    `;
+`;
 export const GetPlanetCompoundDocument = gql`
-    query getPlanetCompound($planet_id: u32!, $name: u8!) {
-  planetCompoundsModels(where: {planet_id: $planet_id, name: $name}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetCompounds {
-              planet_id
-              name
-              level
+  query getPlanetCompound($planet_id: u32!, $name: u8!) {
+    planetCompoundsModels(where: { planet_id: $planet_id, name: $name }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetCompounds {
+                planet_id
+                name
+                level
+              }
             }
           }
         }
       }
     }
   }
-}
-    `;
+`;
 export const GetPlanetTechDocument = gql`
-    query getPlanetTech($planet_id: u32!, $name: u8!) {
-  planetTechsModels(where: {planet_id: $planet_id, name: $name}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetTechs {
-              planet_id
-              name
-              level
+  query getPlanetTech($planet_id: u32!, $name: u8!) {
+    planetTechsModels(where: { planet_id: $planet_id, name: $name }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetTechs {
+                planet_id
+                name
+                level
+              }
             }
           }
         }
       }
     }
   }
-}
-    `;
+`;
 export const GetPlanetPositionDocument = gql`
-    query getPlanetPosition($planet_id: u32!) {
-  planetPositionModels(where: {planet_id: $planet_id}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetPosition {
-              planet_id
-              position {
-                system
-                orbit
+  query getPlanetPosition($planet_id: u32!) {
+    planetPositionModels(where: { planet_id: $planet_id }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetPosition {
+                planet_id
+                position {
+                  system
+                  orbit
+                }
               }
             }
           }
@@ -2384,181 +3024,20 @@ export const GetPlanetPositionDocument = gql`
       }
     }
   }
-}
-    `;
+`;
 export const GetPlanetShipDocument = gql`
-    query getPlanetShip($planet_id: u32!, $name: u8!) {
-  planetShipsModels(where: {planet_id: $planet_id, name: $name}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetShips {
-              planet_id
-              name
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetPlanetDefenceDocument = gql`
-    query getPlanetDefence($planet_id: u32!, $name: u8!) {
-  planetDefencesModels(where: {planet_id: $planet_id, name: $name}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetDefences {
-              planet_id
-              name
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetColonyResourceDocument = gql`
-    query getColonyResource($planet_id: u32!, $colony_id: u8!, $name: u8!) {
-  colonyResourceModels(
-    where: {planet_id: $planet_id, colony_id: $colony_id, name: $name}
-  ) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on ColonyResource {
-              planet_id
-              colony_id
-              name
-              amount
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetColonyCompoundDocument = gql`
-    query getColonyCompound($planet_id: u32!, $colony_id: u8!, $name: u8!) {
-  colonyCompoundsModels(
-    where: {planet_id: $planet_id, colony_id: $colony_id, name: $name}
-  ) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on ColonyCompounds {
-              planet_id
-              colony_id
-              name
-              level
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetColonyShipDocument = gql`
-    query getColonyShip($planet_id: u32!, $colony_id: u8!, $name: u8!) {
-  colonyShipsModels(
-    where: {planet_id: $planet_id, colony_id: $colony_id, name: $name}
-  ) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on ColonyShips {
-              planet_id
-              colony_id
-              name
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetColonyDefenceDocument = gql`
-    query getColonyDefence($planet_id: u32!, $colony_id: u8!, $name: u8!) {
-  colonyDefencesModels(
-    where: {planet_id: $planet_id, colony_id: $colony_id, name: $name}
-  ) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on ColonyDefences {
-              planet_id
-              colony_id
-              name
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetPlanetColoniesCountDocument = gql`
-    query getPlanetColoniesCount($planet_id: u32!) {
-  planetColoniesCountModels(where: {planet_id: $planet_id}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on PlanetColoniesCount {
-              planet_id
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const GetColonyPositionDocument = gql`
-    query getColonyPosition($planet_id: u32!, $colony_id: u8!) {
-  colonyPositionModels(where: {planet_id: $planet_id, colony_id: $colony_id}) {
-    edges {
-      node {
-        entity {
-          keys
-          models {
-            __typename
-            ... on ColonyPosition {
-              planet_id
-              colony_id
-              position {
-                system
-                orbit
+  query getPlanetShip($planet_id: u32!, $name: u8!) {
+    planetShipsModels(where: { planet_id: $planet_id, name: $name }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetShips {
+                planet_id
+                name
+                count
               }
             }
           }
@@ -2566,13 +3045,197 @@ export const GetColonyPositionDocument = gql`
       }
     }
   }
-}
-    `;
+`;
+export const GetPlanetDefenceDocument = gql`
+  query getPlanetDefence($planet_id: u32!, $name: u8!) {
+    planetDefencesModels(where: { planet_id: $planet_id, name: $name }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetDefences {
+                planet_id
+                name
+                count
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetColonyResourceDocument = gql`
+  query getColonyResource($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+    colonyResourceModels(
+      where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on ColonyResource {
+                planet_id
+                colony_id
+                name
+                amount
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetColonyCompoundDocument = gql`
+  query getColonyCompound($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+    colonyCompoundsModels(
+      where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on ColonyCompounds {
+                planet_id
+                colony_id
+                name
+                level
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetColonyShipDocument = gql`
+  query getColonyShip($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+    colonyShipsModels(
+      where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on ColonyShips {
+                planet_id
+                colony_id
+                name
+                count
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetColonyDefenceDocument = gql`
+  query getColonyDefence($planet_id: u32!, $colony_id: u8!, $name: u8!) {
+    colonyDefencesModels(
+      where: { planet_id: $planet_id, colony_id: $colony_id, name: $name }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on ColonyDefences {
+                planet_id
+                colony_id
+                name
+                count
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetPlanetColoniesCountDocument = gql`
+  query getPlanetColoniesCount($planet_id: u32!) {
+    planetColoniesCountModels(where: { planet_id: $planet_id }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on PlanetColoniesCount {
+                planet_id
+                count
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetColonyPositionDocument = gql`
+  query getColonyPosition($planet_id: u32!, $colony_id: u8!) {
+    colonyPositionModels(
+      where: { planet_id: $planet_id, colony_id: $colony_id }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on ColonyPosition {
+                planet_id
+                colony_id
+                position {
+                  system
+                  orbit
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetGeneratedPlanetsDocument = gql`
+  query getGeneratedPlanets {
+    events(
+      keys: ["0x166c64e5e6cde79e1bc7d23a31ebe5be13be5d7b1c23c72ec2fbfae5678be1"]
+    ) {
+      edges {
+        node {
+          data
+        }
+      }
+    }
+  }
+`;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string,
+  variables?: unknown
+) => Promise<T>;
 
-
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
+const defaultWrapper: SdkFunctionWrapper = (
+  action
+  // _operationName,
+  // _operationType,
+  // _variables
+) => action();
 const GetPlanetResourceDocumentString = print(GetPlanetResourceDocument);
 const GetPlanetCompoundDocumentString = print(GetPlanetCompoundDocument);
 const GetPlanetTechDocumentString = print(GetPlanetTechDocument);
@@ -2583,46 +3246,302 @@ const GetColonyResourceDocumentString = print(GetColonyResourceDocument);
 const GetColonyCompoundDocumentString = print(GetColonyCompoundDocument);
 const GetColonyShipDocumentString = print(GetColonyShipDocument);
 const GetColonyDefenceDocumentString = print(GetColonyDefenceDocument);
-const GetPlanetColoniesCountDocumentString = print(GetPlanetColoniesCountDocument);
+const GetPlanetColoniesCountDocumentString = print(
+  GetPlanetColoniesCountDocument
+);
 const GetColonyPositionDocumentString = print(GetColonyPositionDocument);
-export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+const GetGeneratedPlanetsDocumentString = print(GetGeneratedPlanetsDocument);
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper
+) {
   return {
-    getPlanetResource(variables: GetPlanetResourceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetResourceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetResourceQuery>(GetPlanetResourceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetResource', 'query', variables);
+    getPlanetResource(
+      variables: GetPlanetResourceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetResourceQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetResourceQuery>(
+            GetPlanetResourceDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetResource',
+        'query',
+        variables
+      );
     },
-    getPlanetCompound(variables: GetPlanetCompoundQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetCompoundQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetCompoundQuery>(GetPlanetCompoundDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetCompound', 'query', variables);
+    getPlanetCompound(
+      variables: GetPlanetCompoundQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetCompoundQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetCompoundQuery>(
+            GetPlanetCompoundDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetCompound',
+        'query',
+        variables
+      );
     },
-    getPlanetTech(variables: GetPlanetTechQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetTechQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetTechQuery>(GetPlanetTechDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetTech', 'query', variables);
+    getPlanetTech(
+      variables: GetPlanetTechQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetTechQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetTechQuery>(
+            GetPlanetTechDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetTech',
+        'query',
+        variables
+      );
     },
-    getPlanetPosition(variables: GetPlanetPositionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetPositionQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetPositionQuery>(GetPlanetPositionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetPosition', 'query', variables);
+    getPlanetPosition(
+      variables: GetPlanetPositionQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetPositionQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetPositionQuery>(
+            GetPlanetPositionDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetPosition',
+        'query',
+        variables
+      );
     },
-    getPlanetShip(variables: GetPlanetShipQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetShipQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetShipQuery>(GetPlanetShipDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetShip', 'query', variables);
+    getPlanetShip(
+      variables: GetPlanetShipQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetShipQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetShipQuery>(
+            GetPlanetShipDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetShip',
+        'query',
+        variables
+      );
     },
-    getPlanetDefence(variables: GetPlanetDefenceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetDefenceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetDefenceQuery>(GetPlanetDefenceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetDefence', 'query', variables);
+    getPlanetDefence(
+      variables: GetPlanetDefenceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetDefenceQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetDefenceQuery>(
+            GetPlanetDefenceDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetDefence',
+        'query',
+        variables
+      );
     },
-    getColonyResource(variables: GetColonyResourceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetColonyResourceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetColonyResourceQuery>(GetColonyResourceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getColonyResource', 'query', variables);
+    getColonyResource(
+      variables: GetColonyResourceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetColonyResourceQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetColonyResourceQuery>(
+            GetColonyResourceDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getColonyResource',
+        'query',
+        variables
+      );
     },
-    getColonyCompound(variables: GetColonyCompoundQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetColonyCompoundQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetColonyCompoundQuery>(GetColonyCompoundDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getColonyCompound', 'query', variables);
+    getColonyCompound(
+      variables: GetColonyCompoundQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetColonyCompoundQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetColonyCompoundQuery>(
+            GetColonyCompoundDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getColonyCompound',
+        'query',
+        variables
+      );
     },
-    getColonyShip(variables: GetColonyShipQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetColonyShipQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetColonyShipQuery>(GetColonyShipDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getColonyShip', 'query', variables);
+    getColonyShip(
+      variables: GetColonyShipQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetColonyShipQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetColonyShipQuery>(
+            GetColonyShipDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getColonyShip',
+        'query',
+        variables
+      );
     },
-    getColonyDefence(variables: GetColonyDefenceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetColonyDefenceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetColonyDefenceQuery>(GetColonyDefenceDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getColonyDefence', 'query', variables);
+    getColonyDefence(
+      variables: GetColonyDefenceQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetColonyDefenceQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetColonyDefenceQuery>(
+            GetColonyDefenceDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getColonyDefence',
+        'query',
+        variables
+      );
     },
-    getPlanetColoniesCount(variables: GetPlanetColoniesCountQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetColoniesCountQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPlanetColoniesCountQuery>(GetPlanetColoniesCountDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPlanetColoniesCount', 'query', variables);
+    getPlanetColoniesCount(
+      variables: GetPlanetColoniesCountQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetPlanetColoniesCountQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetPlanetColoniesCountQuery>(
+            GetPlanetColoniesCountDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getPlanetColoniesCount',
+        'query',
+        variables
+      );
     },
-    getColonyPosition(variables: GetColonyPositionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetColonyPositionQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetColonyPositionQuery>(GetColonyPositionDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getColonyPosition', 'query', variables);
-    }
+    getColonyPosition(
+      variables: GetColonyPositionQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetColonyPositionQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetColonyPositionQuery>(
+            GetColonyPositionDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getColonyPosition',
+        'query',
+        variables
+      );
+    },
+    getGeneratedPlanets(
+      variables?: GetGeneratedPlanetsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetGeneratedPlanetsQuery;
+      errors?: GraphQLError[];
+      extensions?: unknown;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetGeneratedPlanetsQuery>(
+            GetGeneratedPlanetsDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getGeneratedPlanets',
+        'query',
+        variables
+      );
+    },
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

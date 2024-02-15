@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
+import { ModelUnion } from '../generated/graphql';
 
 export type Position = {
   system: number | undefined;
@@ -31,15 +32,11 @@ export function usePlanetPosition(planetId: number): Position {
       const edges = response.data.planetPositionModels?.edges;
       if (edges) {
         for (const edge of edges) {
-          if (
-            edge &&
-            edge.node &&
-            edge.node.entity &&
-            edge.node.entity.models
-          ) {
-            const models = edge.node.entity.models;
+          if (edge?.node?.entity?.models) {
+            // Include 'null' in the type to handle nullable array elements
+            const models: (ModelUnion | null)[] = edge.node.entity.models;
             for (const model of models) {
-              if (isPlanetPositionModel(model)) {
+              if (model && isPlanetPositionModel(model)) {
                 setSystem(model.position.system);
                 setOrbit(parseInt(model.position.orbit, 16));
                 return; // Exit once the data is found
@@ -56,6 +53,8 @@ export function usePlanetPosition(planetId: number): Position {
   return { system, orbit };
 }
 
-function isPlanetPositionModel(model: any): model is PlanetPositionModel {
+function isPlanetPositionModel(
+  model: ModelUnion
+): model is PlanetPositionModel {
   return model.__typename === 'PlanetPosition';
 }
