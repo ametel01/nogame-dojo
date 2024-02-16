@@ -221,6 +221,72 @@ export function createSystemCalls(
     }
   };
 
+  const collectDebris = async (account: Account, missionId: number) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'fleetactions',
+        'collect_debris',
+        [missionId]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const recallFleet = async (account: Account, missionId: number) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'fleetactions',
+        'recall_fleet',
+        [missionId]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const dockFleet = async (account: Account, missionId: number) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'fleetactions',
+        'dock_fleet',
+        [missionId]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   interface PlanetResourcesResponse {
     steel: bigint;
     quartz: bigint;
@@ -275,6 +341,9 @@ export function createSystemCalls(
     buildDefence,
     sendFleet,
     attackPlanet,
+    collectDebris,
+    recallFleet,
+    dockFleet,
     getPlanetResources,
     getColonyResources,
   };

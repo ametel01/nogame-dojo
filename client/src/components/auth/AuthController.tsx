@@ -5,6 +5,7 @@ import AuthScreen from '../../views/LoginOrGenerate';
 import Dashboard from '../../views/DashBoard';
 import Header from '../ui/Header';
 import { useDojo } from '../../dojo/useDojo';
+import { DestinationProvider } from '../../context/DestinationContext';
 
 const AuthController = () => {
   const {
@@ -20,7 +21,7 @@ const AuthController = () => {
 
   const planetId = useComponentValue(GameOwnerPlanet, entityId);
 
-  const hasGeneratedPlanets = planetId?.planet_id > 0;
+  const hasGeneratedPlanets = (planetId?.planet_id || 0) > 0;
   // const isOverallLoading = isTokenOfLoading || walletConnectLoading;
 
   const shouldRenderAuthScreen =
@@ -33,8 +34,10 @@ const AuthController = () => {
     />
   ) : (
     <>
-      <Header />
-      <Dashboard planetId={planetId?.planet_id} />
+      <DestinationProvider>
+        <Header planetId={planetId?.planet_id || 0} />
+        <Dashboard planetId={planetId?.planet_id || 0} />
+      </DestinationProvider>
     </>
   );
 };

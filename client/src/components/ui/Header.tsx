@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { HeaderButton } from '../../shared/styled/Button';
 import { styled } from '@mui/material/styles';
-// import { FleetMovements } from './FleetMovements';
+import { FleetMovements } from './FleetMovements';
 import { Link } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
@@ -32,11 +32,11 @@ const Spacer = styled('div')({
   flex: '1',
 });
 
-// interface Props {
-//   planetId: number;
-// }
+interface Props {
+  planetId: number;
+}
 
-const Header = () => {
+const Header = ({ planetId }: Props) => {
   const { account } = useDojo();
 
   const handleLogoutClick = () => {
@@ -66,6 +66,7 @@ const Header = () => {
           </Link>
         </HeaderButton>
         <ConnectWallet />
+        <FleetMovements planetId={planetId || 0} />
 
         {/* <HeaderButton>
           <Link
@@ -75,7 +76,6 @@ const Header = () => {
             Pioneer NFT
           </Link>
         </HeaderButton>
-        <FleetMovements planetId={planetId || 0} />
         <HeaderButton variant="text">
           <Link
             to="/battlereports"

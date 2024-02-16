@@ -28,8 +28,8 @@ type EdgeType = {
   };
 };
 
-export function useActiveMissions(planetId: number): Array<[Mission]> {
-  const [missions, setMissions] = useState<Array<[Mission]>>([]);
+export function useActiveMissions(planetId: number): Array<Mission> {
+  const [missions, setMissions] = useState<Array<Mission>>([]);
 
   const {
     setup: { graphSdk },
@@ -45,7 +45,7 @@ export function useActiveMissions(planetId: number): Array<[Mission]> {
       const edges = countResponse.data.activeMissionLenModels.edges;
       if (edges && edges.length > 0) {
         const count = edges[0].node.entity.models[0].lenght;
-        const activeMissions: Array<[Mission]> = [];
+        const activeMissions: Array<Mission> = [];
 
         for (let i = 0; i < count; i++) {
           const missionId = i + 1; // Adjust based on how colony IDs are determined
@@ -56,7 +56,9 @@ export function useActiveMissions(planetId: number): Array<[Mission]> {
           const mission = extractMission(missionResponse);
 
           if (mission) {
-            activeMissions.push([mission]);
+            if (mission.origin !== 0) {
+              activeMissions.push(mission);
+            }
           }
         }
 
@@ -76,7 +78,6 @@ function extractMission(response: any): Mission | undefined {
   )?.node.entity.models[0];
 
   if (missionModel) {
-    console.log('missionModel', missionModel);
     return {
       id: missionModel.mission.id,
       time_start: missionModel.mission.time_start,

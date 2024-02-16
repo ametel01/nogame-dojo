@@ -127,7 +127,6 @@ export const UniverseViewTabPanel = ({
   const [pageError, setPageError] = useState(false);
   const itemsPerPage = 6;
   const pageCount = Math.ceil(planetsData.length / itemsPerPage);
-  console.log('planetsData', planetsData);
   // Fetch planets using the custom hook
   const fetchedPlanets = useGeneratedPlanets();
 

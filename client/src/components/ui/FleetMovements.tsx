@@ -1,18 +1,12 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useReducer,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 
-import { useGetActiveMissions } from '../../hooks/FleetHooks';
 import { Box } from '@mui/system';
 import Modal from '@mui/material/Modal';
 import styled from 'styled-components';
 import { calculateFleetLoss } from '../../shared/utils/Formulas';
 import { HeaderButton } from '../../shared/styled/Button';
 import { MissionRow } from './MissionRow';
+import { useActiveMissions } from '../../hooks/useActiveMissions';
 
 export const StyledBox = styled(Box)({
   fontWeight: 400,
@@ -110,14 +104,10 @@ interface Props {
 }
 
 export const FleetMovements = ({ planetId }: Props) => {
-  const rawMissions = useGetActiveMissions(planetId);
-  const missions = useMemo(() => {
-    if (!rawMissions) return [];
+  console.log(planetId);
+  const missions = useActiveMissions(planetId);
 
-    return [...rawMissions].sort((a, b) => {
-      return Number(a.time_arrival) - Number(b.time_arrival);
-    });
-  }, [rawMissions]);
+  console.log(missions);
 
   const [isOpen, setIsOpen] = useState(false);
   const [state, dispatch] = useReducer(fleetReducer, {

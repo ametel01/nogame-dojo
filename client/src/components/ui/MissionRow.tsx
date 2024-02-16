@@ -2,16 +2,11 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import Tooltip from '@mui/material/Tooltip';
 import { MissionCategory, type Mission } from '../../shared/types';
-import {
-  useAttackPlanet,
-  useRecallFleet,
-  useCollectDebris,
-  useDockFleet,
-} from '../../hooks/FleetHooks';
 import { usePlanetPosition } from '../../hooks/usePlanetPosition';
 import fleetIcon from '../../assets/uiIcons/Fleet.svg';
 import { StyledButton } from '../../shared/styled/Button';
 import { useDestination } from '../../context/DestinationContext';
+import { useDojo } from '../../dojo/useDojo';
 
 const FleetTooltipContent = styled('div')({
   display: 'flex',
@@ -60,20 +55,30 @@ interface MissionRowProps {
 
 export const MissionRow = memo(
   ({ mission, index, countdown, decayPercentage }: MissionRowProps) => {
+    const {
+      setup: {
+        systemCalls: { attackPlanet, collectDebris, dockFleet, recallFleet },
+      },
+      account,
+    } = useDojo();
+
     const position = usePlanetPosition(Number(mission.destination));
+
     const destination = position
       ? `${Number(position.system)} / ${Number(position.orbit)}`
       : 'Unknown';
-    const { writeAsync: recallFleet } = useRecallFleet(mission.id);
-    const { writeAsync: attackPlanet } = useAttackPlanet(mission.id);
-    const { writeAsync: collectDebris } = useCollectDebris(mission.id);
-    const { writeAsync: dockFleet } = useDockFleet(mission.id);
 
-    const onRecallClick = React.useCallback(() => {
-      recallFleet().then(() => {
-        // Handle post-recall actions here, if needed
-      });
-    }, [recallFleet]);
+    const attackCallBack = () => attackPlanet(account.account, mission.id);
+    const recallFleetCallBack = () => recallFleet(account.account, mission.id);
+    const collectDebrisCallBack = () =>
+      collectDebris(account.account, mission.id);
+    const dockFleetCallBack = () => dockFleet(account.account, mission.id);
+
+    // const onRecallClick = React.useCallback(() => {
+    //   recallFleet().then(() => {
+    //     // Handle post-recall actions here, if needed
+    //   });
+    // }, [recallFleet]);
 
     const { handleDestinationClick } = useDestination();
 
@@ -129,7 +134,7 @@ export const MissionRow = memo(
               size="small"
               sx={{ background: '#C47E33' }}
               fullWidth
-              onClick={onRecallClick}
+              onClick={recallFleetCallBack}
             >
               Recall
             </StyledButton>
@@ -139,10 +144,10 @@ export const MissionRow = memo(
                 onClick={() => {
                   {
                     mission.category == MissionCategory['Debris']
-                      ? collectDebris()
+                      ? collectDebrisCallBack()
                       : mission.category == MissionCategory['Attack']
-                      ? attackPlanet()
-                      : dockFleet();
+                      ? attackCallBack()
+                      : dockFleetCallBack();
                   }
                 }}
                 size="small"
@@ -159,7 +164,7 @@ export const MissionRow = memo(
                 size="small"
                 sx={{ background: '#C47E33' }}
                 fullWidth
-                onClick={onRecallClick}
+                onClick={recallFleetCallBack}
               >
                 Recall
               </StyledButton>

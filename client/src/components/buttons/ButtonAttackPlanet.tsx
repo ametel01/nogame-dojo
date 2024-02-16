@@ -189,7 +189,6 @@ function ButtonAttackPlanet({
   const [speed, setSpeed] = useState(100);
 
   const missions = useActiveMissions(planetId);
-  console.log('missions', missions);
   const isMissionLimitReached =
     missions && techs && missions.length === Number(techs.digital) + 1;
 
