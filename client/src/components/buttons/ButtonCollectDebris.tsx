@@ -175,6 +175,7 @@ export function ButtonCollectDebris({
     },
     account,
   } = useDojo();
+
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [travelTime, setTravelTime] = useState(0);
   const [fuelConsumption, setFuelConsumption] = useState(0);

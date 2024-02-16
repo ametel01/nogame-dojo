@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js';
 import { Position } from '../../hooks/usePlanetPosition';
 import { Resources } from '../../hooks/usePlanetResources';
 import { Techs } from '../../hooks/usePlanetTechs';
+import { Fleet } from '../../hooks/usePlanetShips';
+import { BigNumberish } from 'starknet';
 
 export const dataToNumber = (value: unknown[] | string | number | undefined) =>
   new BigNumber(value as unknown as number).toNumber();
@@ -276,3 +278,13 @@ export function getPlanetAndColonyIds(planetId: number): [number, number] {
   }
   return [planetId, 0];
 }
+
+export const fleetToBigNumberishArray = (fleet: Fleet): BigNumberish[] => {
+  return [
+    fleet.carrier,
+    fleet.scraper,
+    fleet.sparrow,
+    fleet.frigate,
+    fleet.armade,
+  ];
+};

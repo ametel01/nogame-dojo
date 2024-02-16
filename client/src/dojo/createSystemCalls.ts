@@ -181,19 +181,31 @@ export function createSystemCalls(
         account,
         'fleetactions',
         'send_fleet',
-        [
-          fleet.carrier,
-          fleet.scraper,
-          fleet.sparrow,
-          fleet.frigate,
-          fleet.armade,
-          destination.orbit,
-          destination.system,
-          destination.orbit,
-          missionType,
-          speedModifier,
-          colonyId,
-        ]
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        [fleet, destination, missionType, speedModifier, colonyId]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const attackPlanet = async (account: Account, missionId: number) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'fleetactions',
+        'attack_planet',
+        [missionId]
       );
 
       setComponentsFromEvents(
@@ -262,6 +274,7 @@ export function createSystemCalls(
     buildShip,
     buildDefence,
     sendFleet,
+    attackPlanet,
     getPlanetResources,
     getColonyResources,
   };

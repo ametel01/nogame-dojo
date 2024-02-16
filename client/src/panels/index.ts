@@ -40,7 +40,6 @@ export {
   UpgradeType,
   type ShipsCost,
   type DefenceCost,
-  type PlanetDetails,
 } from '../shared/types';
 
 export { DefenceBuildType, ShipBuildType, TechUpgradeType } from '../types';
@@ -123,8 +122,8 @@ import {
 import { Compounds } from '../hooks/usePlanetCompounds';
 export type { Compounds } from '../hooks/usePlanetCompounds';
 
-import { Resources } from '../hooks/useColonyResources';
-export type { Resources } from '../hooks/useColonyResources';
+import { Resources } from '../hooks/usePlanetResources';
+export type { Resources } from '../hooks/usePlanetResources';
 
 import { Techs } from '../hooks/usePlanetTechs';
 export type { Techs } from '../hooks/usePlanetTechs';

@@ -289,3 +289,58 @@ query getGeneratedPlanets {
     }
   }
 }
+
+query getActiveMissionsCount($planet_id: u32!) {
+  activeMissionLenModels(where: { planet_id: $planet_id }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ActiveMissionLen {
+              planet_id
+              lenght
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getActiveMission($planet_id: u32!, $mission_id: usize!) {
+  activeMissionModels(
+    where: { planet_id: $planet_id, mission_id: $mission_id }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on ActiveMission {
+              planet_id
+              mission_id
+              mission {
+                id
+                time_start
+                origin
+                destination
+                time_arrival
+                fleet {
+                  carrier
+                  scraper
+                  sparrow
+                  frigate
+                  armade
+                }
+                category
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,12 +11,10 @@ import carrierImg from '../../assets/gameElements/ships/carrier4.webp';
 import sparrowImg from '../../assets/gameElements/ships/sparrow4.webp';
 import scraperImg from '../../assets/gameElements/ships/scraper4.webp';
 import { StyledButton } from '../../shared/styled/Button';
-import {
-  type ShipsLevels,
-  type TechLevels,
-  type Position,
-  MissionCategory,
-} from '../../shared/types';
+import { MissionCategory } from '../../shared/types';
+import { Position } from '../../hooks/usePlanetPosition';
+import { Fleet } from '../../hooks/usePlanetShips';
+import { Techs } from '../../hooks/usePlanetTechs';
 import {
   calculateTotalCargoCapacity,
   getDistance,
@@ -28,6 +26,8 @@ import { convertSecondsToTime } from '../../shared/utils';
 import { numberWithCommas } from '../../shared/utils';
 import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { useDojo } from '../../dojo/useDojo';
+import { useActiveMissions } from '../../hooks/useActiveMissions';
 
 type ShipName = 'carrier' | 'scraper' | 'sparrow' | 'frigate' | 'armade';
 
@@ -154,8 +154,8 @@ interface Props {
   isNoobProtected?: boolean;
   destination: string;
   destinationPosition: Position;
-  ownFleet: ShipsLevels;
-  techs?: TechLevels;
+  ownFleet: Fleet;
+  techs?: Techs;
   ownPosition?: Position;
   planetId: number;
   colonyId: number;
@@ -173,15 +173,23 @@ function ButtonAttackPlanet({
   planetId,
   colonyId,
 }: Props) {
+  const {
+    setup: {
+      systemCalls: { sendFleet },
+    },
+    account,
+  } = useDojo();
+
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [travelTime, setTravelTime] = useState(0);
   const [fuelConsumption, setFuelConsumption] = useState(0);
   const [cargoCapacity, setCargoCapacity] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isButtotClicked, setisButtotClicked] = useState(false);
+  const [, setisButtotClicked] = useState(false);
   const [speed, setSpeed] = useState(100);
 
-  // const missions = useGetActiveMissions(planetId);
+  const missions = useActiveMissions(planetId);
+  console.log('missions', missions);
   const isMissionLimitReached =
     missions && techs && missions.length === Number(techs.digital) + 1;
 
@@ -227,21 +235,25 @@ function ButtonAttackPlanet({
     setCargoCapacity(calculateTotalCargoCapacity(fleet));
   }, [distance, fleet, ownPosition, speed, techs]);
 
-  // const { writeAsync: attack, data: attackData } = useSendFleet(
-  //   fleet,
-  //   destinationPosition,
-  //   MissionCategory['Attack'],
-  //   speed,
-  //   colonyId
-  // );
+  const sendAttackCallBack = () =>
+    sendFleet(
+      account.account,
+      fleet,
+      destinationPosition,
+      MissionCategory['Attack'],
+      speed,
+      colonyId
+    );
 
-  // const { writeAsync: transport, data: transportData } = useSendFleet(
-  //   fleet,
-  //   destinationPosition,
-  //   MissionCategory['Transport'],
-  //   speed,
-  //   colonyId
-  // );
+  const sendTransportCallBack = () =>
+    sendFleet(
+      account.account,
+      fleet,
+      destinationPosition,
+      MissionCategory['Transport'],
+      speed,
+      colonyId
+    );
 
   const ships = ['carrier', 'scraper', 'sparrow', 'frigate', 'armade'];
 
@@ -267,11 +279,11 @@ function ButtonAttackPlanet({
   }, [distance, fleet, ownPosition, techs, speed]);
 
   const handleSendAttackClick = () => {
-    attack(), setIsModalOpen(false), setisButtotClicked(true);
+    sendAttackCallBack(), setIsModalOpen(false), setisButtotClicked(true);
   };
 
   const handleSendTransportClick = () => {
-    transport(), setIsModalOpen(false), setisButtotClicked(true);
+    sendTransportCallBack(), setIsModalOpen(false), setisButtotClicked(true);
   };
 
   function handleChange(ship: string, event: { target: { value: string } }) {
