@@ -224,7 +224,7 @@ const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
           </RadarTextStyle>
         </PlanetPositionGroup>
       </PlanetInfoContainer>
-      {/* <HostileMissions planetId={planetId} /> */}
+      <HostileMissions planetId={planetId} />
     </>
   );
 };

@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import WarningIcon from '@mui/icons-material/Warning';
 import { type HostileMission } from '../../shared/types';
 import { usePlanetPosition } from '../../hooks/usePlanetPosition';
+import { useIncomingMissions } from '../../hooks/useIncomingMissions';
 
 // Styled components
 const Container = styled(Box)(({ theme }) => ({
@@ -145,9 +146,11 @@ interface HostileMissionsProps {
 
 // Component
 export const HostileMissions = ({ planetId }: HostileMissionsProps) => {
-  const hostileMissions = useGetHostileMissions(Number(planetId));
+  const incomingMissions = useIncomingMissions(planetId);
+  console.log('incomingMissions', incomingMissions);
 
-  const displayedMissions = hostileMissions?.filter(shouldDisplayMission) || [];
+  const displayedMissions =
+    incomingMissions?.filter(shouldDisplayMission) || [];
 
   return (
     <>

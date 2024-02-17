@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GraphQLClient, RequestOptions } from 'graphql-request';
 import { GraphQLError, print } from 'graphql';
 import gql from 'graphql-tag';
@@ -3007,6 +3005,7 @@ export type GetActiveMissionsCountQueryVariables = Exact<{
 }>;
 
 export type GetActiveMissionsCountQuery = {
+  data: any;
   __typename?: 'World__Query';
   activeMissionLenModels?: {
     __typename?: 'ActiveMissionLenConnection';
@@ -3114,6 +3113,130 @@ export type GetActiveMissionQuery = {
             | { __typename: 'GameSetup' }
             | { __typename: 'IncomingMissionLen' }
             | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
+export type GetIncomingMissionsCountQueryVariables = Exact<{
+  planet_id: Scalars['u32']['input'];
+}>;
+
+export type GetIncomingMissionsCountQuery = {
+  __typename?: 'World__Query';
+  incomingMissionLenModels?: {
+    __typename?: 'IncomingMissionLenConnection';
+    edges?: Array<{
+      __typename?: 'IncomingMissionLenEdge';
+      node?: {
+        __typename?: 'IncomingMissionLen';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | {
+                __typename: 'IncomingMissionLen';
+                planet_id?: any | null;
+                lenght?: any | null;
+              }
+            | { __typename: 'IncomingMissions' }
+            | { __typename: 'LastActive' }
+            | { __typename: 'PlanetColoniesCount' }
+            | { __typename: 'PlanetCompounds' }
+            | { __typename: 'PlanetDebrisField' }
+            | { __typename: 'PlanetDefences' }
+            | { __typename: 'PlanetPosition' }
+            | { __typename: 'PlanetResource' }
+            | { __typename: 'PlanetResourceTimer' }
+            | { __typename: 'PlanetResourcesSpent' }
+            | { __typename: 'PlanetShips' }
+            | { __typename: 'PlanetTechs' }
+            | { __typename: 'PositionToPlanet' }
+            | null
+          > | null;
+        } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
+export type GetIncomingMissionQueryVariables = Exact<{
+  planet_id: Scalars['u32']['input'];
+  mission_id: Scalars['usize']['input'];
+}>;
+
+export type GetIncomingMissionQuery = {
+  data: any;
+  __typename?: 'World__Query';
+  incomingMissionsModels?: {
+    __typename?: 'IncomingMissionsConnection';
+    edges?: Array<{
+      __typename?: 'IncomingMissionsEdge';
+      node?: {
+        __typename?: 'IncomingMissions';
+        entity?: {
+          __typename?: 'World__Entity';
+          keys?: Array<string | null> | null;
+          models?: Array<
+            | { __typename: 'ActiveMission' }
+            | { __typename: 'ActiveMissionLen' }
+            | { __typename: 'ColonyCompounds' }
+            | { __typename: 'ColonyCount' }
+            | { __typename: 'ColonyDefences' }
+            | { __typename: 'ColonyOwner' }
+            | { __typename: 'ColonyPosition' }
+            | { __typename: 'ColonyResource' }
+            | { __typename: 'ColonyResourceTimer' }
+            | { __typename: 'ColonyShips' }
+            | { __typename: 'GameOwnerPlanet' }
+            | { __typename: 'GamePlanet' }
+            | { __typename: 'GamePlanetCount' }
+            | { __typename: 'GamePlanetOwner' }
+            | { __typename: 'GameSetup' }
+            | { __typename: 'IncomingMissionLen' }
+            | {
+                __typename: 'IncomingMissions';
+                planet_id?: any | null;
+                mission_id?: any | null;
+                mission?: {
+                  __typename?: 'IncomingMissions_IncomingMission';
+                  origin?: any | null;
+                  id_at_origin?: any | null;
+                  time_arrival?: any | null;
+                  number_of_ships?: any | null;
+                  destination?: any | null;
+                } | null;
+              }
             | { __typename: 'LastActive' }
             | { __typename: 'PlanetColoniesCount' }
             | { __typename: 'PlanetCompounds' }
@@ -3543,6 +3666,55 @@ export const GetActiveMissionDocument = gql`
     }
   }
 `;
+export const GetIncomingMissionsCountDocument = gql`
+  query getIncomingMissionsCount($planet_id: u32!) {
+    incomingMissionLenModels(where: { planet_id: $planet_id }) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on IncomingMissionLen {
+                planet_id
+                lenght
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export const GetIncomingMissionDocument = gql`
+  query getIncomingMission($planet_id: u32!, $mission_id: usize!) {
+    incomingMissionsModels(
+      where: { planet_id: $planet_id, mission_id: $mission_id }
+    ) {
+      edges {
+        node {
+          entity {
+            keys
+            models {
+              __typename
+              ... on IncomingMissions {
+                planet_id
+                mission_id
+                mission {
+                  origin
+                  id_at_origin
+                  time_arrival
+                  number_of_ships
+                  destination
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 export const GetResourcesSpentDocument = gql`
   query getResourcesSpent {
     event1: events(
@@ -3621,6 +3793,10 @@ const GetActiveMissionsCountDocumentString = print(
   GetActiveMissionsCountDocument
 );
 const GetActiveMissionDocumentString = print(GetActiveMissionDocument);
+const GetIncomingMissionsCountDocumentString = print(
+  GetIncomingMissionsCountDocument
+);
+const GetIncomingMissionDocumentString = print(GetIncomingMissionDocument);
 const GetResourcesSpentDocumentString = print(GetResourcesSpentDocument);
 export function getSdk(
   client: GraphQLClient,
@@ -3975,6 +4151,50 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'getActiveMission',
+        'query',
+        variables
+      );
+    },
+    getIncomingMissionsCount(
+      variables: GetIncomingMissionsCountQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetIncomingMissionsCountQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetIncomingMissionsCountQuery>(
+            GetIncomingMissionsCountDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getIncomingMissionsCount',
+        'query',
+        variables
+      );
+    },
+    getIncomingMission(
+      variables: GetIncomingMissionQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetIncomingMissionQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetIncomingMissionQuery>(
+            GetIncomingMissionDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getIncomingMission',
         'query',
         variables
       );

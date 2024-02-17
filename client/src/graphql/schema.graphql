@@ -345,6 +345,53 @@ query getActiveMission($planet_id: u32!, $mission_id: usize!) {
   }
 }
 
+query getIncomingMissionsCount($planet_id: u32!) {
+  incomingMissionLenModels(where: { planet_id: $planet_id }) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on IncomingMissionLen {
+              planet_id
+              lenght
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getIncomingMission($planet_id: u32!, $mission_id: usize!) {
+  incomingMissionsModels(
+    where: { planet_id: $planet_id, mission_id: $mission_id }
+  ) {
+    edges {
+      node {
+        entity {
+          keys
+          models {
+            __typename
+            ... on IncomingMissions {
+              planet_id
+              mission_id
+              mission {
+                origin
+                id_at_origin
+                time_arrival
+                number_of_ships
+                destination
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 query getResourcesSpent {
   event1: events(
     keys: ["0xd3ec6f2a0ea7c808123f574badfe3c8379d24dc0811b543c21bc389df83d8d"]
