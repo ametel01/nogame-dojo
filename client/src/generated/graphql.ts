@@ -2871,7 +2871,6 @@ export type GetPlanetColoniesCountQueryVariables = Exact<{
 }>;
 
 export type GetPlanetColoniesCountQuery = {
-  data: any;
   __typename?: 'World__Query';
   planetColoniesCountModels?: {
     __typename?: 'PlanetColoniesCountConnection';
@@ -3008,7 +3007,6 @@ export type GetActiveMissionsCountQueryVariables = Exact<{
 }>;
 
 export type GetActiveMissionsCountQuery = {
-  data: any;
   __typename?: 'World__Query';
   activeMissionLenModels?: {
     __typename?: 'ActiveMissionLenConnection';
@@ -3131,6 +3129,52 @@ export type GetActiveMissionQuery = {
             | null
           > | null;
         } | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
+export type GetResourcesSpentQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetResourcesSpentQuery = {
+  __typename?: 'World__Query';
+  event1?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        data?: Array<string | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+  event2?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        data?: Array<string | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+  event3?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        data?: Array<string | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+  event4?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        data?: Array<string | null> | null;
       } | null;
     } | null> | null;
   } | null;
@@ -3499,6 +3543,50 @@ export const GetActiveMissionDocument = gql`
     }
   }
 `;
+export const GetResourcesSpentDocument = gql`
+  query getResourcesSpent {
+    event1: events(
+      keys: ["0xd3ec6f2a0ea7c808123f574badfe3c8379d24dc0811b543c21bc389df83d8d"]
+    ) {
+      edges {
+        node {
+          data
+        }
+      }
+    }
+    event2: events(
+      keys: [
+        "0x28ca72d4794534d4d915d23d2eb92709d21b690921c3a5532d4060704e8e556"
+      ]
+    ) {
+      edges {
+        node {
+          data
+        }
+      }
+    }
+    event3: events(
+      keys: ["0x52bb6703616ba73fc5904ceeeb95ff77e96cb167baa838ee915191e1cbbfa1"]
+    ) {
+      edges {
+        node {
+          data
+        }
+      }
+    }
+    event4: events(
+      keys: [
+        "0x1aca6c91385637bfb445d037151e619565a7864eac5110f873a57ad1012f9f5"
+      ]
+    ) {
+      edges {
+        node {
+          data
+        }
+      }
+    }
+  }
+`;
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
@@ -3533,6 +3621,7 @@ const GetActiveMissionsCountDocumentString = print(
   GetActiveMissionsCountDocument
 );
 const GetActiveMissionDocumentString = print(GetActiveMissionDocument);
+const GetResourcesSpentDocumentString = print(GetResourcesSpentDocument);
 export function getSdk(
   client: GraphQLClient,
   withWrapper: SdkFunctionWrapper = defaultWrapper
@@ -3886,6 +3975,28 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'getActiveMission',
+        'query',
+        variables
+      );
+    },
+    getResourcesSpent(
+      variables?: GetResourcesSpentQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetResourcesSpentQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetResourcesSpentQuery>(
+            GetResourcesSpentDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getResourcesSpent',
         'query',
         variables
       );

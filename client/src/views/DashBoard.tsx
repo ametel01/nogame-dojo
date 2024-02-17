@@ -9,7 +9,7 @@ import { useDojo } from '../dojo/useDojo';
 import { useComponentValue } from '@dojoengine/react';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Entity } from '@dojoengine/recs';
-import { Position } from '../shared/types';
+import { Position } from '../hooks/usePlanetPosition';
 
 export const GameContainer = styled.div`
   display: grid;

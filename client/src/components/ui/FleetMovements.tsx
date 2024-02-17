@@ -104,10 +104,7 @@ interface Props {
 }
 
 export const FleetMovements = ({ planetId }: Props) => {
-  console.log(planetId);
   const missions = useActiveMissions(planetId);
-
-  console.log(missions);
 
   const [isOpen, setIsOpen] = useState(false);
   const [state, dispatch] = useReducer(fleetReducer, {

@@ -344,3 +344,42 @@ query getActiveMission($planet_id: u32!, $mission_id: usize!) {
     }
   }
 }
+
+query getResourcesSpent {
+  event1: events(
+    keys: ["0xd3ec6f2a0ea7c808123f574badfe3c8379d24dc0811b543c21bc389df83d8d"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+  event2: events(
+    keys: ["0x28ca72d4794534d4d915d23d2eb92709d21b690921c3a5532d4060704e8e556"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+  event3: events(
+    keys: ["0x52bb6703616ba73fc5904ceeeb95ff77e96cb167baa838ee915191e1cbbfa1"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+  event4: events(
+    keys: ["0x1aca6c91385637bfb445d037151e619565a7864eac5110f873a57ad1012f9f5"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+}

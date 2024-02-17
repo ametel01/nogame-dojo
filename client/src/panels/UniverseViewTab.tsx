@@ -7,6 +7,10 @@ import { usePlanetShips } from '../hooks/usePlanetShips';
 import { useColonyShips } from '../hooks/useColonyShips';
 import { useGeneratedPlanets, Planet } from '../hooks/useGeneratedPlanets';
 import { useDojo } from '../dojo/useDojo';
+import { usePlanetPoints } from '../hooks/usePlanetPoints';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { useComponentValue } from '@dojoengine/react';
+import { Entity } from '@dojoengine/recs';
 
 const PaginationContainer = muiStyled('div')({
   display: 'flex',
@@ -42,7 +46,12 @@ const UniverseBoxItem = ({
   ownTechs,
   colonyId,
 }: deps.UniverseProps) => {
-  const { account } = useDojo();
+  const {
+    setup: {
+      clientComponents: { PlanetResourceTimer },
+    },
+    account,
+  } = useDojo();
 
   const highlighted =
     parseInt(account?.account.address, 16) === parseInt(planet.account, 16);
@@ -55,12 +64,21 @@ const UniverseBoxItem = ({
   // const planetRanking = useGetPlanetRanking(motherPlanet);
   // const winLoss = useCalculateWinsAndLosses(motherPlanet);
   // const lastActive = useLastActive(motherPlanet);
-  // const isNoobProtected = useGetIsNoobProtected(
-  //   Number(ownPlanetId),
-  //   motherPlanet
-  // );
+  const planteIdEntity = getEntityIdFromKeys([
+    BigInt(planet.planetId),
+  ]) as Entity;
+
+  const lastActive = useComponentValue(PlanetResourceTimer, planteIdEntity);
+
+  const ownPoints = usePlanetPoints(ownPlanetId);
+
+  const planetPoints = usePlanetPoints(planet.planetId);
+
+  const isNoobProtected =
+    ownPoints > planetPoints * 5 || ownPoints * 5 < planetPoints;
 
   const ownFleetData = usePlanetShips(ownPlanetId);
+
   const ownFleet: deps.Fleet = ownFleetData || {
     carrier: 0,
     scraper: 0,
@@ -98,8 +116,8 @@ const UniverseBoxItem = ({
       ownPlanetId={ownPlanetId}
       ownFleet={colonyId === 0 ? ownFleet : colonyFleet}
       ownTechs={ownTechs}
-      isNoobProtected={false}
-      lastActive={Number(0)}
+      isNoobProtected={isNoobProtected}
+      lastActive={lastActive?.last_collection as number}
       winLoss={[0, 0]}
       colonyId={colonyId}
     />

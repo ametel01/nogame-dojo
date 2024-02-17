@@ -1,9 +1,10 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import nogameLogo from '../assets/logos/NoGameLogo.webp';
 
 import { numberWithCommas } from '../shared/utils';
+import { usePlanetPoints } from '../hooks/usePlanetPoints';
 
 const LogoContainer = styled.div`
   display: flex;
@@ -52,65 +53,12 @@ const StyledImage = styled.img`
   height: auto;
   objectfit: contain;
 `;
-
-interface LeaderboardEntry {
-  planet_id: string; // Assuming planet_id is a string based on your initial data
-  account: string;
-  net_amount: string; // Assuming net_amount is a string that should be converted to a number
-}
-
 interface Props {
   planetId: number;
 }
 
 const LogoAndRankContainer = ({ planetId }: Props) => {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [error, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const nodeEnv = import.meta.env.VITE_NODE_ENV;
-  const apiUrl =
-    nodeEnv === 'production'
-      ? 'https://www.api.testnet.no-game.xyz/leaderboard'
-      : 'http://localhost:3001/leaderboard';
-
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error('Something went wrong!');
-        }
-        const data = await response.json();
-        setLeaderboard(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unexpected error occurred');
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchLeaderboard();
-  }, [apiUrl]);
-
-  const score = useMemo(() => {
-    const planetData = leaderboard.find(
-      (planet) => planet.planet_id === planetId.toString()
-    );
-    return planetData ? Number(planetData.net_amount) : 0;
-  }, [leaderboard, planetId]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const score = usePlanetPoints(planetId);
 
   return (
     <LogoContainer>
@@ -120,7 +68,7 @@ const LogoAndRankContainer = ({ planetId }: Props) => {
           <TrophyDiv>
             <TitleContainer>Score</TitleContainer>
           </TrophyDiv>
-          {numberWithCommas(Math.ceil(score / 1000))}
+          {numberWithCommas(Math.ceil(score))}
         </RankLineContainer>
       </RankContainer>
     </LogoContainer>
