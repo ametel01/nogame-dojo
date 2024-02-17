@@ -33,7 +33,7 @@ mod fleetactions {
     use nogame::dockyard::library as dockyard;
     use nogame::fleet::library as fleet;
     use nogame::libraries::{constants, names::Names};
-    use nogame::game::models::{GamePlanet};
+    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
         PlanetResourceTimer
@@ -84,8 +84,9 @@ mod fleetactions {
                 get!(world, origin_id, PlanetPosition).position, destination
             );
             // Calculate time
+            let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
             let techs = shared::get_tech_levels(world, sender_mother_planet_id);
-            let speed = fleet::get_fleet_speed(fleet, techs);
+            let speed = fleet::get_fleet_speed(fleet, techs) * game_speed;
             let travel_time = fleet::get_flight_time(speed, distance, speed_modifier);
             // Check numeber of mission
             let active_missions_len = get!(world, sender_mother_planet_id, ActiveMissionLen).lenght;
