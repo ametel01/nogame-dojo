@@ -147,7 +147,6 @@ interface HostileMissionsProps {
 // Component
 export const HostileMissions = ({ planetId }: HostileMissionsProps) => {
   const incomingMissions = useIncomingMissions(planetId);
-  console.log('incomingMissions', incomingMissions);
 
   const displayedMissions =
     incomingMissions?.filter(shouldDisplayMission) || [];

@@ -153,9 +153,7 @@ const PlanetImage = ({ planetId, selectedColonyId }: PlanetImageArgs) => {
   }, [planetId, metadata]);
 
   const imgId =
-    selectedColonyId === 0
-      ? Number(position?.orbit)
-      : Number(colonyPosition?.orbit);
+    selectedColonyId === 0 ? position?.orbit : colonyPosition?.orbit;
   const planetImageUrl = getPlanetImage(imgId.toString() as unknown as ImageId);
 
   const findAttribute = (name: string) =>

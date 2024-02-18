@@ -44,8 +44,6 @@ const UniverseViewBox = ({
   const updatedIsNoobProtected =
     isNoobProtected && timeDifference < oneWeekInSeconds;
 
-  console.log('updatedIsNoobProtected:', updatedIsNoobProtected);
-
   const planetIdForOwnPosition =
     colonyId === 0 ? ownPlanetId : ownPlanetId * 1000 + colonyId;
 

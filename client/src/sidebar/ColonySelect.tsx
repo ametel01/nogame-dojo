@@ -3,12 +3,11 @@ import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
 import { GenerateColony } from '../components/buttons/GenerateColony';
-import { TechLevels } from '../shared/types/index';
 // import { useTechLevels } from '../panels';
-import { useDojo } from '../dojo/useDojo';
-import { useComponentValue } from '@dojoengine/react';
-import { getEntityIdFromKeys } from '@dojoengine/utils';
-import { Entity } from '@dojoengine/recs';
+// import { useDojo } from '../dojo/useDojo';
+// import { useComponentValue } from '@dojoengine/react';
+// import { getEntityIdFromKeys } from '@dojoengine/utils';
+// import { Entity } from '@dojoengine/recs';
 import { usePlanetColonies } from '../hooks/usePlanetColonies';
 import { usePlanetTechs } from '../hooks/usePlanetTechs';
 
@@ -52,14 +51,15 @@ const menuProps = {
 };
 
 const ColonySelect = ({ planetId, selectedColonyId, handleChange }: Props) => {
-  const {
-    setup: {
-      clientComponents: { ColonyCount },
-    },
-  } = useDojo();
+  // const {
+  //   setup: {
+  //     clientComponents: { ColonyCount },
+  //   },
+  // } = useDojo();
 
-  const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
+  // const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
   const coloniesArray = usePlanetColonies(planetId);
+  console.log('coloniesArray', coloniesArray);
   const techs = usePlanetTechs(planetId);
   const maxColonies = techs
     ? Math.floor(Number(techs.exocraft) / 2) +

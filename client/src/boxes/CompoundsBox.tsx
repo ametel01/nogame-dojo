@@ -9,8 +9,8 @@ const CompoundsBox = ({
   functionCallName,
   description,
   resourcesAvailable,
-  colonyId,
-}: deps.CompoundsBoxProps) => {
+}: // colonyId,
+deps.CompoundsBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const [, setShowTooltip] = deps.useState(true);
   const [costUpdate, setCostUpdate] = deps.useState({

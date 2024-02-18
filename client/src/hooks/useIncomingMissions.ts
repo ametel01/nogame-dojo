@@ -27,7 +27,6 @@ type EdgeType = {
 
 export function useIncomingMissions(planetId: number): Array<IncomingMission> {
   const [missions, setMissions] = useState<Array<IncomingMission>>([]);
-  console.log('planetId', planetId);
   const {
     setup: { graphSdk },
   } = useDojo();
@@ -40,10 +39,8 @@ export function useIncomingMissions(planetId: number): Array<IncomingMission> {
 
       // Accessing the count using the generated type
       const edges = countResponse.data.incomingMissionLenModels.edges;
-      console.log('edges', edges);
       if (edges && edges.length > 0) {
         const count = edges[0].node.entity.keys.length;
-        console.log('count', count);
         const activeMissions: Array<IncomingMission> = [];
 
         for (let i = 0; i < count; i++) {
@@ -53,7 +50,6 @@ export function useIncomingMissions(planetId: number): Array<IncomingMission> {
             mission_id: missionId,
           });
           const mission = extractMission(missionResponse);
-          console.log('missionResponse', missionResponse);
 
           if (mission) {
             if (mission.origin !== 0) {
@@ -76,7 +72,6 @@ function extractMission(response: any): IncomingMission | undefined {
   const missionModel = response.data.incomingMissionsModels?.edges?.find(
     (edge: EdgeType) => isIncomingMissionModel(edge.node.entity.models)
   )?.node.entity.models[0];
-  console.log('missionModel', missionModel);
 
   if (missionModel) {
     return {
