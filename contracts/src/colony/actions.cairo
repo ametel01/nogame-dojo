@@ -100,6 +100,18 @@ mod colonyactions {
             set!(world, ColonyPosition { planet_id, colony_id, position });
             set!(
                 world,
+                ColonyResource { planet_id, colony_id, name: Names::Resource::STEEL, amount: 500 }
+            );
+            set!(
+                world,
+                ColonyResource { planet_id, colony_id, name: Names::Resource::QUARTZ, amount: 300 }
+            );
+            set!(
+                world,
+                ColonyResource { planet_id, colony_id, name: Names::Resource::TRITIUM, amount: 100 }
+            );
+            set!(
+                world,
                 ColonyResourceTimer { planet_id, colony_id, last_collection: get_block_timestamp() }
             );
             set!(world, PlanetColoniesCount { planet_id, count: colony_id });

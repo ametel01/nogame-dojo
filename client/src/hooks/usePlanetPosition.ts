@@ -11,7 +11,7 @@ type PlanetPositionModel = {
   __typename: 'PlanetPosition';
   position: {
     system: number;
-    orbit: string;
+    orbit: number;
   };
 };
 
@@ -38,7 +38,7 @@ export function usePlanetPosition(planetId: number): Position {
             for (const model of models) {
               if (model && isPlanetPositionModel(model)) {
                 setSystem(model.position.system);
-                setOrbit(parseInt(model.position.orbit, 16));
+                setOrbit(model.position.orbit);
                 return; // Exit once the data is found
               }
             }

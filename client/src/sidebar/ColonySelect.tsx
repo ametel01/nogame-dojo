@@ -59,7 +59,6 @@ const ColonySelect = ({ planetId, selectedColonyId, handleChange }: Props) => {
 
   // const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
   const coloniesArray = usePlanetColonies(planetId);
-  console.log('coloniesArray', coloniesArray);
   const techs = usePlanetTechs(planetId);
   const maxColonies = techs
     ? Math.floor(Number(techs.exocraft) / 2) +
