@@ -5,11 +5,11 @@ import { PlanetSection } from '../planetSection/PlanetSection';
 import { ResourcesSection } from '../panels/MainTabPanel';
 import { SelectChangeEvent } from '@mui/material';
 import ColonyDashboard from '../colony/ColonyDashboard';
-import { useDojo } from '../dojo/useDojo';
+import { useDojo } from '../../dojo/useDojo';
 import { useComponentValue } from '@dojoengine/react';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Entity } from '@dojoengine/recs';
-import { Position } from '../hooks/usePlanetPosition';
+import { Position } from '../../hooks/usePlanetPosition';
 
 export const GameContainer = styled.div`
   display: grid;

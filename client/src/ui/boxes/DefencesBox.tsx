@@ -1,46 +1,27 @@
 import * as deps from './deps';
 import { InfoContainer } from './styled';
-import { useDojo } from '../dojo/useDojo';
+import { useDojo } from '../../dojo/useDojo';
 
-const ResearchBox = ({
+const DefencesBox = ({
   img,
   title,
-  functionCallName,
   level,
+  hasEnoughResources,
+  costUpdate,
+  functionCallName,
   requirementsMet,
   description,
-  resources,
-}: deps.LabBoxProps) => {
+  resourcesAvailable,
+}: deps.DefenceBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const {
     setup: {
-      systemCalls: { upgradeTech },
+      systemCalls: { buildDefence },
     },
     account,
   } = useDojo();
 
-  const upgrade = () =>
-    upgradeTech(account.account, functionCallName, quantity);
-
-  const baseCosts = deps.baseTechCost[(functionCallName as number) + 1];
-  const isExo = functionCallName === 13;
-  // Calculate the cumulative cost of the upgrade
-  const upgradeCost = deps.useMemo(() => {
-    if (quantity > 0 && level != undefined && baseCosts) {
-      const cost = deps.getCumulativeTechCost(
-        level,
-        quantity,
-        baseCosts.steel,
-        baseCosts.quartz,
-        baseCosts.tritium,
-        isExo
-      );
-      return cost;
-    }
-    return { steel: 0, quartz: 0, tritium: 0 };
-  }, [level, quantity, baseCosts, isExo]);
-
-  const hasEnoughResources = deps.calculEnoughResources(upgradeCost, resources);
+  const build = () => buildDefence(account.account, functionCallName, quantity);
 
   const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {
@@ -56,6 +37,32 @@ const ResearchBox = ({
 
   const isDisabled = buttonState === 'noResource';
 
+  // Calculate the cost based on the quantity
+  const adjustedSteel = costUpdate
+    ? quantity === 0
+      ? costUpdate.steel
+      : costUpdate.steel * quantity
+    : 0;
+  const adjustedQuartz = costUpdate
+    ? quantity === 0
+      ? costUpdate.quartz
+      : costUpdate.quartz * quantity
+    : 0;
+  const adjustedTritium = costUpdate
+    ? quantity === 0
+      ? costUpdate.tritium
+      : costUpdate.tritium * quantity
+    : 0;
+
+  // Format the calculated costs to display with commas
+  const steelDisplay = adjustedSteel ? deps.numberWithCommas(adjustedSteel) : 0;
+  const quartzDisplay = adjustedQuartz
+    ? deps.numberWithCommas(adjustedQuartz)
+    : 0;
+  const tritiumDisplay = adjustedTritium
+    ? deps.numberWithCommas(adjustedTritium)
+    : 0;
+
   const boxContent = (
     <deps.Styled.Box>
       <deps.Styled.ImageContainer>
@@ -65,23 +72,32 @@ const ResearchBox = ({
           title={title}
           description={description}
         />
+        <img
+          src={img}
+          alt={title}
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
       </deps.Styled.ImageContainer>
       <deps.Styled.SubBox>
         <deps.Styled.Title>{title}</deps.Styled.Title>
         <InfoContainer>
           <deps.Styled.ResourceContainer>
-            <deps.Styled.ResourceTitle>STAGE</deps.Styled.ResourceTitle>
-            <deps.Styled.NumberContainer>{level}</deps.Styled.NumberContainer>
+            <deps.Styled.ResourceTitle>READY</deps.Styled.ResourceTitle>
+            <deps.Styled.NumberContainer>
+              {String(level)}
+            </deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
           <deps.Styled.ResourceContainer>
             <deps.Styled.ResourceTitle>STEEL</deps.Styled.ResourceTitle>
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  resources.steel < upgradeCost.steel ? '#AB3836' : 'inherit',
+                  resourcesAvailable.steel < adjustedSteel
+                    ? '#AB3836'
+                    : 'inherit',
               }}
             >
-              {deps.numberWithCommas(upgradeCost.steel)}
+              {steelDisplay}
             </deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
           <deps.Styled.ResourceContainer>
@@ -89,10 +105,12 @@ const ResearchBox = ({
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  resources.quartz < upgradeCost.quartz ? '#AB3836' : 'inherit',
+                  resourcesAvailable.quartz < adjustedQuartz
+                    ? '#AB3836'
+                    : 'inherit',
               }}
             >
-              {deps.numberWithCommas(upgradeCost.quartz)}
+              {quartzDisplay}
             </deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
           <deps.Styled.ResourceContainer>
@@ -100,38 +118,38 @@ const ResearchBox = ({
             <deps.Styled.NumberContainer
               style={{
                 color:
-                  resources.tritium < upgradeCost.tritium
+                  resourcesAvailable.tritium < adjustedTritium
                     ? '#AB3836'
                     : 'inherit',
               }}
             >
-              {deps.numberWithCommas(upgradeCost.tritium)}
+              {tritiumDisplay}
             </deps.Styled.NumberContainer>
           </deps.Styled.ResourceContainer>
         </InfoContainer>
         <deps.Styled.ResourceContainer>
-          <deps.Tooltip title="Select the number of levels to upgrade" arrow>
+          <deps.Tooltip title="Select the number of units to build" arrow>
             <deps.Input
               type="number"
               value={quantity}
-              onChange={(e) => {
-                if (e.target.value === '') {
-                  setQuantity(0);
-                } else {
-                  setQuantity(parseInt(e.target.value, 10));
-                }
-              }}
+              defaultValue={1}
               size="sm"
               color="neutral"
               variant="soft"
               style={{ width: '80px' }}
+              onChange={(e) => {
+                const newValue = parseInt(e.target.value, 10);
+                if (!isNaN(newValue) && newValue > 0) {
+                  setQuantity(newValue);
+                }
+              }}
             />
           </deps.Tooltip>
         </deps.Styled.ResourceContainer>
         <deps.Styled.ButtonContainer>
-          <deps.ButtonUpgrade
-            name={`Upgrade ${title}`}
-            callback={upgrade}
+          <deps.ButtonBuild
+            name={`Build ${quantity} ${title}`}
+            callback={build}
             // tx={tx?.transaction_hash}
             disabled={isDisabled}
             noRequirements={hasRequirements}
@@ -140,8 +158,7 @@ const ResearchBox = ({
       </deps.Styled.SubBox>
     </deps.Styled.Box>
   );
-
   return boxContent;
 };
 
-export default ResearchBox;
+export default DefencesBox;

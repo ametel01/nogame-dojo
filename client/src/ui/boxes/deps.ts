@@ -2,47 +2,47 @@ import React, { ReactNode, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Input } from '@mui/joy';
 import Tooltip from '@mui/material/Tooltip';
-import * as Styled from '../shared/styled/Box';
+import * as Styled from '../../shared/styled/Box';
 import {
   numberWithCommas,
   calculEnoughResources,
   convertPositionToNumbers,
-} from '../shared/utils';
-import DescriptionModal from '../components/modals/Description';
+} from '../../shared/utils';
+import DescriptionModal from '../../components/modals/Description';
 
-import { Resources } from '../hooks/usePlanetResources';
-export type { Resources } from '../hooks/usePlanetResources';
+import { Resources } from '../../hooks/usePlanetResources';
+export type { Resources } from '../../hooks/usePlanetResources';
 
-export type { Compounds } from '../hooks/usePlanetCompounds';
+export type { Compounds } from '../../hooks/usePlanetCompounds';
 
-import { Techs } from '../hooks/usePlanetTechs';
-export type { Techs } from '../hooks/usePlanetTechs';
+import { Techs } from '../../hooks/usePlanetTechs';
+export type { Techs } from '../../hooks/usePlanetTechs';
 
-import { Defences } from '../hooks/usePlanetDefences';
-export type { Defences } from '../hooks/usePlanetDefences';
+import { Defences } from '../../hooks/usePlanetDefences';
+export type { Defences } from '../../hooks/usePlanetDefences';
 
-import { Fleet } from '../hooks/usePlanetShips';
-export type { Fleet } from '../hooks/usePlanetShips';
+import { Fleet } from '../../hooks/usePlanetShips';
+export type { Fleet } from '../../hooks/usePlanetShips';
 
-import { Position } from '../hooks/usePlanetPosition';
-export type { Position } from '../hooks/usePlanetPosition';
+import { Position } from '../../hooks/usePlanetPosition';
+export type { Position } from '../../hooks/usePlanetPosition';
 
 import { CircularProgress } from '@mui/material';
-import PlanetModal from '../components/modals/PlanetOverview';
-import DebrisFieldView from '../components/ui/DebrisFieldView';
-import ButtonAttackPlanet from '../components/buttons/ButtonAttackPlanet';
+import PlanetModal from '../../components/modals/PlanetOverview';
+import DebrisFieldView from '../../components/ui/DebrisFieldView';
+import ButtonAttackPlanet from '../../components/buttons/ButtonAttackPlanet';
 import { BigNumberish } from 'starknet';
-export { usePlanetPosition } from '../hooks/usePlanetPosition';
+export { usePlanetPosition } from '../../hooks/usePlanetPosition';
 
-export { ButtonUpgrade } from '../components/ui/Button';
-export { ButtonBuild } from '../components/ui/Button';
-export { getCumulativeTechCost } from '../shared/utils/Formulas';
-export { baseTechCost } from '../constants/costs';
-export { type ShipsLevels, type DefenceLevels } from '../shared/types';
+export { ButtonUpgrade } from '../../components/ui/Button';
+export { ButtonBuild } from '../../components/ui/Button';
+export { getCumulativeTechCost } from '../../shared/utils/Formulas';
+export { baseTechCost } from '../../constants/costs';
+export { type ShipsLevels, type DefenceLevels } from '../../shared/types';
 export {
   getCompoundCost,
   getCumulativeEnergyChange,
-} from '../shared/utils/Formulas';
+} from '../../shared/utils/Formulas';
 
 export {
   React,

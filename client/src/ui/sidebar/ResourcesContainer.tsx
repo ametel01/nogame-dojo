@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
-import { numberWithCommas } from '../shared/utils';
+import { numberWithCommas } from '../../shared/utils';
 // Asset imports
-import ironImg from '../assets/gameElements/resources/steel-1.webp';
-import quartzImg from '../assets/gameElements/resources/quartz-2.webp';
-import tritiumImg from '../assets/gameElements/resources/tritium-1.webp';
-import energyImg from '../assets/gameElements/resources/energy-2.webp';
+import ironImg from '../../assets/gameElements/resources/steel-1.webp';
+import quartzImg from '../../assets/gameElements/resources/quartz-2.webp';
+import tritiumImg from '../../assets/gameElements/resources/tritium-1.webp';
+import energyImg from '../../assets/gameElements/resources/energy-2.webp';
 import CompoundsFormulas, {
   getCelestiaProduction,
-} from '../shared/utils/Formulas';
-import { Position } from '../shared/types';
-import { usePlanetCompounds } from '../hooks/usePlanetCompounds';
-import { useColonyCompounds } from '../hooks/useColonyCompounds';
-import { useColonyResources } from '../hooks/useColonyResources';
-import { usePlanetDefences } from '../hooks/usePlanetDefences';
-import { useColonyDefences } from '../hooks/useColonyDefences';
-import { useDojo } from '../dojo/useDojo';
-import { Resources } from '../types';
+} from '../../shared/utils/Formulas';
+import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
+import { useColonyCompounds } from '../../hooks/useColonyCompounds';
+import { useColonyResources } from '../../hooks/useColonyResources';
+import { usePlanetDefences } from '../../hooks/usePlanetDefences';
+import { useColonyDefences } from '../../hooks/useColonyDefences';
+import { useDojo } from '../../dojo/useDojo';
+import { Resources } from '../../types';
+import { Position } from '../../hooks/usePlanetPosition';
 
 const Container = styled.div`
   display: flex;

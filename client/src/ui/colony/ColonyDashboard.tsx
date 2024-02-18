@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 // import { PlanetSection } from '../components/ui/PlanetSection';
 import { ColonyResourcesSection } from './ColonyResourcesSection';
-import { useColonyCompounds } from '../hooks/useColonyCompounds';
-import { useDojo } from '../dojo/useDojo';
-import { useColonyDefences } from '../hooks/useColonyDefences';
-import { useColonyShips } from '../hooks/useColonyShips';
-import { Resources } from '../hooks/usePlanetResources';
+import { useColonyCompounds } from '../../hooks/useColonyCompounds';
+import { useDojo } from '../../dojo/useDojo';
+import { useColonyDefences } from '../../hooks/useColonyDefences';
+import { useColonyShips } from '../../hooks/useColonyShips';
+import { Resources } from '../../hooks/usePlanetResources';
 
 export const GameContainer = styled.div`
   display: grid;

@@ -2869,6 +2869,7 @@ export type GetPlanetColoniesCountQueryVariables = Exact<{
 }>;
 
 export type GetPlanetColoniesCountQuery = {
+  data: any;
   __typename?: 'World__Query';
   planetColoniesCountModels?: {
     __typename?: 'PlanetColoniesCountConnection';

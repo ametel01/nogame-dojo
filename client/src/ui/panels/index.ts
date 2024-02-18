@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import { BigNumberish } from 'starknet';
 
-import steelImg from '../assets/gameElements/compounds/steel4.webp';
-import quartzImg from '../assets/gameElements/compounds/quartz4.webp';
-import tritiumImg from '../assets/gameElements/compounds/tritium4.webp';
-import energyImg from '../assets/gameElements/compounds/energy4.webp';
-import labImg from '../assets/gameElements/compounds/lab4.webp';
-import dockyardImg from '../assets/gameElements/compounds/dockyard4.webp';
-import armourImg from '../assets/gameElements/techs/armour4.webp';
-import beamImg from '../assets/gameElements/techs/beam4.webp';
-import ionImg from '../assets/gameElements/techs/ion4.webp';
-import plasmaImg from '../assets/gameElements/techs/plasma4.webp';
-import spacetimeImg from '../assets/gameElements/techs/spacetime4.webp';
-import warpEnginImg from '../assets/gameElements/techs/warp4.webp';
-import combustionImg from '../assets/gameElements/techs/combustion4.webp';
-import thrustImg from '../assets/gameElements/techs/thrust4.webp';
-import weaponsImg from '../assets/gameElements/techs/weapons4.webp';
-import digitalImg from '../assets/gameElements/techs/digital4.webp';
-import shieldImg from '../assets/gameElements/techs/shield4.webp';
-import energyTechImg from '../assets/gameElements/techs/energy4.webp';
-import exoImg from '../assets/gameElements/techs/exocraft.webp';
-import armadeImg from '../assets/gameElements/ships/armade4.webp';
-import frigateImg from '../assets/gameElements/ships/frigate4.webp';
-import carrierImg from '../assets/gameElements/ships/carrier4.webp';
-import sparrowImg from '../assets/gameElements/ships/sparrow4.webp';
-import scraperImg from '../assets/gameElements/ships/scraper4.webp';
-import celestiaImg from '../assets/gameElements/ships/celestia4.webp';
-import blasterImg from '../assets/gameElements/defences/blaster4.webp';
-import beamCannonImg from '../assets/gameElements/defences/beam4.webp';
-import astralLauncherImg from '../assets/gameElements/defences/astral4.webp';
-import plasmaCannonImg from '../assets/gameElements/defences/plasma4.webp';
+import steelImg from '../../assets/gameElements/compounds/steel4.webp';
+import quartzImg from '../../assets/gameElements/compounds/quartz4.webp';
+import tritiumImg from '../../assets/gameElements/compounds/tritium4.webp';
+import energyImg from '../../assets/gameElements/compounds/energy4.webp';
+import labImg from '../../assets/gameElements/compounds/lab4.webp';
+import dockyardImg from '../../assets/gameElements/compounds/dockyard4.webp';
+import armourImg from '../../assets/gameElements/techs/armour4.webp';
+import beamImg from '../../assets/gameElements/techs/beam4.webp';
+import ionImg from '../../assets/gameElements/techs/ion4.webp';
+import plasmaImg from '../../assets/gameElements/techs/plasma4.webp';
+import spacetimeImg from '../../assets/gameElements/techs/spacetime4.webp';
+import warpEnginImg from '../../assets/gameElements/techs/warp4.webp';
+import combustionImg from '../../assets/gameElements/techs/combustion4.webp';
+import thrustImg from '../../assets/gameElements/techs/thrust4.webp';
+import weaponsImg from '../../assets/gameElements/techs/weapons4.webp';
+import digitalImg from '../../assets/gameElements/techs/digital4.webp';
+import shieldImg from '../../assets/gameElements/techs/shield4.webp';
+import energyTechImg from '../../assets/gameElements/techs/energy4.webp';
+import exoImg from '../../assets/gameElements/techs/exocraft.webp';
+import armadeImg from '../../assets/gameElements/ships/armade4.webp';
+import frigateImg from '../../assets/gameElements/ships/frigate4.webp';
+import carrierImg from '../../assets/gameElements/ships/carrier4.webp';
+import sparrowImg from '../../assets/gameElements/ships/sparrow4.webp';
+import scraperImg from '../../assets/gameElements/ships/scraper4.webp';
+import celestiaImg from '../../assets/gameElements/ships/celestia4.webp';
+import blasterImg from '../../assets/gameElements/defences/blaster4.webp';
+import beamCannonImg from '../../assets/gameElements/defences/beam4.webp';
+import astralLauncherImg from '../../assets/gameElements/defences/astral4.webp';
+import plasmaCannonImg from '../../assets/gameElements/defences/plasma4.webp';
 
 // Re-exporting named exports directly
 export { StyledTabPanel } from './styleds';
@@ -40,9 +40,9 @@ export {
   UpgradeType,
   type ShipsCost,
   type DefenceCost,
-} from '../shared/types';
+} from '../../shared/types';
 
-export { DefenceBuildType, ShipBuildType, TechUpgradeType } from '../types';
+export { DefenceBuildType, ShipBuildType, TechUpgradeType } from '../../types';
 
 export {
   armourRequirements,
@@ -69,7 +69,7 @@ export {
   astralRequirements,
   plasmaRequirements,
   exoRequirements,
-} from '../shared/utils';
+} from '../../shared/utils';
 
 export {
   ArmourDescription,
@@ -85,7 +85,7 @@ export {
   WarpDescription,
   WeaponsDescription,
   ExoDescription,
-} from '../components/descriptions/LabPopover';
+} from '../../components/descriptions/LabPopover';
 
 export {
   EnergyPlantDescription,
@@ -94,7 +94,7 @@ export {
   TritiumMineDescription,
   LabDescription,
   DockyardDescription,
-} from '../components/descriptions/CompoundsPopover';
+} from '../../components/descriptions/CompoundsPopover';
 
 export {
   CarrierDescription,
@@ -103,36 +103,36 @@ export {
   SparrowDescription,
   FrigateDescription,
   ArmadeDescription,
-} from '../components/descriptions/DockyardPopover';
+} from '../../components/descriptions/DockyardPopover';
 
 export {
   BlasterDescription,
   BeamDescription as BeamCannonDescription,
   AstralDescription,
   PlasmaDescription as PlasmaCannotDescription,
-} from '../components/descriptions/DefencesPopover';
+} from '../../components/descriptions/DefencesPopover';
 
 import {
   TechEntities,
   EnergyCost,
   ShipsCost,
   DefenceCost,
-} from '../shared/types';
+} from '../../shared/types';
 
-import { Compounds } from '../hooks/usePlanetCompounds';
-export type { Compounds } from '../hooks/usePlanetCompounds';
+import { Compounds } from '../../hooks/usePlanetCompounds';
+export type { Compounds } from '../../hooks/usePlanetCompounds';
 
-import { Resources } from '../hooks/usePlanetResources';
-export type { Resources } from '../hooks/usePlanetResources';
+import { Resources } from '../../hooks/usePlanetResources';
+export type { Resources } from '../../hooks/usePlanetResources';
 
-import { Techs } from '../hooks/usePlanetTechs';
-export type { Techs } from '../hooks/usePlanetTechs';
+import { Techs } from '../../hooks/usePlanetTechs';
+export type { Techs } from '../../hooks/usePlanetTechs';
 
-import { Defences } from '../hooks/usePlanetDefences';
-export type { Defences } from '../hooks/usePlanetDefences';
+import { Defences } from '../../hooks/usePlanetDefences';
+export type { Defences } from '../../hooks/usePlanetDefences';
 
-import { Fleet } from '../hooks/usePlanetShips';
-export type { Fleet } from '../hooks/usePlanetShips';
+import { Fleet } from '../../hooks/usePlanetShips';
+export type { Fleet } from '../../hooks/usePlanetShips';
 
 export interface CompoundConfigType {
   description: React.ReactNode;
@@ -203,15 +203,18 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import UniverseViewBox from '../boxes/UniverseViewBox';
 
-export { getPlanetImage, type ImageId } from '../shared/utils/getPlanetImage';
-export { useGetPlanetRanking } from '../components/leaderboards/utils';
+export {
+  getPlanetImage,
+  type ImageId,
+} from '../../shared/utils/getPlanetImage';
+export { useGetPlanetRanking } from '../../components/leaderboards/utils';
 // export { useCalculateWinsAndLosses } from '../reports/utils';
-export { RowCentered } from '../components/ui/Row';
+export { RowCentered } from '../../components/ui/Row';
 export {
   ResourceTab,
   ResourcesTabs,
   ResourcesTabList,
-} from '../shared/styled/Tabs';
+} from '../../shared/styled/Tabs';
 export { ResearchTabPanel } from './ResearchTab';
 export { DockyardTabPanel } from './DockyardTab';
 export { DefenceTabPanel } from './DefencesTab';
@@ -229,8 +232,8 @@ import {
 
 import { Typography } from '@mui/material';
 import DefencesBox from '../boxes/DefencesBox';
-import { Planet } from '../hooks/useGeneratedPlanets';
-export { getBaseShipsCost, getBaseDefenceCost } from '../constants/costs';
+import { Planet } from '../../hooks/useGeneratedPlanets';
+export { getBaseShipsCost, getBaseDefenceCost } from '../../constants/costs';
 
 export {
   React,

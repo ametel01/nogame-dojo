@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { type FC } from 'react';
 // import LogoutIcon from '@mui/icons-material/Logout';
-import NoGameLogo from '../assets/logos/NoGameLogo.webp';
-import { ColumnCenter } from '../shared/styled/Column';
-import { RowCentered } from '../components/ui/Row';
-import ConnectWalletButton from '../components/auth/ConnectWallet';
-import { GeneratePlanet } from '../components/buttons/GeneratePlanet';
+import NoGameLogo from '../../assets/logos/NoGameLogo.webp';
+import { ColumnCenter } from '../../shared/styled/Column';
+import { RowCentered } from '../../components/ui/Row';
+import ConnectWalletButton from '../../components/auth/ConnectWallet';
+import { GeneratePlanet } from '../../components/buttons/GeneratePlanet';
 // import { useGetPlanetPrice } from '../hooks/useGetPlanetPrice';
 // import RotatingLogo from '../components/ui/RotatingLogo';
 

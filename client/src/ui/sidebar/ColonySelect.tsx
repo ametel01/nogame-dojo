@@ -2,14 +2,14 @@ import React from 'react';
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
-import { GenerateColony } from '../components/buttons/GenerateColony';
+import { GenerateColony } from '../../components/buttons/GenerateColony';
 // import { useTechLevels } from '../panels';
 // import { useDojo } from '../dojo/useDojo';
 // import { useComponentValue } from '@dojoengine/react';
 // import { getEntityIdFromKeys } from '@dojoengine/utils';
 // import { Entity } from '@dojoengine/recs';
-import { usePlanetColonies } from '../hooks/usePlanetColonies';
-import { usePlanetTechs } from '../hooks/usePlanetTechs';
+import { usePlanetColonies } from '../../hooks/usePlanetColonies';
+import { usePlanetTechs } from '../../hooks/usePlanetTechs';
 
 interface Props {
   planetId: number;

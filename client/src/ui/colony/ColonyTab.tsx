@@ -1,21 +1,21 @@
 import React from 'react';
 import { StyledTabPanel } from '../panels/styleds';
-import steelImg from '../assets/gameElements/compounds/steel4.webp';
-import quartzImg from '../assets/gameElements/compounds/quartz4.webp';
-import tritiumImg from '../assets/gameElements/compounds/tritium4.webp';
-import energyImg from '../assets/gameElements/compounds/energy4.webp';
-import dockyardImg from '../assets/gameElements/compounds/dockyard4.webp';
-import { ColonyCompounds } from '../hooks/useColonyCompounds';
-import { type EnergyCost, ColonyUpgradeType } from '../shared/types';
+import steelImg from '../../assets/gameElements/compounds/steel4.webp';
+import quartzImg from '../../assets/gameElements/compounds/quartz4.webp';
+import tritiumImg from '../../assets/gameElements/compounds/tritium4.webp';
+import energyImg from '../../assets/gameElements/compounds/energy4.webp';
+import dockyardImg from '../../assets/gameElements/compounds/dockyard4.webp';
+import { ColonyCompounds } from '../../hooks/useColonyCompounds';
+import { type EnergyCost, ColonyUpgradeType } from '../../shared/types';
 import CompoundsBox from '../boxes/CompoundsBox';
-import { Resources } from '../hooks/usePlanetResources';
+import { Resources } from '../../hooks/usePlanetResources';
 import {
   EnergyPlantDescription,
   QuartzMineDescription,
   SteelMineDescription,
   TritiumMineDescription,
   DockyardDescription,
-} from '../components/descriptions/CompoundsPopover';
+} from '../../components/descriptions/CompoundsPopover';
 
 interface CompoundConfigType {
   description: React.ReactNode;

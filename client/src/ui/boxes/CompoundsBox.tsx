@@ -1,6 +1,6 @@
 import * as deps from './deps';
 import { InfoContainer } from './styled';
-import { useDojo } from '../dojo/useDojo';
+import { useDojo } from '../../dojo/useDojo';
 
 const CompoundsBox = ({
   img,

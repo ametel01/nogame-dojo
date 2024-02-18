@@ -1,12 +1,12 @@
 import * as deps from '.';
 
 import { useEffect, useState } from 'react';
-import { usePlanetCompounds } from '../hooks/usePlanetCompounds';
-import { usePlanetTechs } from '../hooks/usePlanetTechs';
-import { usePlanetShips } from '../hooks/usePlanetShips';
-import { usePlanetDefences } from '../hooks/usePlanetDefences';
-import { useDojo } from '../dojo/useDojo';
-import { Resources } from '../types';
+import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
+import { usePlanetTechs } from '../../hooks/usePlanetTechs';
+import { usePlanetShips } from '../../hooks/usePlanetShips';
+import { usePlanetDefences } from '../../hooks/usePlanetDefences';
+import { useDojo } from '../../dojo/useDojo';
+import { Resources } from '../../types';
 
 export const ResourcesSection = ({
   planetId,

@@ -1,15 +1,18 @@
 import React, { type FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import Tooltip from '@mui/material/Tooltip';
-import { ImageIcon } from '../components/icons/Image';
-import { dataToNumber, numberWithCommas } from '../shared/utils';
+import { ImageIcon } from '../../components/icons/Image';
+import { dataToNumber, numberWithCommas } from '../../shared/utils';
 
 import { styled, Box } from '@mui/system';
 import { Typography } from '@mui/material';
-import { RowCentered } from '../components/ui/Row';
-import { HostileMissions } from '../components/ui/HostileMissions';
-import { getPlanetImage, type ImageId } from '../shared/utils/getPlanetImage';
-import { usePlanetPosition } from '../hooks/usePlanetPosition';
+import { RowCentered } from '../../components/ui/Row';
+import { HostileMissions } from '../../components/ui/HostileMissions';
+import {
+  getPlanetImage,
+  type ImageId,
+} from '../../shared/utils/getPlanetImage';
+import { usePlanetPosition } from '../../hooks/usePlanetPosition';
 
 // pink-capable-snake-964.mypinata.cloud/ipfs/QmZkpEbRphWPcZEmLZV7Z9C5jUvMUvPbRHYE42NMrgArQQ/
 const IPFS_BASE_URL = 'https://pink-capable-snake-964.mypinata.cloud/ipfs';

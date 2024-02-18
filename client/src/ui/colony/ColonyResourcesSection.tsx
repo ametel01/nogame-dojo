@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
-import { RowCentered } from '../components/ui/Row';
+import { RowCentered } from '../../components/ui/Row';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PrecisionManufacturing, Security } from '@mui/icons-material';
 import {
   ResourceTab,
   ResourcesTabs,
   ResourcesTabList,
-} from '../shared/styled/Tabs';
-import { ColonyCompounds } from '../hooks/useColonyCompounds';
-import { Techs } from '../hooks/usePlanetTechs';
-import { Resources } from '../hooks/usePlanetResources';
-import { Fleet } from '../hooks/usePlanetShips';
-import { Defences } from '../hooks/usePlanetDefences';
-import { type DefenceCost, type ShipsCost } from '../shared/types';
+} from '../../shared/styled/Tabs';
+import { ColonyCompounds } from '../../hooks/useColonyCompounds';
+import { Techs } from '../../hooks/usePlanetTechs';
+import { Resources } from '../../hooks/usePlanetResources';
+import { Fleet } from '../../hooks/usePlanetShips';
+import { Defences } from '../../hooks/usePlanetDefences';
+import { type DefenceCost, type ShipsCost } from '../../shared/types';
 import { Typography } from '@mui/material';
-import { getBaseDefenceCost, getBaseShipsCost } from '../constants/costs';
+import { getBaseDefenceCost, getBaseShipsCost } from '../../constants/costs';
 import { DefenceTabPanel } from '../panels/DefencesTab';
 import { ColonyCompoundTabPanel } from './ColonyTab';
 import RocketIcon from '@mui/icons-material/Rocket';
 import { DockyardTabPanel } from '../panels/DockyardTab';
 import { UniverseViewTabPanel } from '../panels/UniverseViewTab';
 import { Explore } from '@mui/icons-material';
-import { usePlanetTechs } from '../hooks/usePlanetTechs';
+import { usePlanetTechs } from '../../hooks/usePlanetTechs';
 
 interface ResourcesSectionArgs {
   planetId: number;
