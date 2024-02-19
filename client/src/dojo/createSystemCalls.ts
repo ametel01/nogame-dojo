@@ -1,11 +1,5 @@
 import { Account, BigNumberish } from 'starknet';
-// import { Entity, getComponentValue } from '@dojoengine/recs';
-// import { ClientComponents } from './createClientComponents';
-import {
-  //   getEntityIdFromKeys,
-  getEvents,
-  setComponentsFromEvents,
-} from '@dojoengine/utils';
+import { getEvents, setComponentsFromEvents } from '@dojoengine/utils';
 import { ContractComponents } from './generated/contractComponents';
 import type { IWorld } from './generated/generated';
 import { DojoProvider } from '@dojoengine/core';
@@ -173,6 +167,7 @@ export function createSystemCalls(
     account: Account,
     fleet: Fleet,
     destination: Position,
+    cargo: Resources,
     missionType: number,
     speedModifier: number,
     colonyId: number
@@ -184,7 +179,7 @@ export function createSystemCalls(
         'send_fleet',
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        [fleet, destination, missionType, speedModifier, colonyId]
+        [fleet, destination, cargo, missionType, speedModifier, colonyId]
       );
 
       setComponentsFromEvents(
