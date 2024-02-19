@@ -1,17 +1,9 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import Button from '@mui/material/Button';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Modal from '@mui/material/Modal';
-// import CloseIcon from '@mui/icons-material/Close';
-import Box from '@mui/material/Box';
-import { styled } from '@mui/system';
+import { Box } from '@mui/system';
 import { useDojo } from '../../dojo/useDojo';
-// import { useConnect } from '@starknet-react/core';
-// import argenWallet from '../../assets/uiIcons/argent.png';
-// import braavosWallet from '../../assets/uiIcons/braavos.svg';
-// import ArgentMobileWalletIcon from './ArgentMobileWallet';
-// import ArgentWebWalletIcon from './ArgentWebWallet';
 
 const StyledBox = styled(Box)({
   fontWeight: 600,
@@ -25,74 +17,9 @@ const StyledBox = styled(Box)({
   borderRadius: 16,
   boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
   padding: '24px 12px',
-  // display: "grid",
   display: 'flex',
   flexDirection: 'column',
   width: '30%',
-});
-
-// const HeaderDiv = styled('div')({
-//   display: 'flex',
-//   justifyContent: 'space-between',
-//   alignItems: 'center',
-//   marginBottom: '12px',
-//   fontWeight: 'bold',
-// });
-
-// const CloseStyledIcon = styled(CloseIcon)({
-//   cursor: 'pointer',
-//   padding: '0 8px',
-//   fontSize: '2em',
-//   position: 'absolute',
-//   top: 8, // You can adjust this value as needed
-//   right: 8, // You can adjust this value as needed
-//   transition: 'boxShadow 0.3s ease', // Smooth transition for the shadow on hover
-
-//   '&:hover': {
-//     boxShadow: '0px 0px 10px 3px rgba(0, 0, 0, 0.2)', // Circle shadow effect
-//     borderRadius: '50%', // Ensures the shadow takes a circular form
-//   },
-// });
-
-const StyledUl = styled('ul')({
-  padding: '8px',
-  flexGrow: 1,
-});
-
-const StyledLi = styled('li')({
-  listStyleType: 'none',
-  margin: '8px',
-});
-
-// const ConnectorText = styled('span')({
-//   flexGrow: 1,
-//   textAlign: 'center',
-//   fontWeight: 'bold',
-// });
-
-// const DisclaimerText = styled('div')({
-//   fontSize: '12px',
-//   fontWeight: '400',
-//   width: '100%',
-//   margin: '2px auto',
-//   textAlign: 'center',
-// });
-
-const ToolbarWalletButton = styled(Button)({
-  width: 'auto',
-  borderRadius: 8,
-  padding: '8px 32px',
-  fontWeight: 'bold',
-  textTransform: 'capitalize',
-  letterSpacing: '0.1em',
-  backgroundColor: '#4A63AA', // Slightly lighter background for the WalletButton
-  border: '1px solid #28408F', // Darker border for definition
-  display: 'flex',
-  color: '#F4F3EE',
-  justifyContent: 'center',
-  '&:hover': {
-    background: '#445C9C', // Slightly lighter than #1B1E2A for a subtle hover effect
-  },
 });
 
 const WalletButton = styled(Button)({
@@ -110,14 +37,22 @@ const WalletButton = styled(Button)({
   },
 });
 
-export default function ConnectWallet() {
-  const [open, setOpen] = React.useState(false);
-  const toggleModal = () => {
-    setOpen((prevState) => !prevState);
-  };
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
+const StyledUl = styled('ul')({
+  padding: '8px',
+  flexGrow: 1,
+});
+
+const StyledLi = styled('li')({
+  listStyleType: 'none',
+  margin: '8px',
+});
+
+interface BurnerModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export const BurnerModal = ({ open, onClose }: BurnerModalProps) => {
   const { account } = useDojo();
 
   const [clipboardStatus, setClipboardStatus] = useState({
@@ -152,15 +87,9 @@ export default function ConnectWallet() {
 
   return (
     <>
-      <ToolbarWalletButton
-        startIcon={<AccountBalanceWalletIcon />}
-        onClick={toggleModal}
-      >
-        Create Burner
-      </ToolbarWalletButton>
       <Modal
         open={open}
-        onClose={toggleModal}
+        onClose={onClose}
         aria-label="Connect Wallet Modal"
         disableAutoFocus={true}
       >
@@ -216,4 +145,4 @@ export default function ConnectWallet() {
       </Modal>
     </>
   );
-}
+};

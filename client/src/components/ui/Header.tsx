@@ -7,8 +7,8 @@ import { FleetMovements } from './FleetMovements';
 import { Link } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
-import WalletHeader from './WalletHeader';
-import ConnectWallet from '../auth/ConnectWallet';
+import WalletHeader from '../../ui/wallet/WalletHeader';
+// import ConnectWallet from '../../ui/wallet/ConnectWallet';
 // import { MultiCallTransaction } from '../../multicall/MultiCallTransaction';
 import { useDojo } from '../../dojo/useDojo';
 
@@ -65,7 +65,7 @@ const Header = ({ planetId }: Props) => {
             DashBoard
           </Link>
         </HeaderButton>
-        <ConnectWallet />
+        {/* <ConnectWallet /> */}
         <FleetMovements planetId={planetId || 0} />
 
         {/* <HeaderButton>
