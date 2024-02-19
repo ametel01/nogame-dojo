@@ -1,9 +1,9 @@
-use nogame::data::types::ERC20s;
+use nogame::data::types::Resources;
 
 #[starknet::interface]
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
-    fn get_resources_available(self: @TContractState, planet_id: u32) -> ERC20s;
+    fn get_resources_available(self: @TContractState, planet_id: u32) -> Resources;
 }
 
 
@@ -17,7 +17,7 @@ mod planetactions {
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
-    use nogame::data::types::{Position, ERC20s, CompoundsLevels};
+    use nogame::data::types::{Position, Resources, CompoundsLevels};
     use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{
         GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
@@ -75,7 +75,7 @@ mod planetactions {
             emit!(world, PlanetGenerated { planet_id, position, account: caller, });
         }
 
-        fn get_resources_available(self: @ContractState, planet_id: u32) -> ERC20s {
+        fn get_resources_available(self: @ContractState, planet_id: u32) -> Resources {
             let world = self.world_dispatcher.read();
             let compounds = CompoundsLevels {
                 steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,

@@ -1,5 +1,5 @@
 use nogame::data::types::{
-    Position, CompoundUpgradeType, ERC20s, ShipBuildType, DefenceBuildType, TechLevels,
+    Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
     CompoundsLevels, Fleet, Defences
 };
 
@@ -13,13 +13,13 @@ trait IColonyActions<TState> {
     fn process_defence_build(
         ref self: TState, colony_id: u8, name: DefenceBuildType, quantity: u32,
     );
-    fn get_resources_available(ref self: TState, planet_id: u32, colony_id: u8) -> ERC20s;
+    fn get_resources_available(ref self: TState, planet_id: u32, colony_id: u8) -> Resources;
 }
 
 #[dojo::contract]
 mod colonyactions {
     use nogame::data::types::{
-        Position, CompoundUpgradeType, ERC20s, ShipBuildType, DefenceBuildType, TechLevels,
+        Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
         CompoundsLevels, Fleet, Defences
     };
     use nogame::colony::models::{
@@ -56,19 +56,19 @@ mod colonyactions {
     struct CompoundSpent {
         planet_id: u32,
         quantity: u8,
-        spent: ERC20s
+        spent: Resources
     }
     #[derive(Drop, starknet::Event)]
     struct FleetSpent {
         planet_id: u32,
         quantity: u32,
-        spent: ERC20s
+        spent: Resources
     }
     #[derive(Drop, starknet::Event)]
     struct DefenceSpent {
         planet_id: u32,
         quantity: u32,
-        spent: ERC20s
+        spent: Resources
     }
 
     #[abi(embed_v0)]
@@ -152,7 +152,7 @@ mod colonyactions {
 
         fn get_resources_available(
             ref self: ContractState, planet_id: u32, colony_id: u8
-        ) -> ERC20s {
+        ) -> Resources {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             get_colony_resources(world, planet_id, colony_id)
@@ -169,11 +169,11 @@ mod colonyactions {
         colony_id: u8,
         component: CompoundUpgradeType,
         quantity: u8
-    ) -> ERC20s {
+    ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
-        let mut cost: ERC20s = Default::default();
+        let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
                 cost = compound::cost::steel(compounds.steel, quantity);
@@ -269,13 +269,13 @@ mod colonyactions {
         colony_id: u8,
         component: ShipBuildType,
         quantity: u32,
-    ) -> ERC20s {
+    ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         let ships_levels = get_colony_ships(world, planet_id, colony_id);
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
-        let mut cost: ERC20s = Default::default();
+        let mut cost: Resources = Default::default();
         match component {
             ShipBuildType::Carrier => {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().carrier);
@@ -377,14 +377,14 @@ mod colonyactions {
         colony_id: u8,
         component: DefenceBuildType,
         quantity: u32,
-    ) -> ERC20s {
+    ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         let defences_levels = get_colony_defences(world, planet_id, colony_id);
         let costs = defence::get_defences_unit_cost();
         collect(world, planet_id, colony_id, compounds);
         let resource_available = get_colony_resources(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
-        let mut cost: ERC20s = Default::default();
+        let mut cost: Resources = Default::default();
         match component {
             DefenceBuildType::Celestia => {
                 cost = defence::get_defences_cost(quantity, costs.celestia);
@@ -480,9 +480,9 @@ mod colonyactions {
         cost
     }
 
-    fn get_colony_resources(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> ERC20s {
+    fn get_colony_resources(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> Resources {
         let uni_speed = get!(world, constants::GAME_ID, GameSetup).speed;
-        ERC20s {
+        Resources {
             steel: get!(world, (planet_id, colony_id, Names::Resource::STEEL), ColonyResource)
                 .amount
                 * uni_speed.into(),
@@ -587,7 +587,11 @@ mod colonyactions {
 
 
     fn pay_resources(
-        world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: ERC20s, cost: ERC20s
+        world: IWorldDispatcher,
+        planet_id: u32,
+        colony_id: u8,
+        available: Resources,
+        cost: Resources
     ) {
         if cost.steel > 0 {
             set!(
@@ -632,7 +636,11 @@ mod colonyactions {
     }
 
     fn receive_resources(
-        world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: ERC20s, amount: ERC20s
+        world: IWorldDispatcher,
+        planet_id: u32,
+        colony_id: u8,
+        available: Resources,
+        amount: Resources
     ) {
         if amount.steel > 0 {
             set!(
@@ -677,7 +685,7 @@ mod colonyactions {
 
     fn calculate_production(
         world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels
-    ) -> ERC20s {
+    ) -> Resources {
         let time_now = starknet::get_block_timestamp();
         let last_collection_time = get!(world, (planet_id, colony_id), ColonyResourceTimer)
             .last_collection;
@@ -720,10 +728,10 @@ mod colonyactions {
                 tritium_available, energy_available, energy_required
             );
 
-            return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
+            return Resources { steel: _steel, quartz: _quartz, tritium: _tritium, };
         }
 
-        ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
+        Resources { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
     }
 }
 

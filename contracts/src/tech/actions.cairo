@@ -10,7 +10,7 @@ mod techactions {
     use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
     use nogame::compound::models::{PlanetCompounds};
     use nogame::compound::library as compound;
-    use nogame::data::types::{TechLevels, TechUpgradeType, ERC20s};
+    use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
     use nogame::defence::models::{PlanetDefences};
     use nogame::libraries::names::Names;
     use nogame::libraries::constants;
@@ -31,7 +31,7 @@ mod techactions {
     struct TechSpent {
         planet_id: u32,
         quantity: u8,
-        spent: ERC20s
+        spent: Resources
     }
 
     #[abi(embed_v0)]
@@ -47,13 +47,13 @@ mod techactions {
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: TechUpgradeType, quantity: u8
-    ) -> ERC20s {
+    ) -> Resources {
         let compounds = shared::get_compound_levels(world, planet_id);
         let tech_levels = shared::get_tech_levels(world, planet_id);
         let base_tech_cost = tech::base_tech_costs();
         shared::collect(world, planet_id, compounds);
         let available_resources = shared::get_resources_available(world, planet_id);
-        let mut cost: ERC20s = Default::default();
+        let mut cost: Resources = Default::default();
 
         match component {
             TechUpgradeType::Energy => {

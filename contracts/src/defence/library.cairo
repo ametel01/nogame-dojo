@@ -1,7 +1,7 @@
-use nogame::data::types::{ERC20s, TechLevels, DefencesCost};
+use nogame::data::types::{Resources, TechLevels, DefencesCost};
 
-fn get_defences_cost(quantity: u32, base_cost: ERC20s) -> ERC20s {
-    ERC20s {
+fn get_defences_cost(quantity: u32, base_cost: Resources) -> Resources {
+    Resources {
         steel: base_cost.steel * quantity.into(),
         quartz: base_cost.quartz * quantity.into(),
         tritium: base_cost.tritium * quantity.into()
@@ -10,11 +10,11 @@ fn get_defences_cost(quantity: u32, base_cost: ERC20s) -> ERC20s {
 
 fn get_defences_unit_cost() -> DefencesCost {
     DefencesCost {
-        celestia: ERC20s { steel: 0, quartz: 2000, tritium: 500 },
-        blaster: ERC20s { steel: 2000, quartz: 0, tritium: 0 },
-        beam: ERC20s { steel: 6000, quartz: 2000, tritium: 0 },
-        astral: ERC20s { steel: 20000, quartz: 15000, tritium: 2000 },
-        plasma: ERC20s { steel: 50000, quartz: 50000, tritium: 30000 },
+        celestia: Resources { steel: 0, quartz: 2000, tritium: 500 },
+        blaster: Resources { steel: 2000, quartz: 0, tritium: 0 },
+        beam: Resources { steel: 6000, quartz: 2000, tritium: 0 },
+        astral: Resources { steel: 20000, quartz: 15000, tritium: 2000 },
+        plasma: Resources { steel: 50000, quartz: 50000, tritium: 30000 },
     }
 }
 

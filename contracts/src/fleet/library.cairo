@@ -1,7 +1,7 @@
 use nogame::dockyard::library as dockyard;
 use nogame::libraries::math;
 use nogame::data::types::{
-    ERC20s, TechLevels, Debris, Fleet, Unit, UnitTrait, ShipsCost, Position, Defences,
+    Resources, TechLevels, Debris, Fleet, Unit, UnitTrait, ShipsCost, Position, Defences,
 };
 use nogame_fixed::f128::core::{exp, sqrt, pow};
 use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
@@ -470,7 +470,7 @@ fn get_debris(f_before: Fleet, f_after: Fleet, celestia: u32) -> Debris {
 }
 
 
-fn load_resources(mut resources: ERC20s, mut storage: u128) -> ERC20s {
+fn load_resources(mut resources: Resources, mut storage: u128) -> Resources {
     let mut steel_loaded = 0;
     let mut quartz_loaded = 0;
     let mut tritium_loaded = 0;
@@ -494,7 +494,7 @@ fn load_resources(mut resources: ERC20s, mut storage: u128) -> ERC20s {
         tritium_loaded += tritium_to_load;
     };
 
-    ERC20s { steel: steel_loaded, quartz: quartz_loaded, tritium: tritium_loaded, }
+    Resources { steel: steel_loaded, quartz: quartz_loaded, tritium: tritium_loaded, }
 }
 
 fn min(a: u128, b: u128) -> u128 {

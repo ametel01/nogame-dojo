@@ -1,7 +1,7 @@
-use nogame::data::types::{ERC20s, ShipsCost, TechLevels};
+use nogame::data::types::{Resources, ShipsCost, TechLevels};
 
-fn get_ships_cost(quantity: u32, cost: ERC20s) -> ERC20s {
-    ERC20s {
+fn get_ships_cost(quantity: u32, cost: Resources) -> Resources {
+    Resources {
         steel: (cost.steel * quantity.into()),
         quartz: (cost.quartz * quantity.into()),
         tritium: (cost.tritium * quantity.into())
@@ -10,12 +10,12 @@ fn get_ships_cost(quantity: u32, cost: ERC20s) -> ERC20s {
 
 fn get_ships_unit_cost() -> ShipsCost {
     ShipsCost {
-        carrier: ERC20s { steel: 2000, quartz: 2000, tritium: 0 },
-        celestia: ERC20s { steel: 0, quartz: 2000, tritium: 500 },
-        scraper: ERC20s { steel: 10000, quartz: 6000, tritium: 2000 },
-        sparrow: ERC20s { steel: 3000, quartz: 1000, tritium: 0 },
-        frigate: ERC20s { steel: 20000, quartz: 7000, tritium: 2000 },
-        armade: ERC20s { steel: 45000, quartz: 15000, tritium: 0 }
+        carrier: Resources { steel: 2000, quartz: 2000, tritium: 0 },
+        celestia: Resources { steel: 0, quartz: 2000, tritium: 500 },
+        scraper: Resources { steel: 10000, quartz: 6000, tritium: 2000 },
+        sparrow: Resources { steel: 3000, quartz: 1000, tritium: 0 },
+        frigate: Resources { steel: 20000, quartz: 7000, tritium: 2000 },
+        armade: Resources { steel: 45000, quartz: 15000, tritium: 0 }
     }
 }
 

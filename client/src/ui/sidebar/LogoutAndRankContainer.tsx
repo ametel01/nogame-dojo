@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import nogameLogo from '../../assets/logos/NoGameLogo.webp';
-
 import { numberWithCommas } from '../../shared/utils';
 import { usePlanetPoints } from '../../hooks/usePlanetPoints';
 

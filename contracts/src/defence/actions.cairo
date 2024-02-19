@@ -10,7 +10,7 @@ mod defenceactions {
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
     use nogame::libraries::constants;
-    use nogame::data::types::{DefenceBuildType, ERC20s, TechLevels, Defences};
+    use nogame::data::types::{DefenceBuildType, Resources, TechLevels, Defences};
     use nogame::defence::models::PlanetDefences;
     use nogame::defence::library as defence;
     use nogame::libraries::names::Names;
@@ -29,7 +29,7 @@ mod defenceactions {
     struct DefenceSpent {
         planet_id: u32,
         quantity: u32,
-        spent: ERC20s
+        spent: Resources
     }
 
     #[abi(embed_v0)]
@@ -48,7 +48,7 @@ mod defenceactions {
 
     fn build_component(
         world: IWorldDispatcher, planet_id: u32, component: DefenceBuildType, quantity: u32
-    ) -> ERC20s {
+    ) -> Resources {
         let techs = shared::get_tech_levels(world, planet_id);
         let compounds = shared::get_compound_levels(world, planet_id);
         let defences_levels = shared::get_defences_levels(world, planet_id);

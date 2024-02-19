@@ -10,9 +10,9 @@ use nogame::dockyard::models::PlanetShips;
 use nogame::tech::models::PlanetTechs;
 use nogame::libraries::names::Names;
 use nogame::libraries::constants;
-use nogame::data::types::{ERC20s, Fleet, TechLevels, CompoundsLevels, Defences};
+use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
 
-fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cost: ERC20s) {
+fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: Resources, cost: Resources) {
     if cost.steel > 0 {
         set!(
             world,
@@ -48,7 +48,9 @@ fn pay_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, cos
     set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
 }
 
-fn receive_resources(world: IWorldDispatcher, planet_id: u32, available: ERC20s, amount: ERC20s) {
+fn receive_resources(
+    world: IWorldDispatcher, planet_id: u32, available: Resources, amount: Resources
+) {
     if amount.steel > 0 {
         set!(
             world,
@@ -122,8 +124,8 @@ fn collect(world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels) 
     );
 }
 
-fn get_resources_available(world: IWorldDispatcher, planet_id: u32) -> ERC20s {
-    ERC20s {
+fn get_resources_available(world: IWorldDispatcher, planet_id: u32) -> Resources {
+    Resources {
         steel: get!(world, (planet_id, Names::Resource::STEEL), PlanetResource).amount,
         quartz: get!(world, (planet_id, Names::Resource::QUARTZ), PlanetResource).amount,
         tritium: get!(world, (planet_id, Names::Resource::TRITIUM), PlanetResource).amount
@@ -132,7 +134,7 @@ fn get_resources_available(world: IWorldDispatcher, planet_id: u32) -> ERC20s {
 
 fn calculate_production(
     world: IWorldDispatcher, planet_id: u32, compounds: CompoundsLevels
-) -> ERC20s {
+) -> Resources {
     let time_now = starknet::get_block_timestamp();
     let last_collection_time = get!(world, planet_id, PlanetResourceTimer).last_collection;
     let time_elapsed = time_now - last_collection_time;
@@ -174,10 +176,10 @@ fn calculate_production(
             tritium_available, energy_available, energy_required
         );
 
-        return ERC20s { steel: _steel, quartz: _quartz, tritium: _tritium, };
+        return Resources { steel: _steel, quartz: _quartz, tritium: _tritium, };
     }
 
-    ERC20s { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
+    Resources { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
 }
 
 fn get_ships_levels(world: IWorldDispatcher, planet_id: u32) -> Fleet {

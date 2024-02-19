@@ -10,7 +10,7 @@ mod dockyardactions {
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
     use nogame::libraries::constants;
-    use nogame::data::types::{ShipBuildType, ERC20s, TechLevels, Fleet};
+    use nogame::data::types::{ShipBuildType, Resources, TechLevels, Fleet};
     use nogame::defence::models::PlanetDefences;
     use nogame::dockyard::models::PlanetShips;
     use nogame::dockyard::library as dockyard;
@@ -30,7 +30,7 @@ mod dockyardactions {
     struct FleetSpent {
         planet_id: u32,
         quantity: u32,
-        spent: ERC20s
+        spent: Resources
     }
 
     #[abi(embed_v0)]
@@ -46,7 +46,7 @@ mod dockyardactions {
 
     fn build_component(
         world: IWorldDispatcher, planet_id: u32, component: ShipBuildType, quantity: u32
-    ) -> ERC20s {
+    ) -> Resources {
         let techs = shared::get_tech_levels(world, planet_id);
         let compounds = shared::get_compound_levels(world, planet_id);
         let ships_levels = shared::get_ships_levels(world, planet_id);

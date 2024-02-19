@@ -31,51 +31,51 @@ impl PositionZeroable of Zeroable<Position> {
 
 
 #[derive(Copy, Default, Drop, Serde, Introspect, Print, PartialOrd)]
-struct ERC20s {
+struct Resources {
     steel: u128,
     quartz: u128,
     tritium: u128,
 }
 
-impl ERC20sPartialOrd of PartialOrd<ERC20s> {
-    fn le(lhs: ERC20s, rhs: ERC20s) -> bool {
+impl ResourcePartialOrd of PartialOrd<Resources> {
+    fn le(lhs: Resources, rhs: Resources) -> bool {
         return (lhs.steel <= rhs.steel && lhs.quartz <= rhs.quartz && lhs.tritium <= rhs.tritium);
     }
-    fn ge(lhs: ERC20s, rhs: ERC20s) -> bool {
+    fn ge(lhs: Resources, rhs: Resources) -> bool {
         return (lhs.steel >= rhs.steel && lhs.quartz >= rhs.quartz && lhs.tritium >= rhs.tritium);
     }
-    fn lt(lhs: ERC20s, rhs: ERC20s) -> bool {
+    fn lt(lhs: Resources, rhs: Resources) -> bool {
         return (lhs.steel < rhs.steel && lhs.quartz < rhs.quartz && lhs.tritium < rhs.tritium);
     }
-    fn gt(lhs: ERC20s, rhs: ERC20s) -> bool {
+    fn gt(lhs: Resources, rhs: Resources) -> bool {
         return (lhs.steel > rhs.steel && lhs.quartz > rhs.quartz && lhs.tritium > rhs.tritium);
     }
 }
 
-impl ERC20Zeroable of Zeroable<ERC20s> {
-    fn zero() -> ERC20s {
-        ERC20s { steel: 0, quartz: 0, tritium: 0 }
+impl ERC20Zeroable of Zeroable<Resources> {
+    fn zero() -> Resources {
+        Resources { steel: 0, quartz: 0, tritium: 0 }
     }
-    fn is_zero(self: ERC20s) -> bool {
+    fn is_zero(self: Resources) -> bool {
         self.steel == 0 && self.quartz == 0 && self.tritium == 0
     }
-    fn is_non_zero(self: ERC20s) -> bool {
+    fn is_non_zero(self: Resources) -> bool {
         !self.is_zero()
     }
 }
 
-impl ERC20sAdd of Add<ERC20s> {
-    fn add(lhs: ERC20s, rhs: ERC20s) -> ERC20s {
-        ERC20s {
+impl ResourceAdd of Add<Resources> {
+    fn add(lhs: Resources, rhs: Resources) -> Resources {
+        Resources {
             steel: u128_overflowing_add(lhs.steel, rhs.steel).expect('u128_add Overflow'),
             quartz: u128_overflowing_add(lhs.quartz, rhs.quartz).expect('u128_add Overflow'),
             tritium: u128_overflowing_add(lhs.tritium, rhs.tritium).expect('u128_add Overflow'),
         }
     }
 }
-impl ERC20sSub of Sub<ERC20s> {
-    fn sub(lhs: ERC20s, rhs: ERC20s) -> ERC20s {
-        ERC20s {
+impl ResourceSub of Sub<Resources> {
+    fn sub(lhs: Resources, rhs: Resources) -> Resources {
+        Resources {
             steel: u128_overflowing_sub(lhs.steel, rhs.steel).expect('u128_sub Overflow'),
             quartz: u128_overflowing_sub(lhs.quartz, rhs.quartz).expect('u128_sub Overflow'),
             tritium: u128_overflowing_sub(lhs.tritium, rhs.tritium).expect('u128_sub Overflow'),
@@ -84,8 +84,8 @@ impl ERC20sSub of Sub<ERC20s> {
 }
 
 
-fn erc20_mul(a: ERC20s, multiplicator: u128) -> ERC20s {
-    ERC20s {
+fn erc20_mul(a: Resources, multiplicator: u128) -> Resources {
+    Resources {
         steel: a.steel * multiplicator,
         quartz: a.quartz * multiplicator,
         tritium: a.tritium * multiplicator
@@ -191,9 +191,11 @@ struct Mission {
     time_start: u64,
     origin: u32,
     destination: u32,
+    cargo: Resources,
     time_arrival: u64,
     fleet: Fleet,
     category: u8,
+    is_return: bool,
 }
 
 impl MissionZeroable of Zeroable<Mission> {
@@ -203,9 +205,11 @@ impl MissionZeroable of Zeroable<Mission> {
             time_start: 0,
             origin: 0,
             destination: 0,
+            cargo: Zeroable::zero(),
             time_arrival: 0,
             fleet: Zeroable::zero(),
             category: 0,
+            is_return: false,
         }
     }
     fn is_zero(self: Mission) -> bool {
@@ -256,8 +260,8 @@ enum CompoundUpgradeType {
     Dockyard,
 }
 
-// impl ERC20Print of PrintTrait<ERC20s> {
-//     fn print(self: ERC20s) {
+// impl ERC20Print of PrintTrait<Resources> {
+//     fn print(self: Resources) {
 //         self.steel.print();
 //         self.quartz.print();
 //         self.tritium.print();
@@ -283,18 +287,18 @@ struct TechLevels {
 
 #[derive(Copy, Drop, Serde)]
 struct TechsCost {
-    energy: ERC20s,
-    digital: ERC20s,
-    beam: ERC20s,
-    armour: ERC20s,
-    ion: ERC20s,
-    plasma: ERC20s,
-    weapons: ERC20s,
-    shield: ERC20s,
-    spacetime: ERC20s,
-    combustion: ERC20s,
-    thrust: ERC20s,
-    warp: ERC20s,
+    energy: Resources,
+    digital: Resources,
+    beam: Resources,
+    armour: Resources,
+    ion: Resources,
+    plasma: Resources,
+    weapons: Resources,
+    shield: Resources,
+    spacetime: Resources,
+    combustion: Resources,
+    thrust: Resources,
+    warp: Resources,
 }
 
 #[derive(Drop, Serde)]
@@ -317,12 +321,12 @@ enum TechUpgradeType {
 
 #[derive(Copy, Drop, Serde)]
 struct ShipsCost {
-    carrier: ERC20s,
-    celestia: ERC20s,
-    scraper: ERC20s,
-    sparrow: ERC20s,
-    frigate: ERC20s,
-    armade: ERC20s,
+    carrier: Resources,
+    celestia: Resources,
+    scraper: Resources,
+    sparrow: Resources,
+    frigate: Resources,
+    armade: Resources,
 }
 
 #[derive(Drop, Serde)]
@@ -344,11 +348,11 @@ enum DefenceBuildType {
 
 #[derive(Copy, Drop, Serde)]
 struct DefencesCost {
-    celestia: ERC20s,
-    blaster: ERC20s,
-    beam: ERC20s,
-    astral: ERC20s,
-    plasma: ERC20s,
+    celestia: Resources,
+    blaster: Resources,
+    beam: Resources,
+    astral: Resources,
+    plasma: Resources,
 }
 
 #[derive(Copy, Default, PartialEq, Drop, Serde)]

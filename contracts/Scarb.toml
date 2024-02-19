@@ -25,4 +25,4 @@ world_address = "0x56d5e7d85f337c9a66c44915a698507a294f72ce8a7ca4c0b11a78aca4a4a
 
 [profile.sepolia.tool.dojo.env]
 account_address = "0x00d5b7d5883c00d106c9df28f24a7c46472ef3006f1460d0649a4256f188b906"
-rpc_url = "https://starknet-sepolia.blastapi.io/e88cff07-b7b6-48d0-8be6-292f660dc735/rpc/v0.5"
+rpc_url = "https://starknet-sepolia.blastapi.io/e88cff07-b7b6-48d0-8be6-292f660dc735"

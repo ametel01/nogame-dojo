@@ -1,4 +1,4 @@
-use nogame::data::types::{Fleet, Position, SimulationResult, Defences, Debris};
+use nogame::data::types::{Fleet, Position, SimulationResult, Defences, Debris, Resources};
 
 #[starknet::interface]
 trait IFleetActions<TState> {
@@ -6,6 +6,7 @@ trait IFleetActions<TState> {
         ref self: TState,
         fleet: Fleet,
         destination: Position,
+        cargo: Resources,
         mission_type: u8,
         speed_modifier: u32,
         colony_id: u8,
@@ -22,10 +23,10 @@ trait IFleetActions<TState> {
 #[dojo::contract]
 mod fleetactions {
     use nogame::data::types::{
-        Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, ERC20s,
+        Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
     };
-    use nogame::colony::models::{ColonyOwner, ColonyShips, ColonyResourceTimer};
+    use nogame::colony::models::{ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource};
     use nogame::colony::actions::colonyactions;
     use nogame::defence::models::{PlanetDefences};
     use nogame::defence::library as defence;
@@ -36,7 +37,7 @@ mod fleetactions {
     use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
-        PlanetResourceTimer
+        PlanetResourceTimer, PlanetResource
     };
     use nogame::fleet::models::{
         ActiveMissionLen, ActiveMission, IncomingMissions, IncomingMissionLen
@@ -44,12 +45,45 @@ mod fleetactions {
     use nogame::libraries::shared;
     use starknet::{get_caller_address, get_block_timestamp};
 
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        BattleReport: BattleReport,
+        DebrisCollected: DebrisCollected,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct BattleReport {
+        time: u64,
+        attacker: u32,
+        attacker_position: Position,
+        attacker_initial_fleet: Fleet,
+        attacker_fleet_loss: Fleet,
+        defender: u32,
+        defender_position: Position,
+        defender_initial_fleet: Fleet,
+        defender_fleet_loss: Fleet,
+        initial_defences: Defences,
+        defences_loss: Defences,
+        loot: Resources,
+        debris: Debris,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct DebrisCollected {
+        planet_id: u32,
+        debris_field: Position,
+        collectible_amount: Debris,
+        collected_amount: Debris,
+    }
+
     #[abi(embed_v0)]
     impl FleetActionsImpl of super::IFleetActions<ContractState> {
         fn send_fleet(
             ref self: ContractState,
             fleet: Fleet,
             destination: Position,
+            cargo: Resources,
             mission_type: u8,
             speed_modifier: u32,
             colony_id: u8,
@@ -96,7 +130,7 @@ mod fleetactions {
             );
             // Pay for fuel
             let consumption = fleet::get_fuel_consumption(fleet, distance, speed_modifier);
-            let mut cost: ERC20s = Default::default();
+            let mut cost: Resources = Default::default();
             cost.tritium = consumption;
             if colony_id.is_zero() {
                 let available = shared::get_resources_available(world, sender_mother_planet_id);
@@ -116,8 +150,10 @@ mod fleetactions {
             mission.time_start = time_now;
             mission.origin = origin_id;
             mission.destination = get!(world, destination, PositionToPlanet).planet_id;
+            mission.cargo = cargo;
             mission.time_arrival = time_now + travel_time;
             mission.fleet = fleet;
+            mission.is_return = false;
 
             if mission_type == MissionCategory::DEBRIS {
                 assert!(
@@ -159,7 +195,12 @@ mod fleetactions {
                 add_incoming_mission(world, target_planet, hostile_mission);
             }
             set!(world, LastActive { planet_id: sender_mother_planet_id, time: time_now });
-            fleet_leave_planet(world, origin_id, fleet);
+            let cargo_capacity = fleet::get_fleet_cargo_capacity(fleet);
+            assert!(
+                cargo_capacity >= cargo.steel + cargo.quartz + cargo.tritium,
+                "Fleet: cargo exceeds fleet capacity"
+            );
+            fleet_leave_planet(world, origin_id, fleet, cargo);
         }
 
         fn attack_planet(ref self: ContractState, mission_id: usize) {
@@ -234,7 +275,7 @@ mod fleetactions {
                     }
                 );
             }
-            fleet_return_planet(world, mission.origin, f1);
+            fleet_return_planet(world, mission.origin, f1, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             // set!(
             //     world, PlanetResourcesSpent { planet_id: mission.origin, spent: Zeroable::zero() }
@@ -249,6 +290,24 @@ mod fleetactions {
             update_points_after_attack(world, mission.origin, attacker_loss, Zeroable::zero());
             update_points_after_attack(world, mission.destination, defender_loss, defences_loss);
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
+            emit!(
+                world,
+                BattleReport {
+                    time: time_now,
+                    attacker: mission.origin,
+                    attacker_position: get!(world, mission.origin, PlanetPosition).position,
+                    attacker_initial_fleet: mission.fleet,
+                    attacker_fleet_loss: attacker_loss,
+                    defender: mission.destination,
+                    defender_position: get!(world, mission.destination, PlanetPosition).position,
+                    defender_initial_fleet: defender_fleet,
+                    defender_fleet_loss: defender_loss,
+                    initial_defences: defences,
+                    defences_loss,
+                    loot,
+                    debris: total_debris
+                }
+            );
         }
 
         fn recall_fleet(ref self: ContractState, mission_id: usize) {
@@ -256,7 +315,7 @@ mod fleetactions {
             let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
             let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
             assert!(!mission.is_zero(), "Fleet: mission not found");
-            fleet_return_planet(world, mission.origin, mission.fleet);
+            fleet_return_planet(world, mission.origin, mission.fleet, mission.cargo);
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             remove_incoming_mission(world, mission.destination, mission_id);
             set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
@@ -270,7 +329,7 @@ mod fleetactions {
             assert!(
                 mission.category == MissionCategory::TRANSPORT, "Fleet: not a transport mission"
             );
-            fleet_return_planet(world, mission.destination, mission.fleet);
+            fleet_return_planet(world, mission.destination, mission.fleet, mission.cargo);
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
         }
@@ -305,7 +364,7 @@ mod fleetactions {
 
             set!(world, PlanetDebrisField { planet_id: mission.destination, debris: new_debris });
 
-            let collection = ERC20s {
+            let collection = Resources {
                 steel: collectible_debris.steel,
                 quartz: collectible_debris.quartz,
                 tritium: Zeroable::zero()
@@ -327,9 +386,18 @@ mod fleetactions {
                 shared::receive_resources(world, mission.origin, available, collection);
             }
 
-            fleet_return_planet(world, mission.origin, collector_fleet);
+            fleet_return_planet(world, mission.origin, collector_fleet, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
+            emit!(
+                world,
+                DebrisCollected {
+                    planet_id: mission.origin,
+                    debris_field: get!(world, mission.destination, PlanetPosition).position,
+                    collectible_amount: collectible_debris,
+                    collected_amount: Debris { steel: collection.steel, quartz: collection.quartz }
+                }
+            );
         }
 
         fn simulate_attack(
@@ -440,11 +508,47 @@ mod fleetactions {
         }
     }
 
-    fn fleet_return_planet(world: IWorldDispatcher, planet_id: u32, fleet: Fleet) {
+    fn fleet_return_planet(
+        world: IWorldDispatcher, planet_id: u32, fleet: Fleet, cargo: Resources
+    ) {
         if planet_id > 500 {
             let mother_planet = planet_id / 1000;
             let colony_id: u8 = (planet_id % 1000).try_into().expect('fleet return planet fail');
             let fleet_levels = colonyactions::get_colony_ships(world, mother_planet, colony_id);
+            let resources = colonyactions::get_colony_resources(world, mother_planet, colony_id);
+            if cargo.steel > 0 {
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id: mother_planet,
+                        colony_id,
+                        name: Names::Resource::STEEL,
+                        amount: resources.steel + cargo.steel
+                    }
+                );
+            }
+            if cargo.quartz > 0 {
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id: mother_planet,
+                        colony_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: resources.quartz + cargo.quartz
+                    }
+                );
+            }
+            if cargo.tritium > 0 {
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id: mother_planet,
+                        colony_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: resources.tritium + cargo.tritium
+                    }
+                );
+            }
             if fleet.carrier > 0 {
                 set!(
                     world,
@@ -502,6 +606,37 @@ mod fleetactions {
             }
         } else {
             let fleet_levels = shared::get_ships_levels(world, planet_id);
+            let resources = shared::get_resources_available(world, planet_id);
+            if cargo.steel > 0 {
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::STEEL,
+                        amount: resources.steel + cargo.steel
+                    }
+                );
+            }
+            if cargo.quartz > 0 {
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: resources.quartz + cargo.quartz
+                    }
+                );
+            }
+            if cargo.tritium > 0 {
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: resources.tritium + cargo.tritium
+                    }
+                );
+            }
             if fleet.carrier > 0 {
                 set!(
                     world,
@@ -556,7 +691,7 @@ mod fleetactions {
     }
 
 
-    fn receive_loot(world: IWorldDispatcher, origin: u32, loot: ERC20s) {
+    fn receive_loot(world: IWorldDispatcher, origin: u32, loot: Resources) {
         if origin > 500 {
             let mother_planet = origin / 1000;
             let colony_id: u8 = (origin % 1000).try_into().expect('receive loot fail');
@@ -568,7 +703,7 @@ mod fleetactions {
         }
     }
 
-    fn process_loot_payment(world: IWorldDispatcher, destination_id: u32, loot: ERC20s,) {
+    fn process_loot_payment(world: IWorldDispatcher, destination_id: u32, loot: Resources,) {
         if destination_id > 500 {
             let mother_planet = destination_id / 1000;
             let colony_id: u8 = (destination_id % 1000).try_into().expect('process loot fail');
@@ -582,10 +717,10 @@ mod fleetactions {
 
     fn calculate_loot_amount(
         world: IWorldDispatcher, destination_id: u32, attacker_fleet: Fleet
-    ) -> ERC20s {
-        let mut loot: ERC20s = Default::default();
+    ) -> Resources {
+        let mut loot: Resources = Default::default();
         let mut storage = fleet::get_fleet_cargo_capacity(attacker_fleet);
-        let mut available: ERC20s = Default::default();
+        let mut available: Resources = Default::default();
 
         if destination_id > 500 {
             let mother_planet = destination_id / 1000;
@@ -760,11 +895,50 @@ mod fleetactions {
         }
     }
 
-    fn fleet_leave_planet(world: IWorldDispatcher, planet_id: u32, fleet: Fleet) {
+    fn fleet_leave_planet(world: IWorldDispatcher, planet_id: u32, fleet: Fleet, cargo: Resources) {
         if planet_id > 500 {
             let planet_id = planet_id / 1000;
             let colony_id: u8 = (planet_id % 1000).try_into().expect('fleet leave planet fail');
             let fleet_levels = colonyactions::get_colony_ships(world, planet_id, colony_id);
+            let resources = colonyactions::get_colony_resources(world, planet_id, colony_id);
+            if cargo.steel > 0 {
+                assert!(resources.steel >= cargo.steel, "Fleet: not enough steel for mission");
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::STEEL,
+                        amount: resources.steel - cargo.steel
+                    }
+                );
+            }
+            if cargo.quartz > 0 {
+                assert!(resources.quartz >= cargo.quartz, "Fleet: not enough quartz for mission");
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: resources.quartz - cargo.quartz
+                    }
+                );
+            }
+            if cargo.tritium > 0 {
+                assert!(
+                    resources.tritium >= cargo.tritium, "Fleet: not enough tritium for mission"
+                );
+                set!(
+                    world,
+                    ColonyResource {
+                        planet_id,
+                        colony_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: resources.tritium - cargo.tritium
+                    }
+                );
+            }
             if fleet.carrier > 0 {
                 set!(
                     world,
@@ -822,6 +996,42 @@ mod fleetactions {
             }
         } else {
             let fleet_levels = shared::get_ships_levels(world, planet_id);
+            let resources = shared::get_resources_available(world, planet_id);
+            if cargo.steel > 0 {
+                assert!(resources.steel >= cargo.steel, "Fleet: not enough steel for mission");
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::STEEL,
+                        amount: resources.steel - cargo.steel
+                    }
+                );
+            }
+            if cargo.quartz > 0 {
+                assert!(resources.quartz >= cargo.quartz, "Fleet: not enough quartz for mission");
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::QUARTZ,
+                        amount: resources.quartz - cargo.quartz
+                    }
+                );
+            }
+            if cargo.tritium > 0 {
+                assert!(
+                    resources.tritium >= cargo.tritium, "Fleet: not enough tritium for mission"
+                );
+                set!(
+                    world,
+                    PlanetResource {
+                        planet_id,
+                        name: Names::Resource::TRITIUM,
+                        amount: resources.tritium - cargo.tritium
+                    }
+                );
+            }
             if fleet.carrier > 0 {
                 set!(
                     world,
@@ -889,7 +1099,7 @@ mod test {
     use nogame::libraries::{constants};
     use nogame::data::types::{
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
-        Debris
+        Debris, Resources
     };
     use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
@@ -939,7 +1149,9 @@ mod test {
         fleet.armade = 5;
         set_contract_address(ACCOUNT_1());
         set_block_timestamp(100);
-        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::ATTACK, 100, 0);
+        actions
+            .fleet
+            .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::ATTACK, 100, 0);
 
         let carrier = get!(world, (1, Names::Fleet::CARRIER), PlanetShips).count;
         assert!(carrier == 9, "Fleet: carrier not removed from planet");
@@ -990,7 +1202,9 @@ mod test {
         fleet.carrier = 1;
         set_contract_address(ACCOUNT_1());
         set_block_timestamp(100);
-        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::ATTACK, 100, 0);
+        actions
+            .fleet
+            .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::ATTACK, 100, 0);
 
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 0 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 0 });
@@ -1050,7 +1264,9 @@ mod test {
         fleet.armade = 5;
         set_contract_address(ACCOUNT_1());
         set_block_timestamp(100);
-        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::ATTACK, 100, 0);
+        actions
+            .fleet
+            .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::ATTACK, 100, 0);
 
         actions.fleet.recall_fleet(1);
         let carrier = get!(world, (1, Names::Fleet::CARRIER), PlanetShips).count;
@@ -1066,6 +1282,98 @@ mod test {
 
         let mission = get!(world, (1, 1), ActiveMission).mission;
         assert!(mission.is_zero(), "Fleet: mission not removed correctly");
+    }
+
+    #[test]
+    fn test_recall_fleet_with_cargo() {
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set_contract_address(ACCOUNT_2());
+        actions.planet.generate_planet();
+
+        let p2_position = get!(world, 2, PlanetPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 100_000 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 100_000 }
+        );
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 10;
+
+        let mut cargo: Resources = Default::default();
+        cargo.steel = 10_000;
+        cargo.quartz = 10_000;
+        cargo.tritium = 10_000;
+
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, p2_position, cargo, MissionCategory::TRANSPORT, 100, 0);
+
+        actions.fleet.recall_fleet(1);
+        let steel = get!(world, (1, Names::Resource::STEEL), PlanetResource).amount;
+        assert!(steel == 100_000, "Fleet: steel not returned to planet");
+        let quartz = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
+        assert!(quartz == 100_000, "Fleet: quartz not returned to planet");
+        let tritium = get!(world, (1, Names::Resource::TRITIUM), PlanetResource).amount;
+        assert!(tritium == 99_920, "Fleet: tritium not returned to planet");
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        assert!(mission.is_zero(), "Fleet: mission not removed correctly");
+    }
+
+    #[test]
+    fn test_transport() {
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set_contract_address(ACCOUNT_2());
+        actions.planet.generate_planet();
+
+        let p2_position = get!(world, 2, PlanetPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 100_000 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 100_000 }
+        );
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 10;
+
+        let mut cargo: Resources = Default::default();
+        cargo.steel = 10_000;
+        cargo.quartz = 10_000;
+        cargo.tritium = 10_000;
+
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, p2_position, cargo, MissionCategory::TRANSPORT, 100, 0);
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        set_block_timestamp(mission.time_arrival + 1);
+        actions.fleet.dock_fleet(1);
+
+        let steel = get!(world, (2, Names::Resource::STEEL), PlanetResource).amount;
+        assert!(steel == 10_500, "Fleet: steel not transported correctly");
+        let quartz = get!(world, (2, Names::Resource::QUARTZ), PlanetResource).amount;
+        assert!(quartz == 10_300, "Fleet: quartz not transported correctly");
+        let tritium = get!(world, (2, Names::Resource::TRITIUM), PlanetResource).amount;
+        assert!(tritium == 10_100, "Fleet: tritium not transported correctly");
     }
 
     #[test]
@@ -1098,7 +1406,11 @@ mod test {
         fleet.armade = 5;
         set_contract_address(ACCOUNT_1());
         set_block_timestamp(100);
-        actions.fleet.send_fleet(fleet, colony_position, MissionCategory::TRANSPORT, 100, 0);
+        actions
+            .fleet
+            .send_fleet(
+                fleet, colony_position, Zeroable::zero(), MissionCategory::TRANSPORT, 100, 0
+            );
 
         let mission = get!(world, (1, 1), ActiveMission).mission;
         set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
@@ -1114,6 +1426,60 @@ mod test {
         assert!(frigate == 4, "Fleet: frigate not docked correctly");
         let armade = get!(world, (1, 1, Names::Fleet::ARMADE), ColonyShips).count;
         assert!(armade == 5, "Fleet: armade not docked correctly");
+    }
+
+    #[test]
+    fn test_dock_fleet_with_cargo_own_fleet() {
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::EXOCRAFT, level: 1 });
+        actions.colony.generate_colony();
+
+        let colony_position = get!(world, (1, 1), ColonyPosition).position;
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+
+        set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 100_000 });
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 100_000 }
+        );
+        set!(
+            world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 100_000 }
+        );
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
+        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SPACETIME, level: 3 });
+
+        let mut fleet: Fleet = Default::default();
+        fleet.carrier = 10;
+
+        let mut cargo: Resources = Default::default();
+        cargo.steel = 10_000;
+        cargo.quartz = 10_000;
+        cargo.tritium = 10_000;
+
+        set_contract_address(ACCOUNT_1());
+        set_block_timestamp(100);
+        actions.fleet.send_fleet(fleet, colony_position, cargo, MissionCategory::TRANSPORT, 100, 0);
+
+        let steel = get!(world, (1, Names::Resource::STEEL), PlanetResource).amount;
+        assert!(steel == 90_000, "Fleet: steel not removed from planet");
+        let quartz = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
+        assert!(quartz == 90_000, "Fleet: quartz not removed from planet");
+        let tritium = get!(world, (1, Names::Resource::TRITIUM), PlanetResource).amount;
+        assert!(tritium == 89_850, "Fleet: tritium not removed from planet");
+
+        let mission = get!(world, (1, 1), ActiveMission).mission;
+        set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
+        actions.fleet.dock_fleet(1);
+
+        let steel = get!(world, (1, 1, Names::Resource::STEEL), ColonyResource).amount;
+        assert!(steel == 10_500, "Fleet: steel not docked correctly");
+        let quartz = get!(world, (1, 1, Names::Resource::QUARTZ), ColonyResource).amount;
+        assert!(quartz == 10_300, "Fleet: quartz not docked correctly");
+        let tritium = get!(world, (1, 1, Names::Resource::TRITIUM), ColonyResource).amount;
+        assert!(tritium == 10_100, "Fleet: tritium not docked correctly");
     }
 
     #[test]
@@ -1137,7 +1503,9 @@ mod test {
         fleet.scraper = 1;
         set_contract_address(ACCOUNT_1());
         set_block_timestamp(100);
-        actions.fleet.send_fleet(fleet, p2_position, MissionCategory::DEBRIS, 100, 0);
+        actions
+            .fleet
+            .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::DEBRIS, 100, 0);
 
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 0 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 0 });

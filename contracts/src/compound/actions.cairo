@@ -1,4 +1,4 @@
-use nogame::data::types::{ERC20s, CompoundUpgradeType, CompoundsLevels};
+use nogame::data::types::{Resources, CompoundUpgradeType, CompoundsLevels};
 
 #[starknet::interface]
 trait ICompoundActions<TState> {
@@ -7,7 +7,7 @@ trait ICompoundActions<TState> {
 
 #[dojo::contract]
 mod compoundactions {
-    use nogame::data::types::{CompoundUpgradeType, CompoundsLevels, ERC20s};
+    use nogame::data::types::{CompoundUpgradeType, CompoundsLevels, Resources};
     use nogame::libraries::names::Names;
     use nogame::compound::{library as compound, models::{PlanetCompounds}};
     use nogame::defence::models::{PlanetDefences};
@@ -27,7 +27,7 @@ mod compoundactions {
     struct CompoundSpent {
         planet_id: u32,
         quantity: u8,
-        spent: ERC20s
+        spent: Resources
     }
 
     #[abi(embed_v0)]
@@ -43,11 +43,11 @@ mod compoundactions {
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
-    ) -> ERC20s {
+    ) -> Resources {
         let compounds = shared::get_compound_levels(world, planet_id);
         shared::collect(world, planet_id, compounds);
         let available_resources = shared::get_resources_available(world, planet_id);
-        let mut cost: ERC20s = Default::default();
+        let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
                 cost = compound::cost::steel(compounds.steel, quantity);
