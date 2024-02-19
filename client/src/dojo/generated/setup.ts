@@ -49,14 +49,6 @@ export async function setup({ ...config }: DojoConfig) {
     rpcProvider: dojoProvider.provider,
   });
 
-  if (burnerManager.list().length === 0) {
-    try {
-      await burnerManager.create();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   burnerManager.init();
 
   return {

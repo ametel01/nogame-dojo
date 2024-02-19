@@ -28,10 +28,7 @@ const AuthController = () => {
     !account.account.address || !hasGeneratedPlanets;
 
   return shouldRenderAuthScreen ? (
-    <AuthScreen
-      address={account?.account.address}
-      hasGeneratedPlanets={hasGeneratedPlanets}
-    />
+    <AuthScreen account={account} hasGeneratedPlanets={hasGeneratedPlanets} />
   ) : (
     <>
       <DestinationProvider>
