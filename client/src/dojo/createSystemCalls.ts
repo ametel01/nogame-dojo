@@ -11,6 +11,7 @@ import type { IWorld } from './generated/generated';
 import { DojoProvider } from '@dojoengine/core';
 import { Fleet } from '../hooks/usePlanetShips';
 import { Position } from '../hooks/usePlanetPosition';
+import { Resources } from '../hooks/usePlanetResources';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -293,9 +294,7 @@ export function createSystemCalls(
     tritium: bigint;
   }
 
-  const getPlanetResources = async (
-    planetId: number
-  ): Promise<{ steel: number; quartz: number; tritium: number }> => {
+  const getPlanetResources = async (planetId: number): Promise<Resources> => {
     try {
       const tx = (await provider.callContract(
         'planetactions',

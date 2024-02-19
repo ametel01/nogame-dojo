@@ -1,6 +1,7 @@
 import * as deps from './deps';
 import { InfoContainer } from './styled';
 import { useDojo } from '../../dojo/useDojo';
+import { DefenceBuildType } from '../panels';
 
 const DockyardBox = ({
   img,
@@ -12,17 +13,20 @@ const DockyardBox = ({
   requirementsMet,
   description,
   resourcesAvailable,
+  isCelestia,
 }: // colonyId,
 deps.DockyardBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const {
     setup: {
-      systemCalls: { buildShip },
+      systemCalls: { buildShip, buildDefence },
     },
     account,
   } = useDojo();
 
   const build = () => buildShip(account.account, functionCallName, quantity);
+  const buildCelestia = () =>
+    buildDefence(account.account, DefenceBuildType.celestia, quantity);
 
   const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {
@@ -146,7 +150,7 @@ deps.DockyardBoxProps) => {
         <deps.Styled.ButtonContainer>
           <deps.ButtonBuild
             name={`Build ${quantity} ${title}`}
-            callback={build}
+            callback={isCelestia ? buildCelestia : build}
             // tx={tx?.transaction_hash}
             disabled={isDisabled}
             noRequirements={hasRequirements}

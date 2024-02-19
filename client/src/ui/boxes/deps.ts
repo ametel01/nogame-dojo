@@ -96,6 +96,7 @@ export interface DockyardBoxProps {
   description: ReactNode;
   resourcesAvailable: Resources;
   colonyId: number;
+  isCelestia?: boolean;
 }
 
 export interface DefenceBoxProps {

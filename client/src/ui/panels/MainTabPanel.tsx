@@ -6,7 +6,7 @@ import { usePlanetTechs } from '../../hooks/usePlanetTechs';
 import { usePlanetShips } from '../../hooks/usePlanetShips';
 import { usePlanetDefences } from '../../hooks/usePlanetDefences';
 import { useDojo } from '../../dojo/useDojo';
-import { Resources } from '../../types';
+import { Resources } from '../../hooks/usePlanetResources';
 
 export const ResourcesSection = ({
   planetId,
