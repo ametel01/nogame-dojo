@@ -186,6 +186,7 @@ const ResourcesContainer = ({
   );
 
   const planetCelestia = usePlanetDefences(planetId).celestia;
+  console.log('planetCelestia', planetCelestia);
 
   const colonyCelestia = useColonyDefences(planetId, selectedColonyId).celestia;
 
@@ -194,11 +195,9 @@ const ResourcesContainer = ({
   );
 
   const energyFromCelestia =
-    planetCelestia && colonyCelestia
-      ? selectedColonyId === 0
-        ? planetCelestia * celestiaProduction
-        : colonyCelestia * celestiaProduction
-      : 0;
+    selectedColonyId === 0
+      ? planetCelestia * celestiaProduction
+      : colonyCelestia * celestiaProduction;
 
   const steelConsumption = CompoundsFormulas.steelConsumption(
     selectedColonyId === 0 ? compoundsLevels?.steel : colonyCompounds?.steel
