@@ -121,9 +121,7 @@ const ResearchBox = ({
                   setQuantity(parseInt(e.target.value, 10));
                 }
               }}
-              size="sm"
               color="neutral"
-              variant="soft"
               style={{ width: '80px' }}
             />
           </deps.Tooltip>

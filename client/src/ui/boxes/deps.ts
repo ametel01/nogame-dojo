@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Input } from '@mui/joy';
+import { StyledInput as Input } from '../../shared/styled/input';
 import Tooltip from '@mui/material/Tooltip';
 import * as Styled from '../../shared/styled/Box';
 import {

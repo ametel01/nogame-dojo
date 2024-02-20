@@ -3,7 +3,6 @@ import { styled } from '@mui/system';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import CloseIcon from '@mui/icons-material/Close';
-import { Input } from '@mui/joy';
 import WarningIcon from '@mui/icons-material/Warning';
 import armadeImg from '../../assets/gameElements/ships/armade4.webp';
 import frigateImg from '../../assets/gameElements/ships/frigate4.webp';
@@ -28,6 +27,7 @@ import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import { useDojo } from '../../dojo/useDojo';
 import { useActiveMissions } from '../../hooks/useActiveMissions';
+import { StyledInput } from '../../shared/styled/input';
 
 type ShipName = 'carrier' | 'scraper' | 'sparrow' | 'frigate' | 'armade';
 
@@ -370,13 +370,11 @@ function ButtonAttackPlanet({
                           )
                         </Text>
                         <InputButtonContainer>
-                          <Input
+                          <StyledInput
                             type="number"
                             value={quantities[ship] || 0}
                             onChange={(e) => handleChange(ship, e)}
-                            size="sm"
                             color="neutral"
-                            variant="soft"
                             style={{ width: '80px' }}
                           />
                           <KeyboardDoubleArrowUpIcon

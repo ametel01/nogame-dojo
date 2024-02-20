@@ -134,9 +134,7 @@ deps.DockyardBoxProps) => {
               type="number"
               value={quantity}
               defaultValue={1}
-              size="sm"
               color="neutral"
-              variant="soft"
               style={{ width: '80px' }}
               onChange={(e) => {
                 const newValue = parseInt(e.target.value, 10);
