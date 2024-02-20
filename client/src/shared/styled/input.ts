@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const StyledInput = styled.input`
   max-width: 80px; // Set a maximum width or choose a specific width
-  margin: 5px 5px;
+  // margin: 5px 5px;
   padding: 8px;
   border: none;
   border-radius: 5px;

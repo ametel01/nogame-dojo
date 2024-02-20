@@ -2,7 +2,7 @@ import React from 'react';
 import { type FC } from 'react';
 import NoGameLogo from '../../assets/logos/NoGameLogo.webp';
 import ConnectWalletButton from './ConnectWallet';
-import { GeneratePlanet } from '../../components/buttons/GeneratePlanet';
+import { GeneratePlanet } from '../buttons/GeneratePlanet';
 import { BurnerAccount } from '@dojoengine/create-burner';
 import * as styles from './styled';
 

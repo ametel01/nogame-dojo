@@ -1,7 +1,7 @@
 import { Tooltip, Box, IconButton, Modal } from '@mui/material';
 import DebrisIcon from '../../assets/uiIcons/debris.svg';
 import CircularProgress from '@mui/material/CircularProgress';
-import { ButtonCollectDebris } from '../buttons/ButtonCollectDebris';
+import { ButtonCollectDebris } from '../../ui/buttons/ButtonCollectDebris';
 import React from 'react';
 import { numberWithCommas } from '../../shared/utils';
 import { Fleet } from '../../hooks/usePlanetShips';
