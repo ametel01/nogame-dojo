@@ -1,9 +1,9 @@
 import { useComponentValue } from '@dojoengine/react';
 import { Entity } from '@dojoengine/recs';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
-import AuthScreen from '../../ui/views/LoginOrGenerate';
-import Dashboard from '../../ui/views/DashBoard';
-import Header from '../ui/Header';
+import AuthScreen from './LoginOrGenerate';
+import Dashboard from '../dashboard/DashBoard';
+import Header from '../../components/ui/Header';
 import { useDojo } from '../../dojo/useDojo';
 import { DestinationProvider } from '../../context/DestinationContext';
 

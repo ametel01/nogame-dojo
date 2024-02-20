@@ -5,11 +5,7 @@ import { HeaderButton } from '../../shared/styled/Button';
 import { styled } from '@mui/material/styles';
 import { FleetMovements } from './FleetMovements';
 import { Link } from 'react-router-dom';
-import LogoutIcon from '@mui/icons-material/Logout';
-import IconButton from '@mui/material/IconButton';
-import WalletHeader from '../../ui/wallet/WalletHeader';
-// import ConnectWallet from '../../ui/wallet/ConnectWallet';
-// import { MultiCallTransaction } from '../../multicall/MultiCallTransaction';
+import WalletHeader from '../../ui/auth/WalletHeader';
 import { useDojo } from '../../dojo/useDojo';
 
 const HeaderWrapper = styled(AppBar)({
@@ -39,25 +35,9 @@ interface Props {
 const Header = ({ planetId }: Props) => {
   const { account } = useDojo();
 
-  const handleLogoutClick = () => {
-    account?.clear();
-  };
-
   return (
     <HeaderWrapper position="static">
       <StyledToolbar style={{ minHeight: '48px', padding: '0px 16px' }}>
-        <IconButton
-          onClick={handleLogoutClick}
-          color="inherit"
-          style={{
-            marginRight: '16px',
-            color: '#c5c6c7',
-            fontWeight: 'bold',
-            opacity: '0.8',
-          }}
-        >
-          <LogoutIcon style={{ transform: 'rotate(180deg)' }} />
-        </IconButton>
         <WalletHeader account={account?.account.address} />
         <Spacer />
         <HeaderButton variant="text">

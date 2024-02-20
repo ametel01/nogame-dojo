@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GlobalStyle } from './shared/styled/Theme';
-import AuthController from './components/auth/AuthController';
+import AuthController from './ui/auth/AuthController';
 
 function App() {
   return (

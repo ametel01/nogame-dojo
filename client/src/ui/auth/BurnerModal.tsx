@@ -1,51 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { Box } from '@mui/system';
 import { useDojo } from '../../dojo/useDojo';
-
-const StyledBox = styled(Box)({
-  fontWeight: 600,
-  fontSize: 20,
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: '#1B1E2A',
-  border: '1px solid #282C3E',
-  borderRadius: 16,
-  boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
-  padding: '24px 12px',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '30%',
-});
-
-const WalletButton = styled(Button)({
-  width: '100%',
-  borderRadius: 8,
-  padding: '8px 32px',
-  textTransform: 'capitalize',
-  letterSpacing: '0.1em',
-  backgroundColor: '#282C3E', // Slightly lighter background for the WalletButton
-  display: 'flex',
-  color: '#F4F3EE',
-  justifyContent: 'center',
-  '&:hover': {
-    background: '#202332', // Slightly lighter than #1B1E2A for a subtle hover effect
-  },
-});
-
-const StyledUl = styled('ul')({
-  padding: '8px',
-  flexGrow: 1,
-});
-
-const StyledLi = styled('li')({
-  listStyleType: 'none',
-  margin: '8px',
-});
+import * as styles from './styled';
 
 interface BurnerModalProps {
   open: boolean;
@@ -96,38 +52,41 @@ export const BurnerModal = ({ open, onClose }: BurnerModalProps) => {
         aria-label="Connect Wallet Modal"
         disableAutoFocus={true}
       >
-        <StyledBox>
-          <StyledUl>
-            <StyledLi>
-              <WalletButton onClick={account?.create}>
+        <styles.BurnerModalBox>
+          <styles.BurnerModalUl>
+            <styles.BurnerModalLi>
+              <styles.BurnerModalWalletButton onClick={account?.create}>
                 {account?.isDeploying ? 'deploying burner' : 'create burner'}
-              </WalletButton>
-            </StyledLi>
+              </styles.BurnerModalWalletButton>
+            </styles.BurnerModalLi>
             {account && account?.list().length > 0 && (
-              <StyledLi>
-                <WalletButton
+              <styles.BurnerModalLi>
+                <styles.BurnerModalWalletButton
                   onClick={async () => await account?.copyToClipboard()}
                 >
                   Save Burners to Clipboard
-                </WalletButton>
-              </StyledLi>
+                </styles.BurnerModalWalletButton>
+              </styles.BurnerModalLi>
             )}
-            <StyledLi>
-              <WalletButton onClick={handleRestoreBurners}>
+            <styles.BurnerModalLi>
+              <styles.BurnerModalWalletButton onClick={handleRestoreBurners}>
                 Restore Burners from Clipboard
-              </WalletButton>
-            </StyledLi>
+              </styles.BurnerModalWalletButton>
+            </styles.BurnerModalLi>
             {clipboardStatus.message && (
               <div className={clipboardStatus.isError ? 'error' : 'success'}>
                 {clipboardStatus.message}
               </div>
             )}
-            <StyledLi>
-              <WalletButton onClick={() => account.clear()}>
+            <styles.BurnerModalLi>
+              <styles.BurnerModalWalletButton onClick={() => account.clear()}>
                 Clear burners
-              </WalletButton>
-            </StyledLi>
-            <StyledLi className="card" style={{ textAlign: 'center' }}>
+              </styles.BurnerModalWalletButton>
+            </styles.BurnerModalLi>
+            <styles.BurnerModalLi
+              className="card"
+              style={{ textAlign: 'center' }}
+            >
               select signer:{' '}
               <select
                 value={account ? account.account.address : ''}
@@ -142,9 +101,9 @@ export const BurnerModal = ({ open, onClose }: BurnerModalProps) => {
                   );
                 })}
               </select>
-            </StyledLi>
-          </StyledUl>
-        </StyledBox>
+            </styles.BurnerModalLi>
+          </styles.BurnerModalUl>
+        </styles.BurnerModalBox>
       </Modal>
     </>
   );

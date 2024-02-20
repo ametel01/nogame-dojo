@@ -6,7 +6,6 @@ export const StyledButton = styled(Button)(() => ({
   fontWeight: 600,
   fontSize: 14,
   textTransform: 'capitalize',
-  size: 'large',
   color: '#F4F3EE',
   backgroundColor: '#4A63AA',
   // border: '1px solid #2E3A45',
@@ -17,6 +16,9 @@ export const StyledButton = styled(Button)(() => ({
   },
   '&:disabled': {
     backgroundColor: '#3B3F53',
+  },
+  '&:focus': {
+    outline: 'none', // Removes the focus outline
   },
 }));
 

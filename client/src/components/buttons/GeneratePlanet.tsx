@@ -1,51 +1,47 @@
-import { Box, Button } from '@mui/material';
+import styled from 'styled-components';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { useDojo } from '../../dojo/useDojo';
+
+const StyledButton = styled(Button)`
+  && {
+    color: #e7ecee;
+    width: 345px;
+    height: 75px;
+    background-color: #4a63aa;
+    border: 1px solid #0f111a;
+    border-radius: 8px;
+    margin-top: 32px;
+    font-weight: 700;
+
+    &:hover {
+      background: #212530; /* Slightly lighter than #1B1E2A for a subtle hover effect */
+    }
+
+    &:focus {
+      outline: none; /* Removes the focus outline */
+    }
+  }
+`;
 
 export const GeneratePlanet = () => {
   const {
     setup: {
       systemCalls: { generatePlanet },
-      // clientComponents: { GameOwnerPlanet },
     },
     account,
   } = useDojo();
 
   return (
     <Box position="relative" display="inline-flex">
-      {/* {isPending && (
-        <CircularProgress
-          size={24}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            marginTop: '-12px',
-            marginLeft: '-12px',
-          }}
-        />
-      )} */}
-      <Button
-        // variant="outlined"
+      <StyledButton
         size="large"
-        sx={{
-          color: '#E7ECEE',
-          width: '345px',
-          height: '75px',
-          backgroundColor: '#4A63AA',
-          border: '1px solid #0F111A',
-          borderRadius: '8px',
-          marginTop: '32px',
-          fontWeight: '700',
-          '&:hover': {
-            background: '#212530', // Slightly lighter than #1B1E2A for a subtle hover effect
-          },
-        }}
         onClick={() => {
           generatePlanet(account.account);
         }}
       >
-        Mint Planet
-      </Button>
+        Generate Planet
+      </StyledButton>
     </Box>
   );
 };
