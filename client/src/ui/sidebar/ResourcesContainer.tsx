@@ -186,7 +186,6 @@ const ResourcesContainer = ({
   );
 
   const planetCelestia = usePlanetDefences(planetId).celestia;
-  console.log('planetCelestia', planetCelestia);
 
   const colonyCelestia = useColonyDefences(planetId, selectedColonyId).celestia;
 

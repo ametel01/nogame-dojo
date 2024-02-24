@@ -26,3 +26,9 @@ world_address = "0x56d5e7d85f337c9a66c44915a698507a294f72ce8a7ca4c0b11a78aca4a4a
 [profile.sepolia.tool.dojo.env]
 account_address = "0x00d5b7d5883c00d106c9df28f24a7c46472ef3006f1460d0649a4256f188b906"
 rpc_url = "https://starknet-sepolia.blastapi.io/e88cff07-b7b6-48d0-8be6-292f660dc735"
+
+[profile.slot.tool.dojo.env]
+rpc_url = "https://api.cartridge.gg/x/nogame-test/katana"
+account_address = "0x78b944f9d998228cb0fd52653f4d8b529fbfa33c579aba247eb55f3838c1e89"
+private_key = "0x2750bc3f50eab0c53c161f8b687df99fb830ea090ad26c5eb121d643944f15e"
+world_address = "0x56d5e7d85f337c9a66c44915a698507a294f72ce8a7ca4c0b11a78aca4a4aa2"

@@ -10,14 +10,11 @@ interface BurnerModalProps {
 
 export const BurnerModal = ({ open, onClose }: BurnerModalProps) => {
   const { account } = useDojo();
-  console.log('Burner modal account list', account.list());
 
   const [clipboardStatus, setClipboardStatus] = useState({
     message: '',
     isError: false,
   });
-
-  console.log('account', account);
 
   const handleRestoreBurners = async () => {
     try {

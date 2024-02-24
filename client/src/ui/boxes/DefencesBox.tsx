@@ -21,7 +21,10 @@ const DefencesBox = ({
     account,
   } = useDojo();
 
-  const build = () => buildDefence(account.account, functionCallName, quantity);
+  const build = () => {
+    buildDefence(account.account, functionCallName, quantity);
+    window.location.reload();
+  };
 
   const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {

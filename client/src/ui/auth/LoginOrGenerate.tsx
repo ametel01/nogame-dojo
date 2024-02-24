@@ -59,7 +59,6 @@ interface PlanetViewProp {
 }
 
 const GeneratePlanetView = ({ account }: PlanetViewProp) => {
-  console.log('account', account?.account);
   return (
     <styles.MainWrapper>
       {account?.list().length !== 0 ? (

@@ -28,8 +28,10 @@ deps.CompoundsBoxProps) => {
 
   const energy = deps.numberWithCommas(energyRequired);
 
-  const upgrade = () =>
+  const upgrade = () => {
     upgradeCompound(account.account, functionCallName, quantity);
+    window.location.reload();
+  };
 
   deps.useEffect(() => {
     const newCost = deps.getCompoundCost(

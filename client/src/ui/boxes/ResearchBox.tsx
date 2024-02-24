@@ -19,8 +19,10 @@ const ResearchBox = ({
     account,
   } = useDojo();
 
-  const upgrade = () =>
-    upgradeTech(account.account, functionCallName, quantity);
+  const upgrade = () => {
+    upgradeTech(account.account, functionCallName, quantity),
+      window.location.reload();
+  };
 
   const baseCosts = deps.baseTechCost[(functionCallName as number) + 1];
   const isExo = functionCallName === 13;
