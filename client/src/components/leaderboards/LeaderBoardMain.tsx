@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { formatAccount, numberWithCommas } from '../../shared/utils';
+import { useLeaderboardData } from '../../hooks/useLeaderboardData';
 
 const Table = styled.table`
   width: 100%;
@@ -43,53 +44,14 @@ const Wrapper = styled.div`
   padding: 20px;
 `;
 
-interface FetchData {
-  planet_id: number;
-  account: string;
-  net_amount: number;
-}
-
 interface Props {
   planetId: number;
 }
 
 const LeadearBoardMain = ({ planetId }: Props) => {
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const leaderboardData = useLeaderboardData(); // Using the hook
 
-  const nodeEnv = import.meta.env.VITE_NODE_ENV;
-  const apiUrl =
-    nodeEnv === 'production'
-      ? 'https://www.api.testnet.no-game.xyz/leaderboard'
-      : 'http://localhost:3001/leaderboard';
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error('Something went wrong!');
-        }
-        const data = await response.json();
-        setLeaderboard(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unexpected error occurred');
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [apiUrl]);
-
-  if (isLoading) {
+  if (!leaderboardData.length) {
     return (
       <CenteredProgress>
         <CircularProgress />
@@ -97,10 +59,7 @@ const LeadearBoardMain = ({ planetId }: Props) => {
     );
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+  // Assuming the hook handles errors internally and returns an empty array on error
   return (
     <Wrapper>
       <Table>
@@ -108,29 +67,30 @@ const LeadearBoardMain = ({ planetId }: Props) => {
           <tr>
             <Header>Rank</Header>
             <Header>Player</Header>
-            <Header>Planet</Header>
+            <Header>Position</Header>
             <Header>Points</Header>
           </tr>
         </thead>
         <tbody>
-          {leaderboard.map((entry: FetchData, index: number) => (
+          {leaderboardData.map((entry, index) => (
             <Row
-              key={entry.planet_id}
-              isHighlighted={Number(entry.planet_id) === Number(planetId)}
+              key={entry.planetId}
+              isHighlighted={entry.planetId === planetId}
             >
               <Data>{index + 1}</Data>
               <Data>
-                {entry.account
-                  ? `${formatAccount(entry.account).substring(
+                {entry.owner
+                  ? `${formatAccount(entry.owner).substring(
                       0,
                       6
-                    )}...${entry.account.substring(entry.account.length - 4)}`
+                    )}...${entry.owner.substring(entry.owner.length - 4)}`
                   : 'Unknown Account'}
               </Data>
-              <Data>{entry.planet_id}</Data>
               <Data>
-                {numberWithCommas(Math.ceil(Number(entry.net_amount) / 1000))}
+                {parseInt(entry.position.system, 16)}/
+                {parseInt(entry.position.orbit, 16)}
               </Data>
+              <Data>{numberWithCommas(entry.points)}</Data>
             </Row>
           ))}
         </tbody>

@@ -1,4 +1,4 @@
-import * as deps from '.';
+import * as deps from './deps';
 
 import { useEffect, useState } from 'react';
 // import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';

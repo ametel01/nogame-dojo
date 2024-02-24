@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CompoundsBox from '../boxes/CompoundsBox';
-import * as deps from '.';
+import * as deps from './deps';
 
 export const CompoundsTabPanel = ({
   resources,

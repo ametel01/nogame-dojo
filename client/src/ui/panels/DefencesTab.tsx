@@ -1,5 +1,5 @@
 import React from 'react';
-import * as deps from '.';
+import * as deps from './deps';
 import DefencesBox from '../boxes/DefencesBox';
 
 export const DefenceTabPanel = ({

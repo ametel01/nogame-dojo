@@ -27,6 +27,7 @@ const UniverseViewBox = ({
   lastActive,
   winLoss,
   colonyId,
+  resourcesAvailable,
 }: Props) => {
   const boxStyle = highlighted ? { border: '1px solid #23CE6B' } : {};
 
@@ -143,6 +144,7 @@ const UniverseViewBox = ({
         />
         <Styled.ButtonContainer>
           <ButtonAttackPlanet
+            resourcesAvailable={resourcesAvailable}
             disabled={isDisable}
             noRequirements={highlighted}
             isNoobProtected={updatedIsNoobProtected}

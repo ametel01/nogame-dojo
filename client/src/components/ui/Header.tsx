@@ -63,7 +63,7 @@ const Header = ({ planetId }: Props) => {
           >
             Reports
           </Link>
-        </HeaderButton>
+  </HeaderButton> */}
         <HeaderButton
           variant="text"
           sx={{ display: 'flex', alignItems: 'center' }}
@@ -74,7 +74,7 @@ const Header = ({ planetId }: Props) => {
           >
             LeaderBoard
           </Link>
-        </HeaderButton> */}
+        </HeaderButton>
         {/* <HeaderButton
           variant="text"
           sx={{ display: 'flex', alignItems: 'center' }}

@@ -1,5 +1,5 @@
 import React from 'react';
-import * as deps from '.';
+import * as deps from './deps';
 import ResearchBox from '../boxes/ResearchBox';
 
 export const ResearchTabPanel = ({

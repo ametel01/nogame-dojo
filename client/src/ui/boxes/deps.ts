@@ -131,6 +131,7 @@ export interface UniverseBoxProps {
   lastActive: number;
   winLoss: [number, number];
   colonyId: number;
+  resourcesAvailable: Resources;
 }
 
 export type ButtonState = 'valid' | 'noResource' | 'noRequirements';

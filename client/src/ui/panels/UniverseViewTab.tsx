@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as deps from '.';
+import * as deps from './deps';
 // import { useDestination } from '../context/DestinationContext';
 import TextField from '@mui/material/TextField';
 import { styled as muiStyled } from '@mui/material/styles';
@@ -45,6 +45,7 @@ const UniverseBoxItem = ({
   planet,
   ownTechs,
   colonyId,
+  resourcesAvailable,
 }: deps.UniverseProps) => {
   const {
     setup: {
@@ -120,6 +121,7 @@ const UniverseBoxItem = ({
       lastActive={lastActive?.last_collection as number}
       winLoss={[0, 0]}
       colonyId={colonyId}
+      resourcesAvailable={resourcesAvailable}
     />
   );
 };
@@ -202,6 +204,7 @@ export const UniverseViewTabPanel = ({
           key={index}
           planet={planet}
           colonyId={colonyId}
+          resourcesAvailable={rest.resources}
         />
       ))}
       <PaginationContainer>

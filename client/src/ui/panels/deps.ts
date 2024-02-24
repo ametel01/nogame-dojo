@@ -197,6 +197,7 @@ export interface UniverseProps {
   planet: Planet;
   ownTechs?: Techs;
   colonyId: number;
+  resourcesAvailable: Resources;
 }
 
 import Pagination from '@mui/material/Pagination';

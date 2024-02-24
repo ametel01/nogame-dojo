@@ -1,7 +1,7 @@
 import * as deps from './deps';
 import { InfoContainer } from './styled';
 import { useDojo } from '../../dojo/useDojo';
-import { DefenceBuildType } from '../panels';
+import { DefenceBuildType } from '../panels/deps';
 
 const DockyardBox = ({
   img,

@@ -1,7 +1,7 @@
 import React from 'react';
 import DockyardBox from '../boxes/DockyardBox';
 import { ColonyBuildType } from '../../shared/types/index';
-import * as deps from '.';
+import * as deps from './deps';
 
 export const DockyardTabPanel = ({
   resources,
