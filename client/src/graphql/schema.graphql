@@ -442,3 +442,15 @@ query getTechSpent {
     }
   }
 }
+
+query getFleetSpent {
+  event: events(
+    keys: ["0x28ca72d4794534d4d915d23d2eb92709d21b690921c3a5532d4060704e8e556"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+}

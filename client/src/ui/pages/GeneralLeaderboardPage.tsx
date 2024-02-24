@@ -1,5 +1,5 @@
 import React from 'react';
-// import LeadearBoardFleet from '../components/leaderboards/LeaderBoardFleet';
+import LeaderboardFleet from '../../components/leaderboards/LeaderBoardFleet';
 import LeadearBoardMain from '../../components/leaderboards/LeaderBoardMain';
 import LeadearBoardTech from '../../components/leaderboards/LeaderBoardTech';
 import Header from '../../components/ui/Header';
@@ -66,7 +66,9 @@ const GeneralLeaderboardPage = () => {
   const TechLeaderboard = () => (
     <LeadearBoardTech planetId={planetId?.planet_id || 0} />
   );
-  //   const FleetLeaderboard = () => <LeadearBoardFleet planetId={planetId} />;
+  const FleetLeaderboard = () => (
+    <LeaderboardFleet planetId={planetId?.planet_id || 0} />
+  );
 
   return (
     <>
@@ -84,12 +86,12 @@ const GeneralLeaderboardPage = () => {
             <TechLeaderboard />
           </Section>
         </Column>
-        {/* <Column>
+        <Column>
           <Section>
             <Title>Fleet Leaderboard</Title>
             <FleetLeaderboard />
           </Section>
-        </Column> */}
+        </Column>
       </Wrapper>
     </>
   );

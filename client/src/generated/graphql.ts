@@ -2361,6 +2361,11 @@ export type GetTechSpentQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetTechSpentQuery = { __typename?: 'World__Query', event?: { __typename?: 'World__EventConnection', edges?: Array<{ __typename?: 'World__EventEdge', node?: { __typename?: 'World__Event', data?: Array<string | null> | null } | null } | null> | null } | null };
 
+export type GetFleetSpentQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFleetSpentQuery = { __typename?: 'World__Query', event?: { __typename?: 'World__EventConnection', edges?: Array<{ __typename?: 'World__EventEdge', node?: { __typename?: 'World__Event', data?: Array<string | null> | null } | null } | null> | null } | null };
+
 
 export const GetPlanetResourceDocument = gql`
     query getPlanetResource($planet_id: u32!, $name: u8!) {
@@ -2821,6 +2826,19 @@ export const GetTechSpentDocument = gql`
   }
 }
     `;
+export const GetFleetSpentDocument = gql`
+    query getFleetSpent {
+  event: events(
+    keys: ["0x28ca72d4794534d4d915d23d2eb92709d21b690921c3a5532d4060704e8e556"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -2846,6 +2864,7 @@ const GetIncomingMissionsCountDocumentString = print(GetIncomingMissionsCountDoc
 const GetIncomingMissionDocumentString = print(GetIncomingMissionDocument);
 const GetResourcesSpentDocumentString = print(GetResourcesSpentDocument);
 const GetTechSpentDocumentString = print(GetTechSpentDocument);
+const GetFleetSpentDocumentString = print(GetFleetSpentDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     getPlanetResource(variables: GetPlanetResourceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPlanetResourceQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
@@ -2907,6 +2926,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getTechSpent(variables?: GetTechSpentQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetTechSpentQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
         return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetTechSpentQuery>(GetTechSpentDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTechSpent', 'query', variables);
+    },
+    getFleetSpent(variables?: GetFleetSpentQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetFleetSpentQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetFleetSpentQuery>(GetFleetSpentDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFleetSpent', 'query', variables);
     }
   };
 }
