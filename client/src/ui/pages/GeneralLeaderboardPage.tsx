@@ -1,7 +1,7 @@
 import React from 'react';
 // import LeadearBoardFleet from '../components/leaderboards/LeaderBoardFleet';
 import LeadearBoardMain from '../../components/leaderboards/LeaderBoardMain';
-// import LeadearBoardTech from '../components/leaderboards/LeaderBoardTech';
+import LeadearBoardTech from '../../components/leaderboards/LeaderBoardTech';
 import Header from '../../components/ui/Header';
 import styled from 'styled-components';
 import { useDojo } from '../../dojo/useDojo';
@@ -63,7 +63,9 @@ const GeneralLeaderboardPage = () => {
   const MainLeaderboard = () => (
     <LeadearBoardMain planetId={planetId?.planet_id || 0} />
   );
-  //   const TechLeaderboard = () => <LeadearBoardTech planetId={planetId} />;
+  const TechLeaderboard = () => (
+    <LeadearBoardTech planetId={planetId?.planet_id || 0} />
+  );
   //   const FleetLeaderboard = () => <LeadearBoardFleet planetId={planetId} />;
 
   return (
@@ -76,13 +78,13 @@ const GeneralLeaderboardPage = () => {
             <MainLeaderboard />
           </Section>
         </Column>
-        {/* <Column>
+        <Column>
           <Section>
             <Title>Tech Leaderboard</Title>
             <TechLeaderboard />
           </Section>
         </Column>
-        <Column>
+        {/* <Column>
           <Section>
             <Title>Fleet Leaderboard</Title>
             <FleetLeaderboard />

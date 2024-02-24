@@ -430,3 +430,15 @@ query getResourcesSpent {
     }
   }
 }
+
+query getTechSpent {
+  event: events(
+    keys: ["0xd3ec6f2a0ea7c808123f574badfe3c8379d24dc0811b543c21bc389df83d8d"]
+  ) {
+    edges {
+      node {
+        data
+      }
+    }
+  }
+}
