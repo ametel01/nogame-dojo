@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Compound } from '../constants/names/Names';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
 
 export type Compounds = {
   steel: number;
@@ -12,53 +14,30 @@ export type Compounds = {
 };
 
 export function usePlanetCompounds(planetId: number): Compounds {
-  const [steel, setSteel] = useState<number | undefined>();
-  const [quartz, setQuartz] = useState<number | undefined>();
-  const [tritium, setTritium] = useState<number | undefined>();
-  const [energy, setEnergy] = useState<number | undefined>();
-  const [lab, setLab] = useState<number | undefined>();
-  const [dockyard, setDockyard] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { PlanetCompound },
+    },
   } = useDojo();
 
-  useEffect(() => {
-    async function fetchCompoundLevels(
-      compoundName: string,
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getPlanetCompound({
-        planet_id: planetId,
-        name: Names.Compound[compoundName as keyof typeof Names.Compound],
-      });
-
-      const edges = response.data.planetCompoundsModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const planetCompound = models.find(
-          (model) => model?.__typename === 'PlanetCompounds'
-        );
-        if (planetCompound && 'level' in planetCompound) {
-          setter(planetCompound.level as number);
-        }
-      }
-    }
-
-    fetchCompoundLevels('Steel', setSteel);
-    fetchCompoundLevels('Quartz', setQuartz);
-    fetchCompoundLevels('Tritium', setTritium);
-    fetchCompoundLevels('Energy', setEnergy);
-    fetchCompoundLevels('Lab', setLab);
-    fetchCompoundLevels('Dockyard', setDockyard);
-  }, [graphSdk, planetId]);
-
-  return {
-    steel: steel ?? 0,
-    quartz: quartz ?? 0,
-    tritium: tritium ?? 0,
-    energy: energy ?? 0,
-    lab: lab ?? 0,
-    dockyard: dockyard ?? 0,
+  // Reusable function to get compound level
+  const useGetCompoundLevel = (compoundType: number): number => {
+    const entityId = getEntityIdFromKeys([
+      BigInt(planetId),
+      BigInt(compoundType),
+    ]) as Entity;
+    return useComponentValue(PlanetCompound, entityId)?.level ?? 0;
   };
+
+  // Use the reusable function for each compound
+  const compounds: Compounds = {
+    steel: useGetCompoundLevel(Compound.Steel),
+    quartz: useGetCompoundLevel(Compound.Quartz),
+    tritium: useGetCompoundLevel(Compound.Tritium),
+    energy: useGetCompoundLevel(Compound.Energy),
+    lab: useGetCompoundLevel(Compound.Lab),
+    dockyard: useGetCompoundLevel(Compound.Dockyard),
+  };
+
+  return compounds;
 }

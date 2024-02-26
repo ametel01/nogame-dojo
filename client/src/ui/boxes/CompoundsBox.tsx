@@ -30,7 +30,6 @@ deps.CompoundsBoxProps) => {
 
   const upgrade = () => {
     upgradeCompound(account.account, functionCallName, quantity);
-    window.location.reload();
   };
 
   deps.useEffect(() => {
