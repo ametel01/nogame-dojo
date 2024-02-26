@@ -3,7 +3,7 @@ use nogame::data::types::Resources;
 #[starknet::interface]
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
-    fn get_resources_available(self: @TContractState, planet_id: u32) -> Resources;
+    fn get_uncollected_resources(self: @TContractState, planet_id: u32) -> Resources;
 }
 
 
@@ -75,7 +75,7 @@ mod planetactions {
             emit!(world, PlanetGenerated { planet_id, position, account: caller, });
         }
 
-        fn get_resources_available(self: @ContractState, planet_id: u32) -> Resources {
+        fn get_uncollected_resources(self: @ContractState, planet_id: u32) -> Resources {
             let world = self.world_dispatcher.read();
             let compounds = CompoundsLevels {
                 steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
@@ -87,7 +87,6 @@ mod planetactions {
                     .level,
             };
             shared::calculate_production(world, planet_id, compounds)
-                + shared::get_resources_available(world, planet_id)
         }
     }
 }
