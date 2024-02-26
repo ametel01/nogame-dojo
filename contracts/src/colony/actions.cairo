@@ -13,7 +13,7 @@ trait IColonyActions<TState> {
     fn process_defence_build(
         ref self: TState, colony_id: u8, name: DefenceBuildType, quantity: u32,
     );
-    fn get_resources_available(ref self: TState, planet_id: u32, colony_id: u8) -> Resources;
+    fn get_resources_available(self: @TState, planet_id: u32, colony_id: u8) -> Resources;
 }
 
 #[dojo::contract]
@@ -151,7 +151,7 @@ mod colonyactions {
         }
 
         fn get_resources_available(
-            ref self: ContractState, planet_id: u32, colony_id: u8
+            self: @ContractState, planet_id: u32, colony_id: u8
         ) -> Resources {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
