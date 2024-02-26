@@ -304,25 +304,29 @@ export function createSystemCalls(
       };
     } catch (e) {
       console.log(e);
-      throw e; // Rethrow the error after logging it
+      throw e;
     }
   };
 
-  const getColonyResources = async (planetId: number, colonyId: number) => {
+  const getColonyResources = async (
+    planetId: number,
+    colonyId: number
+  ): Promise<Resources> => {
     try {
-      const tx = await provider.call(
+      const tx = (await provider.callContract(
         'colonyactions',
         'get_resources_available',
         [planetId, colonyId]
-      );
+      )) as PlanetResourcesResponse;
 
       return {
-        steel: parseInt(tx.result[0]),
-        quartz: parseInt(tx.result[1]),
-        tritium: parseInt(tx.result[2]),
+        steel: Number(tx.steel),
+        quartz: Number(tx.quartz),
+        tritium: Number(tx.tritium),
       };
     } catch (e) {
       console.log(e);
+      throw e;
     }
   };
 
