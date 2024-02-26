@@ -20,8 +20,7 @@ const ResearchBox = ({
   } = useDojo();
 
   const upgrade = () => {
-    upgradeTech(account.account, functionCallName, quantity),
-      window.location.reload();
+    upgradeTech(account.account, functionCallName, quantity);
   };
 
   const baseCosts = deps.baseTechCost[(functionCallName as number) + 1];
