@@ -33,7 +33,7 @@ export function useColonyResources(
           (model) => model?.__typename === 'ColonyResource'
         );
         if (colonyResource && 'amount' in colonyResource) {
-          setter(colonyResource.amount as number);
+          setter(parseInt(colonyResource.amount, 16));
         }
       }
     }
