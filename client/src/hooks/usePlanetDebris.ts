@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
 
 export type Debris = {
   steel: number;
@@ -7,38 +9,19 @@ export type Debris = {
 };
 
 export function usePlanetDebris(planetId: number): Debris {
-  const [steel, setSteel] = useState<number | undefined>();
-  const [quartz, setQuartz] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { PlanetDebrisField },
+    },
   } = useDojo();
 
-  useEffect(() => {
-    async function fetchDebrisAmount(
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getPlanetDebris({
-        planet_id: planetId,
-      });
+  // Reusable function to get debris level
+  const entityId = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
 
-      const edges = response.data.planetDebrisFieldModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const planetResource = models.find(
-          (model) => model?.__typename === 'PlanetResource'
-        );
-        if (planetResource && 'amount' in planetResource) {
-          const amountHex = planetResource.amount as string;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
-        }
-      }
-    }
+  const debrisField = useComponentValue(PlanetDebrisField, entityId)?.debris;
 
-    fetchDebrisAmount(setSteel);
-    fetchDebrisAmount(setQuartz);
-  }, [graphSdk, planetId]);
-
-  return { steel: steel ?? 0, quartz: quartz ?? 0 };
+  return {
+    steel: Number(debrisField?.steel) ?? 0,
+    quartz: Number(debrisField?.quartz) ?? 0,
+  };
 }

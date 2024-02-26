@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Resource } from '../constants/names/Names';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
+import { useEffect, useState } from 'react';
 
 export type Resources = {
   steel: number;
@@ -9,42 +12,47 @@ export type Resources = {
 };
 
 export function usePlanetResources(planetId: number): Resources {
-  const [steel, setSteel] = useState<number | undefined>();
-  const [quartz, setQuartz] = useState<number | undefined>();
-  const [tritium, setTritium] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { PlanetResource },
+      systemCalls: { getPlanetUncollectedResources },
+    },
   } = useDojo();
 
+  const [planetUncollectedResources, setPlanetUncollectedResources] =
+    useState<Resources | null>(null);
+
   useEffect(() => {
-    async function fetchResourceAmount(
-      resourceName: string,
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getPlanetResource({
-        planet_id: planetId,
-        name: Names.Resource[resourceName as keyof typeof Names.Resource],
+    getPlanetUncollectedResources(planetId)
+      .then((resources) => {
+        setPlanetUncollectedResources(resources);
+      })
+      .catch((error) => {
+        console.error('Error fetching planet resources:', error);
       });
+  }, [planetId, getPlanetUncollectedResources]);
 
-      const edges = response.data.planetResourceModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const planetResource = models.find(
-          (model) => model?.__typename === 'PlanetResource'
-        );
-        if (planetResource && 'amount' in planetResource) {
-          const amountHex = planetResource.amount as string;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
-        }
-      }
-    }
+  // Reusable function to get resource level
+  const useGetResourceLevel = (resourceType: number): number => {
+    const entityId = getEntityIdFromKeys([
+      BigInt(planetId),
+      BigInt(resourceType),
+    ]) as Entity;
+    return Number(useComponentValue(PlanetResource, entityId)?.amount) ?? 0;
+  };
 
-    fetchResourceAmount('Steel', setSteel);
-    fetchResourceAmount('Quartz', setQuartz);
-    fetchResourceAmount('Tritium', setTritium);
-  }, [graphSdk, planetId]);
+  // Use the reusable function for each resource
+  const resources: Resources = {
+    steel:
+      (planetUncollectedResources?.steel || 0) +
+      useGetResourceLevel(Resource.Steel),
+    quartz:
+      (planetUncollectedResources?.quartz || 0) +
+      useGetResourceLevel(Resource.Quartz),
+    tritium:
+      (planetUncollectedResources?.tritium || 0) +
+      useGetResourceLevel(Resource.Tritium),
+  };
 
-  return { steel: steel ?? 0, quartz: quartz ?? 0, tritium: tritium ?? 0 };
+  return resources;
 }
