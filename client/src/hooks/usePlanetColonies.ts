@@ -35,7 +35,8 @@ export function usePlanetColonies(planetId: number): Array<[number, Position]> {
       const edges = countResponse.data.planetColoniesCountModels.edges;
 
       if (edges.length > 0) {
-        const count = edges[0].node.entity.models[3].count;
+        const count = edges[0].node.entity.models[4].count;
+        console.log('edges', edges[0].node.entity.models);
 
         const colonyPositions: Array<[number, Position]> = [];
 
