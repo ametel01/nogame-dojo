@@ -289,11 +289,13 @@ export function createSystemCalls(
     tritium: bigint;
   }
 
-  const getPlanetResources = async (planetId: number): Promise<Resources> => {
+  const getPlanetUncollectedResources = async (
+    planetId: number
+  ): Promise<Resources> => {
     try {
       const tx = (await provider.callContract(
         'planetactions',
-        'get_resources_available',
+        'get_uncollected_resources',
         [planetId.toString()]
       )) as PlanetResourcesResponse;
 
@@ -308,14 +310,14 @@ export function createSystemCalls(
     }
   };
 
-  const getColonyResources = async (
+  const getColonyUncollectedResources = async (
     planetId: number,
     colonyId: number
   ): Promise<Resources> => {
     try {
       const tx = (await provider.callContract(
         'colonyactions',
-        'get_resources_available',
+        'get_uncollected_resources',
         [planetId, colonyId]
       )) as PlanetResourcesResponse;
 
@@ -342,7 +344,7 @@ export function createSystemCalls(
     collectDebris,
     recallFleet,
     dockFleet,
-    getPlanetResources,
-    getColonyResources,
+    getPlanetUncollectedResources,
+    getColonyUncollectedResources,
   };
 }
