@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Defence } from '../constants/names/Names';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
 
 export type Defences = {
   celestia: number;
@@ -11,52 +13,29 @@ export type Defences = {
 };
 
 export function usePlanetDefences(planetId: number): Defences {
-  const [celestia, setCelestia] = useState<number | undefined>();
-  const [blaster, setBlaster] = useState<number | undefined>();
-  const [beam, setBeam] = useState<number | undefined>();
-  const [astral, setAstral] = useState<number | undefined>();
-  const [plasma, setPlasma] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { PlanetDefence },
+    },
   } = useDojo();
 
-  useEffect(() => {
-    async function fetchDefenceLevels(
-      defenceName: string,
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getPlanetDefence({
-        planet_id: planetId,
-        name: Names.Defence[defenceName as keyof typeof Names.Defence],
-      });
-
-      const edges = response.data.planetDefencesModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const planetDefence = models.find(
-          (model) => model?.__typename === 'PlanetDefences'
-        );
-        if (planetDefence && 'count' in planetDefence) {
-          const amountHex = planetDefence.count;
-          const amountNumber = parseInt(amountHex, 16);
-          setter(amountNumber);
-        }
-      }
-    }
-
-    fetchDefenceLevels('Celestia', setCelestia);
-    fetchDefenceLevels('Blaster', setBlaster);
-    fetchDefenceLevels('Beam', setBeam);
-    fetchDefenceLevels('Astral', setAstral);
-    fetchDefenceLevels('Plasma', setPlasma);
-  }, [graphSdk, planetId]);
-
-  return {
-    celestia: celestia ?? 0,
-    blaster: blaster ?? 0,
-    beam: beam ?? 0,
-    astral: astral ?? 0,
-    plasma: plasma ?? 0,
+  // Reusable function to get ship level
+  const useGetDefenceLevel = (shipType: number): number => {
+    const entityId = getEntityIdFromKeys([
+      BigInt(planetId),
+      BigInt(shipType),
+    ]) as Entity;
+    return useComponentValue(PlanetDefence, entityId)?.count ?? 0;
   };
+
+  // Use the reusable function for each ship
+  const defences: Defences = {
+    celestia: useGetDefenceLevel(Defence.Celestia),
+    blaster: useGetDefenceLevel(Defence.Blaster),
+    beam: useGetDefenceLevel(Defence.Beam),
+    astral: useGetDefenceLevel(Defence.Astral),
+    plasma: useGetDefenceLevel(Defence.Plasma),
+  };
+
+  return defences;
 }
