@@ -25,8 +25,7 @@ deps.DockyardBoxProps) => {
   } = useDojo();
 
   const build = () => {
-    buildShip(account.account, functionCallName, quantity),
-      window.location.reload();
+    buildShip(account.account, functionCallName, quantity);
   };
   const buildCelestia = () =>
     buildDefence(account.account, DefenceBuildType.celestia, quantity);

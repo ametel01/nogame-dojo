@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Fleet } from '../constants/names/Names';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
 
 export type Fleet = {
   carrier: number;
@@ -11,50 +13,29 @@ export type Fleet = {
 };
 
 export function usePlanetShips(planetId: number): Fleet {
-  const [carrier, setCarrier] = useState<number | undefined>();
-  const [scraper, setScraper] = useState<number | undefined>();
-  const [sparrow, setSparrow] = useState<number | undefined>();
-  const [frigate, setFrigate] = useState<number | undefined>();
-  const [armade, setArmade] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { PlanetShip },
+    },
   } = useDojo();
 
-  useEffect(() => {
-    async function fetchShipLevels(
-      shipName: string,
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getPlanetShip({
-        planet_id: planetId,
-        name: Names.Fleet[shipName as keyof typeof Names.Fleet],
-      });
-
-      const edges = response.data.planetShipsModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const planetShip = models.find(
-          (model) => model?.__typename === 'PlanetShips'
-        );
-        if (planetShip && 'count' in planetShip) {
-          setter(planetShip.count as number);
-        }
-      }
-    }
-
-    fetchShipLevels('Carrier', setCarrier);
-    fetchShipLevels('Scraper', setScraper);
-    fetchShipLevels('Sparrow', setSparrow);
-    fetchShipLevels('Frigate', setFrigate);
-    fetchShipLevels('Armade', setArmade);
-  }, [graphSdk, planetId]);
-
-  return {
-    carrier: carrier ?? 0,
-    scraper: scraper ?? 0,
-    sparrow: sparrow ?? 0,
-    frigate: frigate ?? 0,
-    armade: armade ?? 0,
+  // Reusable function to get ship level
+  const useGetShipLevel = (shipType: number): number => {
+    const entityId = getEntityIdFromKeys([
+      BigInt(planetId),
+      BigInt(shipType),
+    ]) as Entity;
+    return useComponentValue(PlanetShip, entityId)?.count ?? 0;
   };
+
+  // Use the reusable function for each ship
+  const ships: Fleet = {
+    carrier: useGetShipLevel(Fleet.Carrier),
+    scraper: useGetShipLevel(Fleet.Scraper),
+    sparrow: useGetShipLevel(Fleet.Sparrow),
+    frigate: useGetShipLevel(Fleet.Frigate),
+    armade: useGetShipLevel(Fleet.Armade),
+  };
+
+  return ships;
 }
