@@ -37,6 +37,7 @@ export function useColonyResources(
       BigInt(colonyId),
       BigInt(resourceType),
     ]) as Entity;
+
     return Number(useComponentValue(ColonyResource, entityId)?.amount) ?? 0;
   };
 
@@ -52,7 +53,6 @@ export function useColonyResources(
       (colonyUncollectedResources?.tritium || 0) +
       useGetResourceLevel(Resource.Tritium),
   };
-  console.log(useGetResourceLevel(Resource.Steel).toString());
 
   return resources;
 }

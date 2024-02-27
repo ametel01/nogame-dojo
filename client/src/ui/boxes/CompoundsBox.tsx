@@ -27,7 +27,6 @@ const CompoundsBox = ({
   } = useDojo();
 
   const energy = deps.numberWithCommas(energyRequired);
-
   const upgrade = () => {
     colonyId === 0
       ? upgradeCompound(account.account, functionCallName, quantity)
