@@ -43,7 +43,7 @@ echo techactions : $TECH_ADDRESS
 echo "---------------------------------------------------------------------------"
 
 # enable system -> component authorizations
-COLONY_COMPONENTS=("ColonyResource" "ColonyCompounds" "ColonyShips" "ColonyDefences" "ColonyPosition" "PositionToColony" "ColonyResourceTimer" "ColonyOwner" "PositionToPlanet" "PlanetPosition" "PlanetColoniesCount" "ColonyCount")
+COLONY_COMPONENTS=("PlanetResourcesSpent" "ColonyCompounds" "ColonyResource" "ColonyShips" "ColonyDefences" "ColonyPosition" "PositionToColony" "ColonyResourceTimer" "ColonyOwner" "PositionToPlanet" "PlanetPosition" "PlanetColoniesCount" "ColonyCount" )   
 for component in ${COLONY_COMPONENTS[@]}; do
     sozo auth writer $component $COLONY_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
     sleep 1
