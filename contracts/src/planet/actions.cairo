@@ -86,7 +86,7 @@ mod planetactions {
                 dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
                     .level,
             };
-            shared::calculate_production(world, planet_id, compounds)
+            shared::calculate_production(world, planet_id, 0, compounds)
         }
     }
 }

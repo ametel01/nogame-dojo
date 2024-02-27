@@ -45,14 +45,14 @@ mod compoundactions {
         world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
     ) -> Resources {
         let compounds = shared::get_compound_levels(world, planet_id);
-        shared::collect(world, planet_id, compounds);
-        let available_resources = shared::get_resources_available(world, planet_id);
+        shared::collect(world, planet_id, 0, compounds);
+        let available_resources = shared::get_resources_available(world, planet_id, 0);
         let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
                 cost = compound::cost::steel(compounds.steel, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -67,7 +67,7 @@ mod compoundactions {
             CompoundUpgradeType::QuartzMine => {
                 cost = compound::cost::quartz(compounds.quartz, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -82,7 +82,7 @@ mod compoundactions {
             CompoundUpgradeType::TritiumMine => {
                 cost = compound::cost::tritium(compounds.tritium, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -97,7 +97,7 @@ mod compoundactions {
             CompoundUpgradeType::EnergyPlant => {
                 cost = compound::cost::energy(compounds.energy, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -112,7 +112,7 @@ mod compoundactions {
             CompoundUpgradeType::Lab => {
                 cost = compound::cost::lab(compounds.lab, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -125,7 +125,7 @@ mod compoundactions {
             CompoundUpgradeType::Dockyard => {
                 cost = compound::cost::dockyard(compounds.dockyard, quantity);
                 assert!(available_resources >= cost, "Compound: Not enough resources");
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (

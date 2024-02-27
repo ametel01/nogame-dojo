@@ -154,7 +154,7 @@ mod colonyactions {
             self: @ContractState, planet_id: u32, colony_id: u8
         ) -> Resources {
             let world = self.world_dispatcher.read();
-            calculate_production(
+            shared::calculate_production(
                 world, planet_id, colony_id, get_colony_compounds(world, planet_id, colony_id)
             )
         }
@@ -170,7 +170,7 @@ mod colonyactions {
     ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         collect(world, planet_id, colony_id, compounds);
-        let resource_available = get_colony_resources(world, planet_id, colony_id);
+        let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
@@ -178,7 +178,7 @@ mod colonyactions {
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
                 );
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     ColonyCompounds {
@@ -195,7 +195,7 @@ mod colonyactions {
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade quartz mine"
                 );
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     ColonyCompounds {
@@ -212,7 +212,7 @@ mod colonyactions {
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade tritium mine"
                 );
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     ColonyCompounds {
@@ -229,7 +229,7 @@ mod colonyactions {
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade energy plant"
                 );
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     ColonyCompounds {
@@ -246,7 +246,7 @@ mod colonyactions {
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
                 );
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     ColonyCompounds {
@@ -271,7 +271,7 @@ mod colonyactions {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         let ships_levels = get_colony_ships(world, planet_id, colony_id);
         collect(world, planet_id, colony_id, compounds);
-        let resource_available = get_colony_resources(world, planet_id, colony_id);
+        let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
         let mut cost: Resources = Default::default();
         match component {
@@ -279,7 +279,7 @@ mod colonyactions {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().carrier);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::carrier_requirements_check(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -297,7 +297,7 @@ mod colonyactions {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().scraper);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::scraper_requirements_check(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -315,7 +315,7 @@ mod colonyactions {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().sparrow);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::sparrow_requirements_check(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -333,7 +333,7 @@ mod colonyactions {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().frigate);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::frigate_requirements_check(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -351,7 +351,7 @@ mod colonyactions {
                 cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().armade);
                 assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
                 dockyard::armade_requirements_check(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -380,7 +380,7 @@ mod colonyactions {
         let defences_levels = get_colony_defences(world, planet_id, colony_id);
         let costs = defence::get_defences_unit_cost();
         collect(world, planet_id, colony_id, compounds);
-        let resource_available = get_colony_resources(world, planet_id, colony_id);
+        let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
         let mut cost: Resources = Default::default();
         match component {
@@ -388,7 +388,7 @@ mod colonyactions {
                 cost = defence::get_defences_cost(quantity, costs.celestia);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::celestia(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -406,7 +406,7 @@ mod colonyactions {
                 cost = defence::get_defences_cost(quantity, costs.blaster);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::blaster(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -424,7 +424,7 @@ mod colonyactions {
                 cost = defence::get_defences_cost(quantity, costs.beam);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::beam(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -442,7 +442,7 @@ mod colonyactions {
                 cost = defence::get_defences_cost(quantity, costs.astral);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::astral(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -460,7 +460,7 @@ mod colonyactions {
                 cost = defence::get_defences_cost(quantity, costs.plasma);
                 assert!(resource_available >= cost, "Colony Defence: Not enough resources");
                 defence::requirements::plasma(compounds.dockyard, techs);
-                pay_resources(world, planet_id, colony_id, resource_available, cost);
+                shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
                 set!(
                     world,
                     (
@@ -476,21 +476,6 @@ mod colonyactions {
             },
         }
         cost
-    }
-
-    fn get_colony_resources(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> Resources {
-        let uni_speed = get!(world, constants::GAME_ID, GameSetup).speed;
-        Resources {
-            steel: get!(world, (planet_id, colony_id, Names::Resource::STEEL), ColonyResource)
-                .amount
-                * uni_speed.into(),
-            quartz: get!(world, (planet_id, colony_id, Names::Resource::QUARTZ), ColonyResource)
-                .amount
-                * uni_speed.into(),
-            tritium: get!(world, (planet_id, colony_id, Names::Resource::TRITIUM), ColonyResource)
-                .amount
-                * uni_speed.into(),
-        }
     }
 
     fn get_colony_compounds(
@@ -538,8 +523,8 @@ mod colonyactions {
     }
 
     fn collect(world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels) {
-        let available = get_colony_resources(world, planet_id, colony_id);
-        let collectible = calculate_production(world, planet_id, colony_id, compounds);
+        let available = shared::get_resources_available(world, planet_id, colony_id);
+        let collectible = shared::calculate_production(world, planet_id, colony_id, compounds);
         set!(
             world,
             (
@@ -581,155 +566,6 @@ mod colonyactions {
                 },
             )
         );
-    }
-
-
-    fn pay_resources(
-        world: IWorldDispatcher,
-        planet_id: u32,
-        colony_id: u8,
-        available: Resources,
-        cost: Resources
-    ) {
-        if cost.steel > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel - cost.steel
-                    },
-                )
-            );
-        }
-        if cost.quartz > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz - cost.quartz
-                    },
-                )
-            );
-        }
-        if cost.tritium > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium - cost.tritium
-                    },
-                )
-            );
-        }
-        set!(world, PlanetResourcesSpent { planet_id, spent: cost.steel + cost.quartz });
-    }
-
-    fn receive_resources(
-        world: IWorldDispatcher,
-        planet_id: u32,
-        colony_id: u8,
-        available: Resources,
-        amount: Resources
-    ) {
-        if amount.steel > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + amount.steel
-                    },
-                )
-            );
-        }
-        if amount.quartz > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + amount.quartz
-                    },
-                )
-            );
-        }
-        if amount.tritium > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + amount.tritium
-                    },
-                )
-            );
-        }
-    }
-
-    fn calculate_production(
-        world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels
-    ) -> Resources {
-        let time_now = starknet::get_block_timestamp();
-        let last_collection_time = get!(world, (planet_id, colony_id), ColonyResourceTimer)
-            .last_collection;
-        let time_elapsed = time_now - last_collection_time;
-
-        let position = get!(world, (planet_id, colony_id), ColonyPosition).position;
-        let temp = compound::calculate_avg_temperature(position.orbit);
-        let speed = get!(world, constants::GAME_ID, GameSetup).speed;
-        let steel_available = compound::production::steel(compounds.steel)
-            * speed.into()
-            * time_elapsed.into()
-            / constants::HOUR.into();
-
-        let quartz_available = compound::production::quartz(compounds.quartz)
-            * speed.into()
-            * time_elapsed.into()
-            / constants::HOUR.into();
-
-        let tritium_available = compound::production::tritium(compounds.tritium, temp, speed.into())
-            * time_elapsed.into()
-            / constants::HOUR.into();
-        let energy_available = compound::production::energy(compounds.energy);
-        let celestia_production = compound::celestia_production(position.orbit);
-        let celestia_available = get!(
-            world, (planet_id, colony_id, Names::Defence::CELESTIA), ColonyDefences
-        )
-            .count;
-        let energy_required = compound::consumption::base(compounds.steel)
-            + compound::consumption::base(compounds.quartz)
-            + compound::consumption::base(compounds.tritium);
-        if energy_available
-            + (celestia_production.into() * celestia_available).into() < energy_required {
-            let _steel = compound::production_scaler(
-                steel_available, energy_available, energy_required
-            );
-            let _quartz = compound::production_scaler(
-                quartz_available, energy_available, energy_required
-            );
-            let _tritium = compound::production_scaler(
-                tritium_available, energy_available, energy_required
-            );
-
-            return Resources { steel: _steel, quartz: _quartz, tritium: _tritium, };
-        }
-
-        Resources { steel: steel_available, quartz: quartz_available, tritium: tritium_available, }
     }
 }
 

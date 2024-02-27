@@ -50,8 +50,8 @@ mod dockyardactions {
         let techs = shared::get_tech_levels(world, planet_id);
         let compounds = shared::get_compound_levels(world, planet_id);
         let ships_levels = shared::get_ships_levels(world, planet_id);
-        shared::collect(world, planet_id, compounds);
-        let available_resources = shared::get_resources_available(world, planet_id);
+        shared::collect(world, planet_id, 0, compounds);
+        let available_resources = shared::get_resources_available(world, planet_id, 0);
         match component {
             ShipBuildType::Carrier => {
                 let cost = dockyard::get_ships_cost(
@@ -59,7 +59,7 @@ mod dockyardactions {
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
                 dockyard::carrier_requirements_check(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -78,7 +78,7 @@ mod dockyardactions {
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
                 dockyard::scraper_requirements_check(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -97,7 +97,7 @@ mod dockyardactions {
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
                 dockyard::sparrow_requirements_check(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -116,7 +116,7 @@ mod dockyardactions {
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
                 dockyard::frigate_requirements_check(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -135,7 +135,7 @@ mod dockyardactions {
                 );
                 assert!(available_resources >= cost, "Dockyard: Not enough resources");
                 dockyard::armade_requirements_check(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (

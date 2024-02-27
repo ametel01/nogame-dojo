@@ -132,19 +132,9 @@ mod fleetactions {
             let consumption = fleet::get_fuel_consumption(fleet, distance, speed_modifier);
             let mut cost: Resources = Default::default();
             cost.tritium = consumption;
-            if colony_id.is_zero() {
-                let available = shared::get_resources_available(world, sender_mother_planet_id);
-                assert!(available.tritium >= consumption, "Fleet: not enough tritium for mission");
-                shared::pay_resources(world, sender_mother_planet_id, available, cost);
-            } else {
-                let available = colonyactions::get_colony_resources(
-                    world, sender_mother_planet_id, colony_id
-                );
-                assert!(available.tritium >= consumption, "Fleet: not enough tritium for mission");
-                colonyactions::pay_resources(
-                    world, sender_mother_planet_id, colony_id, available, cost
-                );
-            }
+            let available = shared::get_resources_available(world, sender_mother_planet_id, 0);
+            assert!(available.tritium >= consumption, "Fleet: not enough tritium for mission");
+            shared::pay_resources(world, sender_mother_planet_id, 0, available, cost);
             // Write mission
             let mut mission: Mission = Default::default();
             mission.time_start = time_now;
@@ -370,21 +360,11 @@ mod fleetactions {
                 tritium: Zeroable::zero()
             };
 
-            if mission.origin > 500 {
-                let mother_planet = mission.origin / 1000;
-                let colony_id: u8 = (mission.origin % 1000)
-                    .try_into()
-                    .expect('collect debris fail');
-                let available = colonyactions::get_colony_resources(
-                    world, mother_planet, colony_id
-                );
-                colonyactions::receive_resources(
-                    world, mother_planet, colony_id, available, collection
-                );
-            } else {
-                let available = shared::get_resources_available(world, mission.origin);
-                shared::receive_resources(world, mission.origin, available, collection);
-            }
+            let mother_planet = mission.origin / 1000;
+            let colony_id: u8 = (mission.origin % 1000).try_into().expect('collect debris fail');
+
+            let available = shared::get_resources_available(world, mission.origin, colony_id);
+            shared::receive_resources(world, mission.origin, 0, available, collection);
 
             fleet_return_planet(world, mission.origin, collector_fleet, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
@@ -515,7 +495,7 @@ mod fleetactions {
             let mother_planet = planet_id / 1000;
             let colony_id: u8 = (planet_id % 1000).try_into().expect('fleet return planet fail');
             let fleet_levels = colonyactions::get_colony_ships(world, mother_planet, colony_id);
-            let resources = colonyactions::get_colony_resources(world, mother_planet, colony_id);
+            let resources = shared::get_resources_available(world, mother_planet, colony_id);
             if cargo.steel > 0 {
                 set!(
                     world,
@@ -606,7 +586,7 @@ mod fleetactions {
             }
         } else {
             let fleet_levels = shared::get_ships_levels(world, planet_id);
-            let resources = shared::get_resources_available(world, planet_id);
+            let resources = shared::get_resources_available(world, planet_id, 0);
             if cargo.steel > 0 {
                 set!(
                     world,
@@ -695,11 +675,11 @@ mod fleetactions {
         if origin > 500 {
             let mother_planet = origin / 1000;
             let colony_id: u8 = (origin % 1000).try_into().expect('receive loot fail');
-            let available = colonyactions::get_colony_resources(world, mother_planet, colony_id);
-            colonyactions::receive_resources(world, mother_planet, colony_id, available, loot);
+            let available = shared::get_resources_available(world, mother_planet, colony_id);
+            shared::receive_resources(world, mother_planet, colony_id, available, loot);
         } else {
-            let available = shared::get_resources_available(world, origin);
-            shared::receive_resources(world, origin, available, loot);
+            let available = shared::get_resources_available(world, origin, 0);
+            shared::receive_resources(world, origin, 0, available, loot);
         }
     }
 
@@ -707,11 +687,11 @@ mod fleetactions {
         if destination_id > 500 {
             let mother_planet = destination_id / 1000;
             let colony_id: u8 = (destination_id % 1000).try_into().expect('process loot fail');
-            let available = colonyactions::get_colony_resources(world, mother_planet, colony_id);
-            colonyactions::pay_resources(world, mother_planet, colony_id, available, loot);
+            let available = shared::get_resources_available(world, mother_planet, colony_id);
+            shared::pay_resources(world, mother_planet, colony_id, available, loot);
         } else {
-            let available = shared::get_resources_available(world, destination_id);
-            shared::pay_resources(world, destination_id, available, loot);
+            let available = shared::get_resources_available(world, destination_id, 0);
+            shared::pay_resources(world, destination_id, 0, available, loot);
         }
     }
 
@@ -725,13 +705,13 @@ mod fleetactions {
         if destination_id > 500 {
             let mother_planet = destination_id / 1000;
             let colony_id: u8 = (destination_id % 1000).try_into().expect('calculate loot fail');
-            available = colonyactions::get_colony_resources(world, mother_planet, colony_id);
+            available = shared::get_resources_available(world, mother_planet, colony_id);
             let compounds = colonyactions::get_colony_compounds(world, mother_planet, colony_id);
             colonyactions::collect(world, mother_planet, colony_id, compounds);
         } else {
             let compounds = shared::get_compound_levels(world, destination_id);
-            shared::collect(world, destination_id, compounds);
-            available = shared::get_resources_available(world, destination_id);
+            shared::collect(world, destination_id, 0, compounds);
+            available = shared::get_resources_available(world, destination_id, 0);
         }
 
         if !available.is_zero() {
@@ -900,7 +880,7 @@ mod fleetactions {
             let planet_id = planet_id / 1000;
             let colony_id: u8 = (planet_id % 1000).try_into().expect('fleet leave planet fail');
             let fleet_levels = colonyactions::get_colony_ships(world, planet_id, colony_id);
-            let resources = colonyactions::get_colony_resources(world, planet_id, colony_id);
+            let resources = shared::get_resources_available(world, planet_id, colony_id);
             if cargo.steel > 0 {
                 assert!(resources.steel >= cargo.steel, "Fleet: not enough steel for mission");
                 set!(
@@ -996,7 +976,7 @@ mod fleetactions {
             }
         } else {
             let fleet_levels = shared::get_ships_levels(world, planet_id);
-            let resources = shared::get_resources_available(world, planet_id);
+            let resources = shared::get_resources_available(world, planet_id, 0);
             if cargo.steel > 0 {
                 assert!(resources.steel >= cargo.steel, "Fleet: not enough steel for mission");
                 set!(

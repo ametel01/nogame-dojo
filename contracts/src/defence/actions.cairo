@@ -52,8 +52,8 @@ mod defenceactions {
         let techs = shared::get_tech_levels(world, planet_id);
         let compounds = shared::get_compound_levels(world, planet_id);
         let defences_levels = shared::get_defences_levels(world, planet_id);
-        shared::collect(world, planet_id, compounds);
-        let available_resources = shared::get_resources_available(world, planet_id);
+        shared::collect(world, planet_id, 0, compounds);
+        let available_resources = shared::get_resources_available(world, planet_id, 0);
         match component {
             DefenceBuildType::Celestia => {
                 let cost = defence::get_defences_cost(
@@ -61,7 +61,7 @@ mod defenceactions {
                 );
                 assert!(available_resources >= cost, "Defence: Not enough resources");
                 defence::requirements::celestia(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -80,7 +80,7 @@ mod defenceactions {
                 );
                 assert!(available_resources >= cost, "Defence: Not enough resources");
                 defence::requirements::blaster(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -99,7 +99,7 @@ mod defenceactions {
                 );
                 assert!(available_resources >= cost, "Defence: Not enough resources");
                 defence::requirements::beam(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -118,7 +118,7 @@ mod defenceactions {
                 );
                 assert!(available_resources >= cost, "Defence: Not enough resources");
                 defence::requirements::astral(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -137,7 +137,7 @@ mod defenceactions {
                 );
                 assert!(available_resources >= cost, "Defence: Not enough resources");
                 defence::requirements::plasma(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (

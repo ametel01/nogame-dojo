@@ -51,8 +51,8 @@ mod techactions {
         let compounds = shared::get_compound_levels(world, planet_id);
         let tech_levels = shared::get_tech_levels(world, planet_id);
         let base_tech_cost = tech::base_tech_costs();
-        shared::collect(world, planet_id, compounds);
-        let available_resources = shared::get_resources_available(world, planet_id);
+        shared::collect(world, planet_id, 0, compounds);
+        let available_resources = shared::get_resources_available(world, planet_id, 0);
         let mut cost: Resources = Default::default();
 
         match component {
@@ -60,7 +60,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.energy, quantity, base_tech_cost.energy);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::energy(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -76,7 +76,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.digital, quantity, base_tech_cost.digital);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::digital(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -92,7 +92,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.beam, quantity, base_tech_cost.beam);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::beam(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -106,7 +106,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.armour, quantity, base_tech_cost.armour);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::armour(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -122,7 +122,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.ion, quantity, base_tech_cost.ion);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::ion(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -136,7 +136,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.plasma, quantity, base_tech_cost.plasma);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::plasma(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -152,7 +152,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.weapons, quantity, base_tech_cost.weapons);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::weapons(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -168,7 +168,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.shield, quantity, base_tech_cost.shield);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::shield(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -185,7 +185,7 @@ mod techactions {
                     tech::get_tech_cost(tech_levels.spacetime, quantity, base_tech_cost.spacetime);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::spacetime(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -204,7 +204,7 @@ mod techactions {
                     );
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::combustion(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -220,7 +220,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.thrust, quantity, base_tech_cost.thrust);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::thrust(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -236,7 +236,7 @@ mod techactions {
                 cost = tech::get_tech_cost(tech_levels.warp, quantity, base_tech_cost.warp);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::warp(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
@@ -250,7 +250,7 @@ mod techactions {
                 cost = tech::exocraft_cost(tech_levels.exocraft, quantity);
                 assert!(available_resources >= cost, "Tech: Not enough resources");
                 tech::requirements::exocraft(compounds.lab, tech_levels);
-                shared::pay_resources(world, planet_id, available_resources, cost);
+                shared::pay_resources(world, planet_id, 0, available_resources, cost);
                 set!(
                     world,
                     (
