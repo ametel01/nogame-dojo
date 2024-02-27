@@ -95,7 +95,7 @@ export function createSystemCalls(
       const { transaction_hash } = await provider.execute(
         account,
         'colonyactions',
-        'process_colony_compound_upgrade',
+        'process_compound_upgrade',
         [colonyId, component, quantity]
       );
 
@@ -164,6 +164,33 @@ export function createSystemCalls(
     }
   };
 
+  const buildColonyShip = async (
+    account: Account,
+    colonyId: BigNumberish,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'colonyactions',
+        'process_ship_build',
+        [colonyId, component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const buildDefence = async (
     account: Account,
     component: BigNumberish,
@@ -175,6 +202,33 @@ export function createSystemCalls(
         'defenceactions',
         'process_defence_build',
         [component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const buildColonyDefence = async (
+    account: Account,
+    colonyId: BigNumberish,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'colonyactions',
+        'process_defence_build',
+        [colonyId, component, quantity]
       );
 
       setComponentsFromEvents(
@@ -366,7 +420,9 @@ export function createSystemCalls(
     upgradeColonyCompound,
     upgradeTech,
     buildShip,
+    buildColonyShip,
     buildDefence,
+    buildColonyDefence,
     sendFleet,
     attackPlanet,
     collectDebris,
