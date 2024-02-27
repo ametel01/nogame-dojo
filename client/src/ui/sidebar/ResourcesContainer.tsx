@@ -164,7 +164,7 @@ const ResourcesContainer = ({
   const colonyCompounds = useColonyCompounds(planetId, selectedColonyId);
 
   const solarEnergy = CompoundsFormulas.energyProduction(
-    selectedColonyId === 0 ? compoundsLevels?.energy : colonyCompounds?.energy
+    selectedColonyId === 0 ? compoundsLevels.energy : colonyCompounds.energy
   );
 
   const planetCelestia = usePlanetDefences(planetId).celestia;
