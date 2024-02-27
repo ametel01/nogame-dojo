@@ -1,36 +1,15 @@
 import * as deps from './deps';
-
-import { useEffect, useState } from 'react';
-// import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
 import { usePlanetTechs } from '../../hooks/usePlanetTechs';
 import { usePlanetShips } from '../../hooks/usePlanetShips';
 import { usePlanetDefences } from '../../hooks/usePlanetDefences';
-import { useDojo } from '../../dojo/useDojo';
-import { Resources } from '../../hooks/usePlanetResources';
+import { usePlanetResources } from '../../hooks/usePlanetResources';
 import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
 
 export const ResourcesSection = ({
   planetId,
   colonyId,
 }: deps.ResourcesSectionArgs) => {
-  const {
-    setup: {
-      systemCalls: { getPlanetResources },
-    },
-  } = useDojo();
-  const [planetResources, setPlanetResources] = useState<Resources | null>(
-    null
-  );
-
-  useEffect(() => {
-    getPlanetResources(planetId)
-      .then((resources) => {
-        setPlanetResources(resources);
-      })
-      .catch((error) => {
-        console.error('Error fetching planet resources:', error);
-      });
-  }, [planetId, getPlanetResources, setPlanetResources]);
+  const planetResources = usePlanetResources(planetId);
 
   const [activeTab, setActiveTab] = deps.useState(1);
 

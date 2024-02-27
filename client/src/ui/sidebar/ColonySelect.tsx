@@ -51,15 +51,10 @@ const menuProps = {
 };
 
 const ColonySelect = ({ planetId, selectedColonyId, handleChange }: Props) => {
-  // const {
-  //   setup: {
-  //     clientComponents: { ColonyCount },
-  //   },
-  // } = useDojo();
-
-  // const planteIdEntity = getEntityIdFromKeys([BigInt(planetId)]) as Entity;
   const coloniesArray = usePlanetColonies(planetId);
+
   const techs = usePlanetTechs(planetId);
+
   const maxColonies = techs
     ? Math.floor(Number(techs.exocraft) / 2) +
       (Number(techs.exocraft) % 2 === 1 ? 1 : 0)
