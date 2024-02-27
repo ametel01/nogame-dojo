@@ -93,7 +93,7 @@ export const ColonyUpgradeType = {
   QuartzMine: 1,
   TritiumMine: 2,
   EnergyPlant: 3,
-  Dockyard: 4,
+  Dockyard: 5,
 };
 
 export function getColonyUpgradeType(
