@@ -6,7 +6,7 @@ use nogame::data::types::{
 #[starknet::interface]
 trait IColonyActions<TState> {
     fn generate_colony(ref self: TState);
-    fn process_colony_compound_upgrade(
+    fn process_compound_upgrade(
         ref self: TState, colony_id: u8, name: CompoundUpgradeType, quantity: u8
     );
     fn process_ship_build(ref self: TState, colony_id: u8, name: ShipBuildType, quantity: u32,);
@@ -120,7 +120,7 @@ mod colonyactions {
             emit!(world, PlanetGenerated { planet_id, position, account: get_caller_address() });
         }
 
-        fn process_colony_compound_upgrade(
+        fn process_compound_upgrade(
             ref self: ContractState, colony_id: u8, name: CompoundUpgradeType, quantity: u8
         ) {
             let world = self.world_dispatcher.read();
@@ -659,11 +659,11 @@ mod test {
             }
         );
 
-        actions.colony.process_colony_compound_upgrade(1, CompoundUpgradeType::SteelMine, 1);
-        actions.colony.process_colony_compound_upgrade(1, CompoundUpgradeType::QuartzMine, 1);
-        actions.colony.process_colony_compound_upgrade(1, CompoundUpgradeType::TritiumMine, 1);
-        actions.colony.process_colony_compound_upgrade(1, CompoundUpgradeType::EnergyPlant, 1);
-        actions.colony.process_colony_compound_upgrade(1, CompoundUpgradeType::Dockyard, 1);
+        actions.colony.process_compound_upgrade(1, CompoundUpgradeType::SteelMine, 1);
+        actions.colony.process_compound_upgrade(1, CompoundUpgradeType::QuartzMine, 1);
+        actions.colony.process_compound_upgrade(1, CompoundUpgradeType::TritiumMine, 1);
+        actions.colony.process_compound_upgrade(1, CompoundUpgradeType::EnergyPlant, 1);
+        actions.colony.process_compound_upgrade(1, CompoundUpgradeType::Dockyard, 1);
 
         let steel_level = get!(world, (1, 1, Names::Compound::STEEL), ColonyCompounds).level;
         assert!(steel_level == 1, "Colony: steel mine not upgraded correctly");
