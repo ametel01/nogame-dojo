@@ -85,6 +85,33 @@ export function createSystemCalls(
     }
   };
 
+  const upgradeColonyCompound = async (
+    account: Account,
+    colonyId: BigNumberish,
+    component: BigNumberish,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await provider.execute(
+        account,
+        'colonyactions',
+        'process_colony_compound_upgrade',
+        [colonyId, component, quantity]
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const upgradeTech = async (
     account: Account,
     component: BigNumberish,
@@ -336,6 +363,7 @@ export function createSystemCalls(
     generatePlanet,
     generateColony,
     upgradeCompound,
+    upgradeColonyCompound,
     upgradeTech,
     buildShip,
     buildDefence,
