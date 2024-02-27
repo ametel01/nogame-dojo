@@ -12,12 +12,13 @@ import CompoundsFormulas, {
 } from '../../shared/utils/Formulas';
 import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
 import { useColonyCompounds } from '../../hooks/useColonyCompounds';
-import { useColonyResources } from '../../hooks/useColonyResources';
 import { usePlanetDefences } from '../../hooks/usePlanetDefences';
 import { useColonyDefences } from '../../hooks/useColonyDefences';
 import { useDojo } from '../../dojo/useDojo';
 import { Resources } from '../../types';
 import { Position } from '../../hooks/usePlanetPosition';
+import { usePlanetResources } from '../../hooks/usePlanetResources';
+import { useColonyResources } from '../../hooks/useColonyResources';
 
 const Container = styled.div`
   display: flex;
@@ -158,26 +159,34 @@ const ResourcesContainer = ({
 }: ResourceContainerArgs) => {
   const {
     setup: {
-      systemCalls: { getPlanetResources },
+      systemCalls: { getColonyUncollectedResources },
     },
   } = useDojo();
-  const [planetResources, setPlanetResources] = useState<Resources | null>(
-    null
-  );
+  const [colonyUncollectedResources, setColonyUncollectedResources] =
+    useState<Resources | null>(null);
 
   useEffect(() => {
-    getPlanetResources(planetId)
+    getColonyUncollectedResources(planetId, selectedColonyId)
       .then((resources) => {
-        setPlanetResources(resources);
+        setColonyUncollectedResources(resources);
       })
       .catch((error) => {
         console.error('Error fetching planet resources:', error);
       });
-  }, [planetId, getPlanetResources, setPlanetResources]);
+  }, [planetId, selectedColonyId, getColonyUncollectedResources]);
 
-  const compoundsLevels = usePlanetCompounds(planetId);
+  const planetResources = usePlanetResources(planetId);
 
   const colonyResources = useColonyResources(planetId, selectedColonyId);
+
+  const totalColonyResources = {
+    steel: colonyResources?.steel + (colonyUncollectedResources?.steel || 0),
+    quartz: colonyResources?.quartz + (colonyUncollectedResources?.quartz || 0),
+    tritium:
+      colonyResources?.tritium + (colonyUncollectedResources?.tritium || 0),
+  };
+
+  const compoundsLevels = usePlanetCompounds(planetId);
 
   const colonyCompounds = useColonyCompounds(planetId, selectedColonyId);
 
@@ -220,8 +229,8 @@ const ResourcesContainer = ({
         img={ironImg}
         available={
           selectedColonyId === 0
-            ? numberWithCommas(planetResources?.steel)
-            : numberWithCommas(colonyResources?.steel)
+            ? numberWithCommas(planetResources.steel)
+            : numberWithCommas(totalColonyResources.steel)
         }
       />
       <Resource
@@ -229,8 +238,8 @@ const ResourcesContainer = ({
         img={quartzImg}
         available={
           selectedColonyId === 0
-            ? numberWithCommas(planetResources?.quartz)
-            : numberWithCommas(colonyResources?.quartz)
+            ? numberWithCommas(planetResources.quartz)
+            : numberWithCommas(totalColonyResources.quartz)
         }
       />
       <Resource
@@ -238,8 +247,8 @@ const ResourcesContainer = ({
         img={tritiumImg}
         available={
           selectedColonyId === 0
-            ? numberWithCommas(planetResources?.tritium)
-            : numberWithCommas(colonyResources?.tritium)
+            ? numberWithCommas(planetResources.tritium)
+            : numberWithCommas(totalColonyResources.tritium)
         }
       />
       <Energy
