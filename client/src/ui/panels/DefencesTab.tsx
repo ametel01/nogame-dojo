@@ -40,8 +40,8 @@ export const DefenceTabPanel = ({
       requirements: deps.astralRequirements(dockyard, techs),
     },
     {
-      description: <deps.PlasmaDescription />,
-      img: deps.plasmaImg,
+      description: <deps.PlasmaCannotDescription />,
+      img: deps.plasmaCannonImg,
       title: 'Plasma Projector',
       functionCallName: deps.DefenceBuildType.plasma,
       level: defences?.plasma,
