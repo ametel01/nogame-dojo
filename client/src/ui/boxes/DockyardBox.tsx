@@ -14,21 +14,36 @@ const DockyardBox = ({
   description,
   resourcesAvailable,
   isCelestia,
-}: // colonyId,
-deps.DockyardBoxProps) => {
+  colonyId,
+}: deps.DockyardBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const {
     setup: {
-      systemCalls: { buildShip, buildDefence },
+      systemCalls: {
+        buildShip,
+        buildColonyShip,
+        buildColonyDefence,
+        buildDefence,
+      },
     },
     account,
   } = useDojo();
 
   const build = () => {
-    buildShip(account.account, functionCallName, quantity);
+    colonyId === 0
+      ? buildShip(account.account, functionCallName, quantity)
+      : buildColonyShip(account.account, colonyId, functionCallName, quantity);
   };
+
   const buildCelestia = () =>
-    buildDefence(account.account, DefenceBuildType.celestia, quantity);
+    colonyId === 0
+      ? buildDefence(account.account, DefenceBuildType.celestia, quantity)
+      : buildColonyDefence(
+          account.account,
+          colonyId,
+          DefenceBuildType.celestia,
+          quantity
+        );
 
   const buttonState = deps.useMemo((): deps.ButtonState => {
     if (!requirementsMet) {

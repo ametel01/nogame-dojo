@@ -12,17 +12,25 @@ const DefencesBox = ({
   requirementsMet,
   description,
   resourcesAvailable,
+  colonyId,
 }: deps.DefenceBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const {
     setup: {
-      systemCalls: { buildDefence },
+      systemCalls: { buildDefence, buildColonyDefence },
     },
     account,
   } = useDojo();
 
   const build = () => {
-    buildDefence(account.account, functionCallName, quantity);
+    colonyId === 0
+      ? buildDefence(account.account, functionCallName, quantity)
+      : buildColonyDefence(
+          account.account,
+          colonyId,
+          functionCallName,
+          quantity
+        );
   };
 
   const buttonState = deps.useMemo((): deps.ButtonState => {
