@@ -101,120 +101,32 @@ fn receive_resources(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: Resources, amount: Resources
 ) {
     if colony_id == 0 {
-        if amount.steel > 0 {
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + amount.steel
-                    },
-                )
-            );
-        }
-        if amount.quartz > 0 {
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + amount.quartz
-                    },
-                )
-            );
-        }
-        if amount.tritium > 0 {
-            set!(
-                world,
-                (
-                    PlanetResource {
-                        planet_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + amount.tritium
-                    },
-                )
-            );
-        }
+        add_resources_to_planet(world, planet_id, available, amount);
     } else {
-        if amount.steel > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::STEEL,
-                        amount: available.steel + amount.steel
-                    },
-                )
-            );
-        }
-        if amount.quartz > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::QUARTZ,
-                        amount: available.quartz + amount.quartz
-                    },
-                )
-            );
-        }
-        if amount.tritium > 0 {
-            set!(
-                world,
-                (
-                    ColonyResource {
-                        planet_id,
-                        colony_id,
-                        name: Names::Resource::TRITIUM,
-                        amount: available.tritium + amount.tritium
-                    },
-                )
-            );
-        }
+        add_resources_to_colony(world, planet_id, colony_id, available, amount);
     }
 }
 
 fn collect(world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels) {
     let available = get_resources_available(world, planet_id, colony_id);
     let collectible = calculate_production(world, planet_id, colony_id, compounds);
-    set!(
-        world,
-        (
-            PlanetResource {
-                planet_id, name: Names::Resource::STEEL, amount: available.steel + collectible.steel
-            },
-        )
-    );
-    set!(
-        world,
-        (
-            PlanetResource {
-                planet_id,
-                name: Names::Resource::QUARTZ,
-                amount: available.quartz + collectible.quartz
-            },
-        )
-    );
-    set!(
-        world,
-        (
-            PlanetResource {
-                planet_id,
-                name: Names::Resource::TRITIUM,
-                amount: available.tritium + collectible.tritium
-            },
-        )
-    );
-    set!(
-        world,
-        (PlanetResourceTimer { planet_id, last_collection: starknet::get_block_timestamp() },)
-    );
+    if colony_id == 0 {
+        add_resources_to_planet(world, planet_id, available, collectible);
+        set!(
+            world,
+            (PlanetResourceTimer { planet_id, last_collection: starknet::get_block_timestamp() },)
+        );
+    } else {
+        add_resources_to_colony(world, planet_id, colony_id, available, collectible);
+        set!(
+            world,
+            (
+                ColonyResourceTimer {
+                    planet_id, colony_id, last_collection: starknet::get_block_timestamp()
+                },
+            )
+        );
+    }
 }
 
 fn get_resources_available(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> Resources {
@@ -345,4 +257,53 @@ fn get_defences_levels(world: IWorldDispatcher, planet_id: u32) -> Defences {
         astral: get!(world, (planet_id, Names::Defence::ASTRAL), PlanetDefences).count,
         plasma: get!(world, (planet_id, Names::Defence::PLASMA), PlanetDefences).count,
     }
+}
+
+fn add_resources_to_colony(
+    world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: Resources, amount: Resources
+) {
+    set!(
+        world,
+        (
+            ColonyResource {
+                planet_id,
+                colony_id,
+                name: Names::Resource::STEEL,
+                amount: available.steel + amount.steel
+            },
+            ColonyResource {
+                planet_id,
+                colony_id,
+                name: Names::Resource::QUARTZ,
+                amount: available.quartz + amount.quartz
+            },
+            ColonyResource {
+                planet_id,
+                colony_id,
+                name: Names::Resource::TRITIUM,
+                amount: available.tritium + amount.tritium
+            },
+        )
+    );
+}
+
+fn add_resources_to_planet(
+    world: IWorldDispatcher, planet_id: u32, available: Resources, amount: Resources
+) {
+    set!(
+        world,
+        (
+            PlanetResource {
+                planet_id, name: Names::Resource::STEEL, amount: available.steel + amount.steel
+            },
+            PlanetResource {
+                planet_id, name: Names::Resource::QUARTZ, amount: available.quartz + amount.quartz
+            },
+            PlanetResource {
+                planet_id,
+                name: Names::Resource::TRITIUM,
+                amount: available.tritium + amount.tritium
+            },
+        )
+    );
 }

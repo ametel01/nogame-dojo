@@ -169,7 +169,7 @@ mod colonyactions {
         quantity: u8
     ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
-        collect(world, planet_id, colony_id, compounds);
+        shared::collect(world, planet_id, colony_id, compounds);
         let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let mut cost: Resources = Default::default();
         match component {
@@ -270,7 +270,7 @@ mod colonyactions {
     ) -> Resources {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         let ships_levels = get_colony_ships(world, planet_id, colony_id);
-        collect(world, planet_id, colony_id, compounds);
+        shared::collect(world, planet_id, colony_id, compounds);
         let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
         let mut cost: Resources = Default::default();
@@ -379,7 +379,7 @@ mod colonyactions {
         let compounds = get_colony_compounds(world, planet_id, colony_id);
         let defences_levels = get_colony_defences(world, planet_id, colony_id);
         let costs = defence::get_defences_unit_cost();
-        collect(world, planet_id, colony_id, compounds);
+        shared::collect(world, planet_id, colony_id, compounds);
         let resource_available = shared::get_resources_available(world, planet_id, colony_id);
         let techs = shared::get_tech_levels(world, planet_id);
         let mut cost: Resources = Default::default();
@@ -520,52 +520,6 @@ mod colonyactions {
             plasma: get!(world, (planet_id, colony_id, Names::Defence::PLASMA), ColonyDefences)
                 .count,
         }
-    }
-
-    fn collect(world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels) {
-        let available = shared::get_resources_available(world, planet_id, colony_id);
-        let collectible = shared::calculate_production(world, planet_id, colony_id, compounds);
-        set!(
-            world,
-            (
-                ColonyResource {
-                    planet_id,
-                    colony_id,
-                    name: Names::Resource::STEEL,
-                    amount: available.steel + collectible.steel
-                },
-            )
-        );
-        set!(
-            world,
-            (
-                ColonyResource {
-                    planet_id,
-                    colony_id,
-                    name: Names::Resource::QUARTZ,
-                    amount: available.quartz + collectible.quartz
-                },
-            )
-        );
-        set!(
-            world,
-            (
-                ColonyResource {
-                    planet_id,
-                    colony_id,
-                    name: Names::Resource::TRITIUM,
-                    amount: available.tritium + collectible.tritium
-                },
-            )
-        );
-        set!(
-            world,
-            (
-                ColonyResourceTimer {
-                    planet_id, colony_id, last_collection: starknet::get_block_timestamp()
-                },
-            )
-        );
     }
 }
 

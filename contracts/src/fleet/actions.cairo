@@ -707,7 +707,7 @@ mod fleetactions {
             let colony_id: u8 = (destination_id % 1000).try_into().expect('calculate loot fail');
             available = shared::get_resources_available(world, mother_planet, colony_id);
             let compounds = colonyactions::get_colony_compounds(world, mother_planet, colony_id);
-            colonyactions::collect(world, mother_planet, colony_id, compounds);
+            shared::collect(world, mother_planet, colony_id, compounds);
         } else {
             let compounds = shared::get_compound_levels(world, destination_id);
             shared::collect(world, destination_id, 0, compounds);
