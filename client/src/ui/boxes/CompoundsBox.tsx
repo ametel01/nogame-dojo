@@ -9,8 +9,8 @@ const CompoundsBox = ({
   functionCallName,
   description,
   resourcesAvailable,
-}: // colonyId,
-deps.CompoundsBoxProps) => {
+  colonyId,
+}: deps.CompoundsBoxProps) => {
   const [quantity, setQuantity] = deps.useState(1);
   const [, setShowTooltip] = deps.useState(true);
   const [costUpdate, setCostUpdate] = deps.useState({
@@ -21,7 +21,7 @@ deps.CompoundsBoxProps) => {
   const [energyRequired, setEnergyRequired] = deps.useState(0);
   const {
     setup: {
-      systemCalls: { upgradeCompound },
+      systemCalls: { upgradeCompound, upgradeColonyCompound },
     },
     account,
   } = useDojo();
@@ -29,7 +29,14 @@ deps.CompoundsBoxProps) => {
   const energy = deps.numberWithCommas(energyRequired);
 
   const upgrade = () => {
-    upgradeCompound(account.account, functionCallName, quantity);
+    colonyId === 0
+      ? upgradeCompound(account.account, functionCallName, quantity)
+      : upgradeColonyCompound(
+          account.account,
+          colonyId,
+          functionCallName,
+          quantity
+        );
   };
 
   deps.useEffect(() => {

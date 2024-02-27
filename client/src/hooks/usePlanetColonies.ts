@@ -40,7 +40,6 @@ export function usePlanetColonies(planetId: number): Array<[number, Position]> {
             (model: { __typename: string }) =>
               model.__typename === 'PlanetColoniesCount'
           )?.count ?? 0;
-        console.log('count', count);
 
         const colonyPositions: Array<[number, Position]> = [];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import { numberWithCommas } from '../../shared/utils';
@@ -14,8 +14,6 @@ import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
 import { useColonyCompounds } from '../../hooks/useColonyCompounds';
 import { usePlanetDefences } from '../../hooks/usePlanetDefences';
 import { useColonyDefences } from '../../hooks/useColonyDefences';
-import { useDojo } from '../../dojo/useDojo';
-import { Resources } from '../../types';
 import { Position } from '../../hooks/usePlanetPosition';
 import { usePlanetResources } from '../../hooks/usePlanetResources';
 import { useColonyResources } from '../../hooks/useColonyResources';
@@ -157,34 +155,9 @@ const ResourcesContainer = ({
   selectedColonyId,
   planetPosition,
 }: ResourceContainerArgs) => {
-  const {
-    setup: {
-      systemCalls: { getColonyUncollectedResources },
-    },
-  } = useDojo();
-  const [colonyUncollectedResources, setColonyUncollectedResources] =
-    useState<Resources | null>(null);
-
-  useEffect(() => {
-    getColonyUncollectedResources(planetId, selectedColonyId)
-      .then((resources) => {
-        setColonyUncollectedResources(resources);
-      })
-      .catch((error) => {
-        console.error('Error fetching planet resources:', error);
-      });
-  }, [planetId, selectedColonyId, getColonyUncollectedResources]);
-
   const planetResources = usePlanetResources(planetId);
 
   const colonyResources = useColonyResources(planetId, selectedColonyId);
-
-  const totalColonyResources = {
-    steel: colonyResources?.steel + (colonyUncollectedResources?.steel || 0),
-    quartz: colonyResources?.quartz + (colonyUncollectedResources?.quartz || 0),
-    tritium:
-      colonyResources?.tritium + (colonyUncollectedResources?.tritium || 0),
-  };
 
   const compoundsLevels = usePlanetCompounds(planetId);
 
@@ -230,7 +203,7 @@ const ResourcesContainer = ({
         available={
           selectedColonyId === 0
             ? numberWithCommas(planetResources.steel)
-            : numberWithCommas(totalColonyResources.steel)
+            : numberWithCommas(colonyResources.steel)
         }
       />
       <Resource
@@ -239,7 +212,7 @@ const ResourcesContainer = ({
         available={
           selectedColonyId === 0
             ? numberWithCommas(planetResources.quartz)
-            : numberWithCommas(totalColonyResources.quartz)
+            : numberWithCommas(colonyResources.quartz)
         }
       />
       <Resource
@@ -248,7 +221,7 @@ const ResourcesContainer = ({
         available={
           selectedColonyId === 0
             ? numberWithCommas(planetResources.tritium)
-            : numberWithCommas(totalColonyResources.tritium)
+            : numberWithCommas(colonyResources.tritium)
         }
       />
       <Energy

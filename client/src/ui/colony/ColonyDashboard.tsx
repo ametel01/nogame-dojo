@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-// import { PlanetSection } from '../components/ui/PlanetSection';
 import { ColonyResourcesSection } from './ColonyResourcesSection';
 import { useColonyCompounds } from '../../hooks/useColonyCompounds';
-import { useDojo } from '../../dojo/useDojo';
 import { useColonyDefences } from '../../hooks/useColonyDefences';
 import { useColonyShips } from '../../hooks/useColonyShips';
-import { Resources } from '../../hooks/usePlanetResources';
+import { useColonyResources } from '../../hooks/useColonyResources';
 
 export const GameContainer = styled.div`
   display: grid;
@@ -45,24 +42,8 @@ interface Props {
 }
 
 export default function ColonyDashboard({ planetId, colonyId }: Props) {
-  const [resources, setResources] = useState<Resources>({} as Resources);
-  const {
-    setup: {
-      systemCalls: { getColonyResources },
-    },
-  } = useDojo();
-  useEffect(() => {
-    getColonyResources(planetId, colonyId)
-      .then((res) => {
-        if (res) {
-          setResources(res);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        // Handle the error appropriately
-      });
-  }, [planetId, colonyId, getColonyResources]);
+  const resources = useColonyResources(planetId, colonyId);
+
   const compoundLevels = useColonyCompounds(planetId, colonyId);
 
   const defences = useColonyDefences(planetId, colonyId);

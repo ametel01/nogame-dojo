@@ -1,47 +1,58 @@
-import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
-import * as Names from '../constants/names/Names';
+import { getEntityIdFromKeys } from '@dojoengine/utils';
+import { Resource } from '../constants/names/Names';
+import { Entity } from '@dojoengine/recs';
+import { useComponentValue } from '@dojoengine/react';
+import { useEffect, useState } from 'react';
 import { Resources } from './usePlanetResources';
 
 export function useColonyResources(
   planetId: number,
   colonyId: number
 ): Resources {
-  const [steel, setSteel] = useState<number | undefined>();
-  const [quartz, setQuartz] = useState<number | undefined>();
-  const [tritium, setTritium] = useState<number | undefined>();
-
   const {
-    setup: { graphSdk },
+    setup: {
+      clientComponents: { ColonyResource },
+      systemCalls: { getColonyUncollectedResources },
+    },
   } = useDojo();
 
+  const [colonyUncollectedResources, setColonyUncollectedResources] =
+    useState<Resources | null>(null);
+
   useEffect(() => {
-    async function fetchResourceAmount(
-      resourceName: string,
-      setter: React.Dispatch<React.SetStateAction<number | undefined>>
-    ) {
-      const response = await graphSdk.getColonyResource({
-        planet_id: planetId,
-        colony_id: colonyId,
-        name: Names.Resource[resourceName as keyof typeof Names.Resource],
+    getColonyUncollectedResources(planetId, colonyId)
+      .then((resources) => {
+        setColonyUncollectedResources(resources);
+      })
+      .catch((error) => {
+        console.error('Error fetching planet resources:', error);
       });
+  }, [planetId, getColonyUncollectedResources, colonyId]);
 
-      const edges = response.data.colonyResourceModels?.edges;
-      const models = edges?.[0]?.node?.entity?.models;
-      if (models) {
-        const colonyResource = models.find(
-          (model) => model?.__typename === 'ColonyResource'
-        );
-        if (colonyResource && 'amount' in colonyResource) {
-          setter(parseInt(colonyResource.amount, 16));
-        }
-      }
-    }
+  // Reusable function to get resource level
+  const useGetResourceLevel = (resourceType: number): number => {
+    const entityId = getEntityIdFromKeys([
+      BigInt(planetId),
+      BigInt(colonyId),
+      BigInt(resourceType),
+    ]) as Entity;
+    return Number(useComponentValue(ColonyResource, entityId)?.amount) ?? 0;
+  };
 
-    fetchResourceAmount('Steel', setSteel);
-    fetchResourceAmount('Quartz', setQuartz);
-    fetchResourceAmount('Tritium', setTritium);
-  }, [colonyId, graphSdk, planetId]);
+  // Use the reusable function for each resource
+  const resources: Resources = {
+    steel:
+      (colonyUncollectedResources?.steel || 0) +
+      useGetResourceLevel(Resource.Steel),
+    quartz:
+      (colonyUncollectedResources?.quartz || 0) +
+      useGetResourceLevel(Resource.Quartz),
+    tritium:
+      (colonyUncollectedResources?.tritium || 0) +
+      useGetResourceLevel(Resource.Tritium),
+  };
+  console.log(useGetResourceLevel(Resource.Steel).toString());
 
-  return { steel: steel ?? 0, quartz: quartz ?? 0, tritium: tritium ?? 0 };
+  return resources;
 }
