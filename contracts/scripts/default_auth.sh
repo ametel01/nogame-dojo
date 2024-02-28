@@ -67,7 +67,7 @@ for component in ${DOCKYARD_COMPONENTS[@]}; do
     sleep 1
 done
 
-FLEET_COMPONENTS=("PlanetResourcesSpent" "LastActive" "PlanetDebrisField" "ColonyResourceTimer" "PlanetResourceTimer" "ActiveMission" "ActiveMissionLen" "IncomingMissions" "IncomingMissionLen" "ColonyShips" "PlanetShips" "PlanetDefences" "PlanetResource")
+FLEET_COMPONENTS=("PlanetResourcesSpent" "LastActive" "PlanetDebrisField" "ColonyResourceTimer" "PlanetResourceTimer" "ActiveMission" "ActiveMissionLen" "IncomingMissions" "IncomingMissionLen" "ColonyShips" "PlanetShips" "PlanetDefences" "PlanetResource" "ColonyResource")
 for component in ${FLEET_COMPONENTS[@]}; do
     sozo auth writer $component $FLEET_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
     sleep 1
