@@ -3,29 +3,27 @@ import { styled } from '@mui/system';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import CloseIcon from '@mui/icons-material/Close';
-import { StyledButton } from '../../../shared/styled/Button';
-import { MissionCategory } from '../../../shared/types';
-import { Position } from '../../../hooks/usePlanetPosition';
-import { Fleet } from '../../../hooks/usePlanetShips';
-import { Techs } from '../../../hooks/usePlanetTechs';
+import { StyledButton } from '../../../../shared/styled/Button';
+import { MissionCategory } from '../../../../shared/types';
+import { Position } from '../../../../hooks/usePlanetPosition';
+import { Fleet } from '../../../../hooks/usePlanetShips';
+import { Techs } from '../../../../hooks/usePlanetTechs';
 import {
   calculateTotalCargoCapacity,
   getDistance,
   getFleetSpeed,
   getFlightTime,
   getFuelConsumption,
-} from '../../../shared/utils/FleetUtils';
+} from '../../../../shared/utils/FleetUtils';
 import Slider from '@mui/material/Slider';
-import { useDojo } from '../../../dojo/useDojo';
-import { useActiveMissions } from '../../../hooks/useActiveMissions';
-import { TravelInfo } from './TravelInfo';
-import { InputButtonContainer, InputImage, ShipsSelect } from './ShipsSelect';
-import { Resources } from '../../../hooks/usePlanetResources';
-import { StyledInput } from '../../../shared/styled/input';
-import steelImg from '../../../assets/gameElements/resources/steel-1.webp';
-import quartzImg from '../../../assets/gameElements/resources/quartz-2.webp';
-import tritiumImg from '../../../assets/gameElements/resources/tritium-1.webp';
+import { useDojo } from '../../../../dojo/useDojo';
+import { useActiveMissions } from '../../../../hooks/useActiveMissions';
+import { TravelInfo } from '../TravelInfo';
+import { InputButtonContainer, InputImage, ShipsSelect } from '../ShipsSelect';
+import { Resources } from '../../../../hooks/usePlanetResources';
+import { StyledInput } from '../../../../shared/styled/input';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { ResourceName, ShipName, resourceImageMapping } from './utils';
 
 export const StyledBox = styled(Box)({
   fontWeight: 400,
@@ -93,16 +91,6 @@ export const SliderContainer = styled('div')({
   justifyContent: 'center', // Horizontally centers the child elements
 });
 
-export type ShipName = 'carrier' | 'scraper' | 'sparrow' | 'frigate' | 'armade';
-
-export type ResourceName = 'steel' | 'quartz' | 'tritium';
-
-export const resourceImageMapping: Record<ResourceName, string> = {
-  steel: steelImg,
-  quartz: quartzImg,
-  tritium: tritiumImg,
-};
-
 interface Props {
   callback?: () => void;
   disabled?: boolean;
@@ -169,11 +157,32 @@ function ButtonAttackPlanet({
     });
   };
 
-  const handleMaxResourcesQuantity = (resource: ResourceName) => {
-    setCargo({
-      ...cargo,
-      [resource]: resourcesAvailable[resource] || 0,
-    });
+  const handleMaxResourcesQuantity = (resource: keyof Resources) => {
+    // Calculate the total cargo excluding the current resource
+    const totalOtherResources = Object.keys(cargo).reduce(
+      (total, currentResource) => {
+        if (currentResource !== resource) {
+          return total + (cargo[currentResource as keyof Resources] || 0);
+        }
+        return total;
+      },
+      0
+    );
+
+    // Calculate the available capacity for the current resource
+    const availableCapacityForResource = cargoCapacity - totalOtherResources;
+
+    // Determine the maximum amount that can be added without exceeding cargo capacity
+    const maxAddableQuantity = Math.min(
+      resourcesAvailable[resource] || 0,
+      availableCapacityForResource
+    );
+
+    // Update the cargo state with the adjusted quantity for the specified resource
+    setCargo((prev) => ({
+      ...prev,
+      [resource]: maxAddableQuantity,
+    }));
   };
 
   const missions = useActiveMissions(planetId);
@@ -273,7 +282,39 @@ function ButtonAttackPlanet({
   };
 
   const handleCargoChange = (resource: keyof Resources, value: number) => {
-    setCargo((prev) => ({ ...prev, [resource]: value || 0 }));
+    const newValue = Math.max(0, value); // Ensure the new value is not negative
+
+    // Calculate the total cargo excluding the current resource
+    const totalOtherResources = Object.keys(cargo).reduce(
+      (total, currentResource) => {
+        if (currentResource !== resource) {
+          return total + (cargo[currentResource as keyof Resources] || 0);
+        }
+        return total;
+      },
+      0
+    );
+
+    // Calculate the available capacity for the current resource
+    const availableCapacityForResource = cargoCapacity - totalOtherResources;
+
+    // If the new value exceeds the available capacity, adjust it to fit within the remaining cargo capacity
+    const adjustedValue =
+      newValue > availableCapacityForResource
+        ? availableCapacityForResource
+        : newValue;
+
+    // Log the values for debugging (These can be removed in production)
+    console.log('cargoCapacity:', cargoCapacity);
+    console.log('totalOtherResources:', totalOtherResources);
+    console.log('newValue:', newValue);
+    console.log('adjustedValue:', adjustedValue);
+
+    // Update the state with either the new value or the adjusted value
+    setCargo((prev) => ({
+      ...prev,
+      [resource]: adjustedValue,
+    }));
   };
 
   const resources: ResourceName[] = ['steel', 'quartz', 'tritium'];

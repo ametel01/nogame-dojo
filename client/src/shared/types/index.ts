@@ -75,6 +75,7 @@ export interface Mission {
   time_start: number;
   origin: number;
   destination: number;
+  cargo: Resources;
   time_arrival: number;
   fleet: Fleet;
   category: number;

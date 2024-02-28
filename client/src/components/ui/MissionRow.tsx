@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import Tooltip from '@mui/material/Tooltip';
-import { MissionCategory, type Mission } from '../../shared/types';
+import { MissionCategory } from '../../shared/types';
+import { Mission } from '../../hooks/useActiveMissions';
 import { usePlanetPosition } from '../../hooks/usePlanetPosition';
 import fleetIcon from '../../assets/uiIcons/Fleet.svg';
 import { StyledButton } from '../../shared/styled/Button';
@@ -69,16 +70,13 @@ export const MissionRow = memo(
       : 'Unknown';
 
     const attackCallBack = () => attackPlanet(account.account, mission.id);
+
     const recallFleetCallBack = () => recallFleet(account.account, mission.id);
+
     const collectDebrisCallBack = () =>
       collectDebris(account.account, mission.id);
-    const dockFleetCallBack = () => dockFleet(account.account, mission.id);
 
-    // const onRecallClick = React.useCallback(() => {
-    //   recallFleet().then(() => {
-    //     // Handle post-recall actions here, if needed
-    //   });
-    // }, [recallFleet]);
+    const dockFleetCallBack = () => dockFleet(account.account, mission.id);
 
     const { handleDestinationClick } = useDestination();
 
@@ -89,11 +87,18 @@ export const MissionRow = memo(
 
     const renderFleetDetails = () => (
       <FleetTooltipContent>
-        <div>Carrier: {Number(mission.fleet.carrier)}</div>
-        <div>Scraper: {Number(mission.fleet.scraper)}</div>
-        <div>Sparrow: {Number(mission.fleet.sparrow)}</div>
-        <div>Frigate: {Number(mission.fleet.frigate)}</div>
-        <div>Armade: {Number(mission.fleet.armade)}</div>
+        <div>
+          <div>Carrier: {Number(mission.fleet.carrier)}</div>
+          <div>Scraper: {Number(mission.fleet.scraper)}</div>
+          <div>Sparrow: {Number(mission.fleet.sparrow)}</div>
+          <div>Frigate: {Number(mission.fleet.frigate)}</div>
+          <div>Armade: {Number(mission.fleet.armade)}</div>
+        </div>
+        <div>
+          <div>Steel: {Number(mission.cargo.steel)}</div>
+          <div>Quartz: {Number(mission.cargo.quartz)}</div>
+          <div>Tritium: {Number(mission.cargo.tritium)}</div>
+        </div>
       </FleetTooltipContent>
     );
 

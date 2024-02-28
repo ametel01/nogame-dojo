@@ -2879,7 +2879,6 @@ export type GetPlanetColoniesCountQueryVariables = Exact<{
 }>;
 
 export type GetPlanetColoniesCountQuery = {
-  data: any;
   __typename?: 'World__Query';
   planetColoniesCountModels?: {
     __typename?: 'PlanetColoniesCountConnection';
@@ -3016,6 +3015,7 @@ export type GetActiveMissionsCountQueryVariables = Exact<{
 }>;
 
 export type GetActiveMissionsCountQuery = {
+  data: any;
   __typename?: 'World__Query';
   activeMissionLenModels?: {
     __typename?: 'ActiveMissionLenConnection';
@@ -3097,6 +3097,12 @@ export type GetActiveMissionQuery = {
                   destination?: any | null;
                   time_arrival?: any | null;
                   category?: any | null;
+                  cargo?: {
+                    __typename?: 'ActiveMission_Resources';
+                    steel?: any | null;
+                    quartz?: any | null;
+                    tritium?: any | null;
+                  } | null;
                   fleet?: {
                     __typename?: 'ActiveMission_Fleet';
                     carrier?: any | null;
@@ -3689,6 +3695,11 @@ export const GetActiveMissionDocument = gql`
                   time_start
                   origin
                   destination
+                  cargo {
+                    steel
+                    quartz
+                    tritium
+                  }
                   time_arrival
                   fleet {
                     carrier

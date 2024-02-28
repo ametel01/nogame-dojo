@@ -18,7 +18,7 @@ import { convertSecondsToTime, numberWithCommas } from '../../shared/utils';
 import {
   SliderContainer,
   Text as SliderText,
-} from './buttonSendFleet/ButtonAttackPlanet';
+} from './buttonSendFleet/ButtonSendFleet';
 import Slider from '@mui/material/Slider';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import { Fleet } from '../../hooks/usePlanetShips';

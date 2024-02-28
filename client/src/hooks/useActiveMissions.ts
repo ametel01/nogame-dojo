@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import { useDojo } from '../dojo/useDojo';
 import { GetActiveMissionsCountQuery } from '../generated/graphql';
 import { Fleet } from './usePlanetShips';
+import { Resources } from './usePlanetResources';
 
 export type Mission = {
   id: number;
   time_start: number;
   origin: number;
   destination: number;
+  cargo: Resources;
   time_arrival: number;
   fleet: Fleet;
   category: number;
@@ -76,6 +78,7 @@ function extractMission(response: any): Mission | undefined {
   const missionModel = response.data.activeMissionModels?.edges?.find(
     (edge: EdgeType) => isActiveMissionModel(edge.node.entity.models)
   )?.node.entity.models[0];
+  console.log(missionModel);
 
   if (missionModel) {
     return {
@@ -83,6 +86,7 @@ function extractMission(response: any): Mission | undefined {
       time_start: missionModel.mission.time_start,
       origin: missionModel.mission.origin,
       destination: missionModel.mission.destination,
+      cargo: missionModel.mission.cargo,
       time_arrival: missionModel.mission.time_arrival,
       fleet: missionModel.mission.fleet,
       category: missionModel.mission.category,

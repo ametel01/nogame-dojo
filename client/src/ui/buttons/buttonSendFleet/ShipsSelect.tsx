@@ -8,7 +8,7 @@ import frigateImg from '../../../assets/gameElements/ships/frigate4.webp';
 import carrierImg from '../../../assets/gameElements/ships/carrier4.webp';
 import sparrowImg from '../../../assets/gameElements/ships/sparrow4.webp';
 import scraperImg from '../../../assets/gameElements/ships/scraper4.webp';
-import { ShipName } from './ButtonAttackPlanet';
+import { ShipName } from './ButtonSendFleet';
 import Tooltip from '@mui/material/Tooltip';
 
 export const FlexContainer = styled('div')({

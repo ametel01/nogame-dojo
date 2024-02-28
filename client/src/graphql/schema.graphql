@@ -327,6 +327,11 @@ query getActiveMission($planet_id: u32!, $mission_id: usize!) {
                 time_start
                 origin
                 destination
+                cargo {
+                  steel
+                  quartz
+                  tritium
+                }
                 time_arrival
                 fleet {
                   carrier
