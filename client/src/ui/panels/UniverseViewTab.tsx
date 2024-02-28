@@ -78,24 +78,11 @@ const UniverseBoxItem = ({
   const isNoobProtected =
     ownPoints > planetPoints * 5 || ownPoints * 5 < planetPoints;
 
-  const ownFleetData = usePlanetShips(ownPlanetId);
+  const ownPlanetFleetData = usePlanetShips(ownPlanetId);
+  const ownColonyFleetData = useColonyShips(ownPlanetId, colonyId);
 
-  const ownFleet: deps.Fleet = ownFleetData || {
-    carrier: 0,
-    scraper: 0,
-    sparrow: 0,
-    frigate: 0,
-    armade: 0,
-  };
-
-  const colonyFleetData = useColonyShips(ownPlanetId, colonyId);
-  const colonyFleet: deps.Fleet = colonyFleetData || {
-    carrier: 0,
-    scraper: 0,
-    sparrow: 0,
-    frigate: 0,
-    armade: 0,
-  };
+  const ownFleet: deps.Fleet =
+    colonyId == 0 ? ownPlanetFleetData : ownColonyFleetData;
 
   const img = deps.getPlanetImage(
     planet.position.orbit?.toString() as unknown as deps.ImageId
@@ -115,7 +102,7 @@ const UniverseBoxItem = ({
       points={0}
       highlighted={highlighted}
       ownPlanetId={ownPlanetId}
-      ownFleet={colonyId === 0 ? ownFleet : colonyFleet}
+      ownFleet={ownFleet}
       ownTechs={ownTechs}
       isNoobProtected={isNoobProtected}
       lastActive={lastActive?.last_collection as number}

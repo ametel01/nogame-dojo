@@ -8,7 +8,7 @@ import {
   CircularProgress,
   numberWithCommas,
   DebrisFieldView,
-  ButtonAttackPlanet,
+  ButtonSendFleet,
   UniverseBoxProps as Props,
 } from './deps';
 import { InfoContainer } from './styled';
@@ -143,7 +143,7 @@ const UniverseViewBox = ({
           colonyId={colonyId}
         />
         <Styled.ButtonContainer>
-          <ButtonAttackPlanet
+          <ButtonSendFleet
             resourcesAvailable={resourcesAvailable}
             disabled={isDisable}
             noRequirements={highlighted}

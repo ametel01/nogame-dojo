@@ -30,7 +30,7 @@ export type { Position } from '../../hooks/usePlanetPosition';
 import { CircularProgress } from '@mui/material';
 import PlanetModal from '../../components/modals/PlanetOverview';
 import DebrisFieldView from '../../components/ui/DebrisFieldView';
-import ButtonAttackPlanet from '../buttons/buttonSendFleet/ButtonSendFleet';
+import ButtonSendFleet from '../buttons/buttonSendFleet/ButtonSendFleet';
 import { BigNumberish } from 'starknet';
 export { usePlanetPosition } from '../../hooks/usePlanetPosition';
 
@@ -57,7 +57,7 @@ export {
   styled,
   numberWithCommas,
   calculEnoughResources,
-  ButtonAttackPlanet,
+  ButtonSendFleet,
   CircularProgress,
   PlanetModal,
   DebrisFieldView,
