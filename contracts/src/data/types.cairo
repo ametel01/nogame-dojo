@@ -260,14 +260,6 @@ enum CompoundUpgradeType {
     Dockyard,
 }
 
-// impl ERC20Print of PrintTrait<Resources> {
-//     fn print(self: Resources) {
-//         self.steel.print();
-//         self.quartz.print();
-//         self.tritium.print();
-//     }
-// }
-
 #[derive(Copy, Default, Drop, Serde)]
 struct TechLevels {
     energy: u8,
