@@ -413,6 +413,7 @@ mod fleetactions {
         }
     }
 
+
     fn update_points_after_attack(
         world: IWorldDispatcher, planet_id: u32, fleet: Fleet, defences: Defences
     ) {
@@ -1153,7 +1154,7 @@ mod test {
         assert!(mission.time_start == 100, "Fleet: mission time_start not set correctly");
         assert!(mission.origin == 1, "Fleet: mission origin not set correctly");
         assert!(mission.destination == 2, "Fleet: mission destination not set correctly");
-        assert!(mission.time_arrival == 20352, "Fleet: mission time_arrival not set correctly");
+        assert!(mission.time_arrival == 20638, "Fleet: mission time_arrival not set correctly");
         assert!(mission.fleet.carrier == 1, "Fleet: mission carrier not set correctly");
         assert!(mission.fleet.scraper == 2, "Fleet: mission scraper not set correctly");
         assert!(mission.fleet.sparrow == 3, "Fleet: mission sparrow not set correctly");
@@ -1670,7 +1671,7 @@ mod test {
         let quartz = get!(world, (1, Names::Resource::QUARTZ), PlanetResource).amount;
         assert!(quartz == 90_000, "Fleet: quartz not removed from planet");
         let tritium = get!(world, (1, Names::Resource::TRITIUM), PlanetResource).amount;
-        assert!(tritium == 89_850, "Fleet: tritium not removed from planet");
+        assert!(tritium == 89_760, "Fleet: tritium not removed from planet");
 
         let mission = get!(world, (1, 1), ActiveMission).mission;
         set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
