@@ -3015,7 +3015,6 @@ export type GetActiveMissionsCountQueryVariables = Exact<{
 }>;
 
 export type GetActiveMissionsCountQuery = {
-  data: any;
   __typename?: 'World__Query';
   activeMissionLenModels?: {
     __typename?: 'ActiveMissionLenConnection';
@@ -3344,6 +3343,24 @@ export type GetFleetSpentQuery = {
       __typename?: 'World__EventEdge';
       node?: {
         __typename?: 'World__Event';
+        data?: Array<string | null> | null;
+      } | null;
+    } | null> | null;
+  } | null;
+};
+
+export type GetBattlereportQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetBattlereportQuery = {
+  battleReports: any;
+  __typename?: 'World__Query';
+  event?: {
+    __typename?: 'World__EventConnection';
+    edges?: Array<{
+      __typename?: 'World__EventEdge';
+      node?: {
+        __typename?: 'World__Event';
+        keys?: Array<string | null> | null;
         data?: Array<string | null> | null;
       } | null;
     } | null> | null;
@@ -3839,6 +3856,20 @@ export const GetFleetSpentDocument = gql`
     }
   }
 `;
+export const GetBattlereportDocument = gql`
+  query getBattlereport {
+    event: events(
+      keys: ["0x579adc8714adcce37ca7ab9e4b8464d68f228e9db83224aaae841e1d873d7d"]
+    ) {
+      edges {
+        node {
+          keys
+          data
+        }
+      }
+    }
+  }
+`;
 
 export type SdkFunctionWrapper = <T>(
   action: (requestHeaders?: Record<string, string>) => Promise<T>,
@@ -3880,6 +3911,7 @@ const GetIncomingMissionDocumentString = print(GetIncomingMissionDocument);
 const GetResourcesSpentDocumentString = print(GetResourcesSpentDocument);
 const GetTechSpentDocumentString = print(GetTechSpentDocument);
 const GetFleetSpentDocumentString = print(GetFleetSpentDocument);
+const GetBattlereportDocumentString = print(GetBattlereportDocument);
 export function getSdk(
   client: GraphQLClient,
   withWrapper: SdkFunctionWrapper = defaultWrapper
@@ -4343,6 +4375,28 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'getFleetSpent',
+        'query',
+        variables
+      );
+    },
+    getBattlereport(
+      variables?: GetBattlereportQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<{
+      data: GetBattlereportQuery;
+      errors?: GraphQLError[];
+      extensions?: any;
+      headers: Headers;
+      status: number;
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<GetBattlereportQuery>(
+            GetBattlereportDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'getBattlereport',
         'query',
         variables
       );

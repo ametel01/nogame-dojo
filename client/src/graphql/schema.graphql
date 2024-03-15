@@ -459,3 +459,16 @@ query getFleetSpent {
     }
   }
 }
+
+query getBattlereport {
+  event: events(
+    keys: ["0x579adc8714adcce37ca7ab9e4b8464d68f228e9db83224aaae841e1d873d7d"]
+  ) {
+    edges {
+      node {
+        keys
+        data
+      }
+    }
+  }
+}
