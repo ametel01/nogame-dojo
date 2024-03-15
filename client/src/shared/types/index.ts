@@ -61,26 +61,6 @@ export interface DebrisField {
   steel: number;
   quartz: number;
 }
-
-export interface Fleet {
-  carrier: number;
-  scraper: number;
-  sparrow: number;
-  frigate: number;
-  armade: number;
-}
-
-export interface Mission {
-  id: number;
-  time_start: number;
-  origin: number;
-  destination: number;
-  cargo: Resources;
-  time_arrival: number;
-  fleet: Fleet;
-  category: number;
-}
-
 export interface HostileMission {
   origin: number;
   id_at_origin: number;
