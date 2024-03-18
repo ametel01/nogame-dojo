@@ -1,0 +1,503 @@
+[
+  {
+    "type": "impl",
+    "name": "DojoResourceProviderImpl",
+    "interface_name": "dojo::world::IDojoResourceProvider"
+  },
+  {
+    "type": "interface",
+    "name": "dojo::world::IDojoResourceProvider",
+    "items": [
+      {
+        "type": "function",
+        "name": "dojo_resource",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::felt252"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "WorldProviderImpl",
+    "interface_name": "dojo::world::IWorldProvider"
+  },
+  {
+    "type": "struct",
+    "name": "dojo::world::IWorldDispatcher",
+    "members": [
+      {
+        "name": "contract_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "dojo::world::IWorldProvider",
+    "items": [
+      {
+        "type": "function",
+        "name": "world",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "dojo::world::IWorldDispatcher"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "FleetActionsImpl",
+    "interface_name": "nogame::fleet::actions::IFleetActions"
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::Fleet",
+    "members": [
+      {
+        "name": "carrier",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "scraper",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "sparrow",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "frigate",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "armade",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::Position",
+    "members": [
+      {
+        "name": "system",
+        "type": "core::integer::u16"
+      },
+      {
+        "name": "orbit",
+        "type": "core::integer::u8"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::Resources",
+    "members": [
+      {
+        "name": "steel",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "quartz",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "tritium",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::Defences",
+    "members": [
+      {
+        "name": "celestia",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "blaster",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "beam",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "astral",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "plasma",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::SimulationResult",
+    "members": [
+      {
+        "name": "attacker_carrier",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "attacker_scraper",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "attacker_sparrow",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "attacker_frigate",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "attacker_armade",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "defender_carrier",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "defender_scraper",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "defender_sparrow",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "defender_frigate",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "defender_armade",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "celestia",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "blaster",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "beam",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "astral",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "plasma",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "nogame::fleet::actions::IFleetActions",
+    "items": [
+      {
+        "type": "function",
+        "name": "send_fleet",
+        "inputs": [
+          {
+            "name": "fleet",
+            "type": "nogame::data::types::Fleet"
+          },
+          {
+            "name": "destination",
+            "type": "nogame::data::types::Position"
+          },
+          {
+            "name": "cargo",
+            "type": "nogame::data::types::Resources"
+          },
+          {
+            "name": "mission_type",
+            "type": "core::integer::u8"
+          },
+          {
+            "name": "speed_modifier",
+            "type": "core::integer::u32"
+          },
+          {
+            "name": "colony_id",
+            "type": "core::integer::u8"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "attack_planet",
+        "inputs": [
+          {
+            "name": "mission_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "recall_fleet",
+        "inputs": [
+          {
+            "name": "mission_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "dock_fleet",
+        "inputs": [
+          {
+            "name": "mission_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "collect_debris",
+        "inputs": [
+          {
+            "name": "mission_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "simulate_attack",
+        "inputs": [
+          {
+            "name": "attacker_fleet",
+            "type": "nogame::data::types::Fleet"
+          },
+          {
+            "name": "defender_fleet",
+            "type": "nogame::data::types::Fleet"
+          },
+          {
+            "name": "defences",
+            "type": "nogame::data::types::Defences"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "nogame::data::types::SimulationResult"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "UpgradableImpl",
+    "interface_name": "dojo::components::upgradeable::IUpgradeable"
+  },
+  {
+    "type": "interface",
+    "name": "dojo::components::upgradeable::IUpgradeable",
+    "items": [
+      {
+        "type": "function",
+        "name": "upgrade",
+        "inputs": [
+          {
+            "name": "new_class_hash",
+            "type": "core::starknet::class_hash::ClassHash"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "dojo::components::upgradeable::upgradeable::Upgraded",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "class_hash",
+        "type": "core::starknet::class_hash::ClassHash",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "dojo::components::upgradeable::upgradeable::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "Upgraded",
+        "type": "dojo::components::upgradeable::upgradeable::Upgraded",
+        "kind": "nested"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "nogame::data::types::Debris",
+    "members": [
+      {
+        "name": "steel",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "quartz",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "nogame::fleet::actions::fleetactions::BattleReport",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "time",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "attacker",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "attacker_position",
+        "type": "nogame::data::types::Position",
+        "kind": "data"
+      },
+      {
+        "name": "attacker_initial_fleet",
+        "type": "nogame::data::types::Fleet",
+        "kind": "data"
+      },
+      {
+        "name": "attacker_fleet_loss",
+        "type": "nogame::data::types::Fleet",
+        "kind": "data"
+      },
+      {
+        "name": "defender",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "defender_position",
+        "type": "nogame::data::types::Position",
+        "kind": "data"
+      },
+      {
+        "name": "defender_initial_fleet",
+        "type": "nogame::data::types::Fleet",
+        "kind": "data"
+      },
+      {
+        "name": "defender_fleet_loss",
+        "type": "nogame::data::types::Fleet",
+        "kind": "data"
+      },
+      {
+        "name": "initial_defences",
+        "type": "nogame::data::types::Defences",
+        "kind": "data"
+      },
+      {
+        "name": "defences_loss",
+        "type": "nogame::data::types::Defences",
+        "kind": "data"
+      },
+      {
+        "name": "loot",
+        "type": "nogame::data::types::Resources",
+        "kind": "data"
+      },
+      {
+        "name": "debris",
+        "type": "nogame::data::types::Debris",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "nogame::fleet::actions::fleetactions::DebrisCollected",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "planet_id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "debris_field",
+        "type": "nogame::data::types::Position",
+        "kind": "data"
+      },
+      {
+        "name": "collectible_amount",
+        "type": "nogame::data::types::Debris",
+        "kind": "data"
+      },
+      {
+        "name": "collected_amount",
+        "type": "nogame::data::types::Debris",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "nogame::fleet::actions::fleetactions::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "UpgradeableEvent",
+        "type": "dojo::components::upgradeable::upgradeable::Event",
+        "kind": "nested"
+      },
+      {
+        "name": "BattleReport",
+        "type": "nogame::fleet::actions::fleetactions::BattleReport",
+        "kind": "nested"
+      },
+      {
+        "name": "DebrisCollected",
+        "type": "nogame::fleet::actions::fleetactions::DebrisCollected",
+        "kind": "nested"
+      }
+    ]
+  }
+]
