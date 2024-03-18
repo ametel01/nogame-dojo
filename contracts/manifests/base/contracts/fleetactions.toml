@@ -1,0 +1,7 @@
+kind = "DojoContract"
+class_hash = "0x738ac62ff4bd14668c193191076c271aaea527367969d6bd9f036be8aaa8d5e"
+abi = "abis/base/contracts/fleetactions.json"
+reads = []
+writes = []
+computed = []
+name = "nogame::fleet::actions::fleetactions"

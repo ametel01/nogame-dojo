@@ -1,0 +1,7 @@
+kind = "DojoContract"
+class_hash = "0x4812b2ffb06f04246fe3ace58492389820f82181d478cabfb1837b0550172f8"
+abi = "abis/base/contracts/colonyactions.json"
+reads = []
+writes = []
+computed = []
+name = "nogame::colony::actions::colonyactions"

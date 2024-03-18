@@ -45,49 +45,49 @@ echo "--------------------------------------------------------------------------
 # enable system -> component authorizations
 COLONY_COMPONENTS=("PlanetResourcesSpent" "ColonyCompounds" "ColonyResource" "ColonyShips" "ColonyDefences" "ColonyPosition" "PositionToColony" "ColonyResourceTimer" "ColonyOwner" "PositionToPlanet" "PlanetPosition" "PlanetColoniesCount" "ColonyCount" )   
 for component in ${COLONY_COMPONENTS[@]}; do
-    sozo auth writer $component $COLONY_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$COLONY_ADDRESS  
     sleep 1
 done
 
 COMPOUND_COMPONENTS=("PlanetCompounds" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
 for component in ${COMPOUND_COMPONENTS[@]}; do
-    sozo auth writer $component $COMPOUND_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$COMPOUND_ADDRESS  
     sleep 1
 done
 
 DEFENCE_COMPONENTS=("PlanetDefences" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
 for component in ${DEFENCE_COMPONENTS[@]}; do
-    sozo auth writer $component $DEFENCE_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$DEFENCE_ADDRESS  
     sleep 1
 done
 
 DOCKYARD_COMPONENTS=("PlanetShips" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
 for component in ${DOCKYARD_COMPONENTS[@]}; do
-    sozo auth writer $component $DOCKYARD_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$DOCKYARD_ADDRESS  
     sleep 1
 done
 
 FLEET_COMPONENTS=("PlanetResourcesSpent" "LastActive" "PlanetDebrisField" "ColonyResourceTimer" "PlanetResourceTimer" "ActiveMission" "ActiveMissionLen" "IncomingMissions" "IncomingMissionLen" "ColonyShips" "PlanetShips" "PlanetDefences" "PlanetResource" "ColonyResource")
 for component in ${FLEET_COMPONENTS[@]}; do
-    sozo auth writer $component $FLEET_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$FLEET_ADDRESS  
     sleep 1
 done
 
 GAME_COMPONENTS=("GameSetup" "GamePlanetCount" )
 for component in ${GAME_COMPONENTS[@]}; do
-    sozo auth writer $component $GAME_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$GAME_ADDRESS  
     sleep 1
 done
 
 PLANET_COMPONENTS=("PlanetPosition" "PositionToPlanet"  "PlanetResourceTimer" "PlanetResource"  "GamePlanetCount" "GamePlanet" "GamePlanetOwner" "GameOwnerPlanet")
 for component in ${PLANET_COMPONENTS[@]}; do
-    sozo auth writer $component $PLANET_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$PLANET_ADDRESS  
     sleep 1
 done
 
 TECH_COMPONENTS=("PlanetTechs" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
 for component in ${TECH_COMPONENTS[@]}; do
-    sozo auth writer $component $TECH_ADDRESS --world $WORLD_ADDRESS --rpc-url $RPC_URL
+    sozo auth grant writer $component,$TECH_ADDRESS  
     sleep 1
 done
 

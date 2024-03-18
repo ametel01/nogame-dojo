@@ -1,0 +1,7 @@
+kind = "DojoContract"
+class_hash = "0x36b540854e7316cf29a40650f86a91a36d93201c0128b7fd7db2bd974896110"
+abi = "abis/base/contracts/compoundactions.json"
+reads = []
+writes = []
+computed = []
+name = "nogame::compound::actions::compoundactions"

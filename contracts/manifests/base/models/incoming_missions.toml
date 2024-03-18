@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0x38adb45bb1a44dff800a9ae74d62da501151573b0cdf81203589463946803d7"
+name = "nogame::fleet::models::incoming_missions"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "mission_id"
+type = "usize"
+key = true
+
+[[members]]
+name = "mission"
+type = "IncomingMission"
+key = false

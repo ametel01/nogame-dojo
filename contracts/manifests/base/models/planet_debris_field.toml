@@ -1,0 +1,13 @@
+kind = "DojoModel"
+class_hash = "0x3411c749f55738ea9312bcd9b3d384be63854f469b9e5893aca4d2ff596f03a"
+name = "nogame::planet::models::planet_debris_field"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "debris"
+type = "Debris"
+key = false

@@ -1,0 +1,7 @@
+kind = "DojoContract"
+class_hash = "0x4e21c4babf444355e9a017d9888e9a2fe854ee9ad3ca3faf038ab64385ae923"
+abi = "abis/base/contracts/planetactions.json"
+reads = []
+writes = []
+computed = []
+name = "nogame::planet::actions::planetactions"

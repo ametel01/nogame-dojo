@@ -1,0 +1,13 @@
+kind = "DojoModel"
+class_hash = "0x37aa53336bff1fb4fc49f123d99caef72d7bb4941725327e6f3726c2e9b8ac3"
+name = "nogame::planet::models::planet_position"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "position"
+type = "Position"
+key = false

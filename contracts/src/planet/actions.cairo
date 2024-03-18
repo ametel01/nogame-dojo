@@ -14,7 +14,6 @@ mod planetactions {
     };
     use super::IPlanetActions;
 
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
     use nogame::data::types::{Position, Resources, CompoundsLevels};
@@ -40,7 +39,7 @@ mod planetactions {
         account: ContractAddress,
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl PlanetActionsImpl of IPlanetActions<ContractState> {
         fn generate_planet(ref self: ContractState) {
             // Access the world dispatcher for reading.
@@ -52,7 +51,6 @@ mod planetactions {
             );
 
             let planets = get!(world, constants::GAME_ID, GamePlanetCount);
-            let game_setup = get!(world, constants::GAME_ID, GameSetup);
 
             let planet_id = planets.count + 1;
             set!(world, GamePlanet { owner: caller, planet_id });

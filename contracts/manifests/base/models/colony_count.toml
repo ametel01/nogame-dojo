@@ -1,0 +1,13 @@
+kind = "DojoModel"
+class_hash = "0x6c85ef72b3ba0901758994fc9ae0a18e6e23aab63ca59a80977b1b63539b668"
+name = "nogame::colony::models::colony_count"
+
+[[members]]
+name = "game_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "count"
+type = "u8"
+key = false

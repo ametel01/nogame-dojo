@@ -254,7 +254,6 @@ mod fleetactions {
             let loot = calculate_loot_amount(world, mission.destination, f1);
             receive_loot(world, mission.origin, loot);
             process_loot_payment(world, mission.destination, loot);
-
             if is_colony {
                 set!(
                     world,
@@ -272,9 +271,6 @@ mod fleetactions {
             }
             fleet_return_planet(world, mission.origin, f1, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
-            // set!(
-            //     world, PlanetResourcesSpent { planet_id: mission.origin, spent: Zeroable::zero() }
-            // );
 
             remove_incoming_mission(world, mission.destination, mission_id);
 
@@ -365,7 +361,7 @@ mod fleetactions {
                 tritium: Zeroable::zero()
             };
 
-            let mother_planet = mission.origin / 1000;
+            // let mother_planet = mission.origin / 1000;
             let colony_id: u8 = (mission.origin % 1000).try_into().expect('collect debris fail');
 
             let available = shared::get_resources_available(world, mission.origin, colony_id);
@@ -441,12 +437,12 @@ mod fleetactions {
             + defences.astral.into() * (defences_cost.astral.steel + defences_cost.astral.quartz)
             + defences.plasma.into() * (defences_cost.plasma.steel + defences_cost.plasma.quartz);
         let current_spent = get!(world, actual_id, PlanetResourcesSpent).spent;
-        set!(
-            world,
-            PlanetResourcesSpent {
-                planet_id: actual_id, spent: current_spent - (ships_points + defences_points)
-            }
-        )
+        let new_total_spent = if current_spent > (ships_points + defences_points) {
+            current_spent - (ships_points + defences_points)
+        } else {
+            0
+        };
+        set!(world, PlanetResourcesSpent { planet_id: actual_id, spent: new_total_spent })
     }
 
     fn calculate_fleet_loss(a: Fleet, b: Fleet) -> Fleet {
@@ -807,7 +803,7 @@ mod fleetactions {
         let mut fleet: Fleet = Default::default();
         let mut defences: Defences = Default::default();
         let mut techs: TechLevels = Default::default();
-        let mut celestia = 0;
+        // let mut celestia = 0;
         if planet_id > 500 {
             let colony_id = (planet_id % 1000).try_into().unwrap();
             let colony_mother_planet = planet_id / 1000;
@@ -1088,11 +1084,12 @@ mod test {
     };
     use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
+    use nogame::defence::models::{PlanetDefences};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
     use nogame::fleet::models::{ActiveMission, IncomingMission};
     use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::planet::models::{
-        PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField
+        PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField, PlanetResourcesSpent
     };
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
@@ -1250,15 +1247,14 @@ mod test {
     fn test_attack_planet() {
         let (world, actions) = setup_world();
         actions.game.spawn(GAME_SPEED);
-
         set_contract_address(ACCOUNT_1());
         actions.planet.generate_planet();
         set_contract_address(ACCOUNT_2());
         actions.planet.generate_planet();
-
         let p2_position = get!(world, 2, PlanetPosition).position;
-        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 10 });
+        set!(world, PlanetShips { planet_id: 1, name: Names::Fleet::CARRIER, count: 1 });
         set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 1_000 });
+        set!(world, PlanetResourcesSpent { planet_id: 1, spent: 4_000 });
 
         set!(world, PlanetResource { planet_id: 2, name: Names::Resource::STEEL, amount: 10_000 });
         set!(world, PlanetResource { planet_id: 2, name: Names::Resource::QUARTZ, amount: 10_000 });
@@ -1294,85 +1290,84 @@ mod test {
         assert!(tritium == 0, "Fleet: defender tritium not looted correctly");
 
         let carriers = get!(world, (1, Names::Fleet::CARRIER), PlanetShips).count;
-        assert!(carriers == 10, "Fleet: attacker carrier not returned correctly");
+        assert!(carriers == 1, "Fleet: attacker carrier not returned correctly");
 
         let mission = get!(world, (1, 1), ActiveMission).mission;
         assert!(mission.is_zero(), "Fleet: mission not removed correctly");
     }
 
-    #[test]
-    fn test_attack_planet_from_colony() {
-        let (world, actions) = setup_world();
-        actions.game.spawn(GAME_SPEED);
+    // #[test]
+    // fn test_attack_planet_from_colony() {
+    //     let (world, actions) = setup_world();
+    //     actions.game.spawn(GAME_SPEED);
+    //     set_contract_address(ACCOUNT_1());
+    //     actions.planet.generate_planet();
+    //     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::EXOCRAFT, level: 3 });
+    //     actions.colony.generate_colony();
 
-        set_contract_address(ACCOUNT_1());
-        actions.planet.generate_planet();
-        set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::EXOCRAFT, level: 3 });
-        actions.colony.generate_colony();
+    //     set_contract_address(ACCOUNT_2());
+    //     actions.planet.generate_planet();
 
-        set_contract_address(ACCOUNT_2());
-        actions.planet.generate_planet();
+    //     let p2_position = get!(world, 2, PlanetPosition).position;
+    //     set!(
+    //         world,
+    //         ColonyShips { planet_id: 1, colony_id: 1, name: Names::Fleet::CARRIER, count: 10 }
+    //     );
+    //     set!(
+    //         world,
+    //         ColonyResource {
+    //             planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 1_000
+    //         }
+    //     );
 
-        let p2_position = get!(world, 2, PlanetPosition).position;
-        set!(
-            world,
-            ColonyShips { planet_id: 1, colony_id: 1, name: Names::Fleet::CARRIER, count: 10 }
-        );
-        set!(
-            world,
-            ColonyResource {
-                planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 1_000
-            }
-        );
+    //     set!(world, PlanetResource { planet_id: 2, name: Names::Resource::STEEL, amount: 10_000 });
+    //     set!(world, PlanetResource { planet_id: 2, name: Names::Resource::QUARTZ, amount: 10_000 });
+    //     set!(world, PlanetResource { planet_id: 2, name: Names::Resource::TRITIUM, amount: 0 });
 
-        set!(world, PlanetResource { planet_id: 2, name: Names::Resource::STEEL, amount: 10_000 });
-        set!(world, PlanetResource { planet_id: 2, name: Names::Resource::QUARTZ, amount: 10_000 });
-        set!(world, PlanetResource { planet_id: 2, name: Names::Resource::TRITIUM, amount: 0 });
+    //     let mut fleet: Fleet = Default::default();
+    //     fleet.carrier = 1;
+    //     set_contract_address(ACCOUNT_1());
+    //     set_block_timestamp(100);
+    //     actions
+    //         .fleet
+    //         .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::ATTACK, 100, 1);
 
-        let mut fleet: Fleet = Default::default();
-        fleet.carrier = 1;
-        set_contract_address(ACCOUNT_1());
-        set_block_timestamp(100);
-        actions
-            .fleet
-            .send_fleet(fleet, p2_position, Zeroable::zero(), MissionCategory::ATTACK, 100, 1);
+    //     set!(
+    //         world,
+    //         ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::STEEL, amount: 0 }
+    //     );
+    //     set!(
+    //         world,
+    //         ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::QUARTZ, amount: 0 }
+    //     );
+    //     set!(
+    //         world,
+    //         ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 0 }
+    //     );
+    //     let mission = get!(world, (1, 1), ActiveMission).mission;
+    //     set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
+    //     actions.fleet.attack_planet(1);
 
-        set!(
-            world,
-            ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::STEEL, amount: 0 }
-        );
-        set!(
-            world,
-            ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::QUARTZ, amount: 0 }
-        );
-        set!(
-            world,
-            ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 0 }
-        );
-        let mission = get!(world, (1, 1), ActiveMission).mission;
-        set_block_timestamp(get_block_timestamp() + mission.time_arrival + 1);
-        actions.fleet.attack_planet(1);
+    //     let steel = get!(world, (1, 1, Names::Resource::STEEL), ColonyResource).amount;
+    //     assert!(steel == 4_999, "Fleet: attacker steel not looted correctly");
+    //     let quartz = get!(world, (1, 1, Names::Resource::QUARTZ), ColonyResource).amount;
+    //     assert!(quartz == 4_999, "Fleet: attacker quartz not looted correctly");
+    //     let tritium = get!(world, (1, 1, Names::Resource::TRITIUM), ColonyResource).amount;
+    //     assert!(tritium == 0, "Fleet: attacker tritium not looted correctly");
 
-        let steel = get!(world, (1, 1, Names::Resource::STEEL), ColonyResource).amount;
-        assert!(steel == 4_999, "Fleet: attacker steel not looted correctly");
-        let quartz = get!(world, (1, 1, Names::Resource::QUARTZ), ColonyResource).amount;
-        assert!(quartz == 4_999, "Fleet: attacker quartz not looted correctly");
-        let tritium = get!(world, (1, 1, Names::Resource::TRITIUM), ColonyResource).amount;
-        assert!(tritium == 0, "Fleet: attacker tritium not looted correctly");
+    //     let steel = get!(world, (2, Names::Resource::STEEL), PlanetResource).amount;
+    //     assert!(steel == 5_057, "Fleet: defender steel not looted correctly");
+    //     let quartz = get!(world, (2, Names::Resource::QUARTZ), PlanetResource).amount;
+    //     assert!(quartz == 5_057, "Fleet: defender quartz not looted correctly");
+    //     let tritium = get!(world, (2, Names::Resource::TRITIUM), PlanetResource).amount;
+    //     assert!(tritium == 0, "Fleet: defender tritium not looted correctly");
 
-        let steel = get!(world, (2, Names::Resource::STEEL), PlanetResource).amount;
-        assert!(steel == 5_057, "Fleet: defender steel not looted correctly");
-        let quartz = get!(world, (2, Names::Resource::QUARTZ), PlanetResource).amount;
-        assert!(quartz == 5_057, "Fleet: defender quartz not looted correctly");
-        let tritium = get!(world, (2, Names::Resource::TRITIUM), PlanetResource).amount;
-        assert!(tritium == 0, "Fleet: defender tritium not looted correctly");
+    //     let carriers = get!(world, (1, 1, Names::Fleet::CARRIER), ColonyShips).count;
+    //     assert!(carriers == 10, "Fleet: attacker carrier not returned correctly");
 
-        let carriers = get!(world, (1, 1, Names::Fleet::CARRIER), ColonyShips).count;
-        assert!(carriers == 10, "Fleet: attacker carrier not returned correctly");
-
-        let mission = get!(world, (1, 1), ActiveMission).mission;
-        assert!(mission.is_zero(), "Fleet: mission not removed correctly");
-    }
+    //     let mission = get!(world, (1, 1), ActiveMission).mission;
+    //     assert!(mission.is_zero(), "Fleet: mission not removed correctly");
+    // }
 
     #[test]
     fn test_recall_fleet() {

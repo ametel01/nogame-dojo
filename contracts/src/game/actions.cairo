@@ -2,10 +2,7 @@ use starknet::ContractAddress;
 
 #[starknet::interface]
 trait IGameActions<TContractState> {
-    fn spawn(
-        self: @TContractState,
-        speed: usize,
-    );
+    fn spawn(self: @TContractState, speed: usize,);
 }
 
 // dojo decorator
@@ -15,7 +12,6 @@ mod gameactions {
         ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
     };
 
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
     use super::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
@@ -27,22 +23,17 @@ mod gameactions {
     use nogame::libraries::{{auction::{LinearVRGDA, LinearVRGDATrait}}, names, position, constants};
     use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl GameActionsImpl of super::IGameActions<ContractState> {
         // ContractState is defined by system decorator expansion
-        fn spawn(
-            self: @ContractState,
-            speed: usize,
-        ) {
+        fn spawn(self: @ContractState, speed: usize,) {
             let world = self.world_dispatcher.read();
 
             set!(
                 world,
                 (
                     GameSetup {
-                        game_id: constants::GAME_ID,
-                        speed,
-                        start_time: get_block_timestamp()
+                        game_id: constants::GAME_ID, speed, start_time: get_block_timestamp()
                     },
                     GamePlanetCount { game_id: constants::GAME_ID, count: 0 },
                 )

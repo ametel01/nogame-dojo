@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0x5bfc3b3bf56cf05a048501757534721b393e9175015aa095eb54ccc33bfa5f8"
+name = "nogame::defence::models::planet_defences"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "name"
+type = "u8"
+key = true
+
+[[members]]
+name = "count"
+type = "u32"
+key = false

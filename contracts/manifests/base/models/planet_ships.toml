@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0x6f3f9f84254cd62bfc1d3663d1c10e9ba4421a6d3d2608733fe9d5b8808e3c"
+name = "nogame::dockyard::models::planet_ships"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "name"
+type = "u8"
+key = true
+
+[[members]]
+name = "count"
+type = "u32"
+key = false

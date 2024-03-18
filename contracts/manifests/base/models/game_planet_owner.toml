@@ -1,0 +1,13 @@
+kind = "DojoModel"
+class_hash = "0x78bd1e3b02b6292468e5696b9104f2b06ee007a2f0a45232e9d28522614008"
+name = "nogame::game::models::game_planet_owner"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "owner"
+type = "ContractAddress"
+key = false

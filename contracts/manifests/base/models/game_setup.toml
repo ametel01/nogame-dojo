@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0x38e52fc4d441b11011508f5a3ebe4d9950caeb788c54386229d665d232a0fc6"
+name = "nogame::game::models::game_setup"
+
+[[members]]
+name = "game_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "speed"
+type = "usize"
+key = false
+
+[[members]]
+name = "start_time"
+type = "u64"
+key = false

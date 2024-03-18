@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0xc91fb86efa0b1ea9979aa293bf039b5b94af98434441a9e16270d01e780805"
+name = "nogame::planet::models::planet_resource"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "name"
+type = "u8"
+key = true
+
+[[members]]
+name = "amount"
+type = "u128"
+key = false

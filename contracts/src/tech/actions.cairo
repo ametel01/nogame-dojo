@@ -41,6 +41,7 @@ mod techactions {
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = upgrade_component(world, planet_id, component, quantity);
+            shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, TechSpent { planet_id, quantity, spent: cost });
         }
     }

@@ -1,0 +1,23 @@
+kind = "DojoModel"
+class_hash = "0x7c656c474de02606852c78cfdcfcd8888c9d8ed8a56dea302230d15875518a8"
+name = "nogame::colony::models::colony_compounds"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "colony_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "name"
+type = "u8"
+key = true
+
+[[members]]
+name = "level"
+type = "u8"
+key = false

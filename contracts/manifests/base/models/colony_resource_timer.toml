@@ -1,0 +1,18 @@
+kind = "DojoModel"
+class_hash = "0x19fe556b5500ec029fdfb0d761abc40bc88b9f4c172b3160fa9089d5f11b7cc"
+name = "nogame::colony::models::colony_resource_timer"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "colony_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "last_collection"
+type = "u64"
+key = false

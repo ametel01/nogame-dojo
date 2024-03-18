@@ -1,12 +1,8 @@
-use starknet::{ContractAddress, contract_address_const};
 use starknet::testing::set_contract_address;
 
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use dojo::test_utils::{spawn_test_world, deploy_contract};
+use dojo::test_utils::{spawn_test_world};
 
-use openzeppelin::token::erc20::interface::{
-    IERC20Dispatcher, IERC20DispatcherTrait, IERC20CamelDispatcher, IERC20CamelDispatcherTrait
-};
 use nogame::colony::models::{
     ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
     ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
@@ -48,8 +44,8 @@ use nogame::fleet::models::{
 };
 use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
 use nogame::defence::models::{PlanetDefences, planet_defences};
-use nogame::token::erc721::erc721::ERC721NoGame;
-use nogame::token::erc20::erc20::ERC20;
+
+use starknet::{syscalls::deploy_syscall, ClassHash, ContractAddress, contract_address_const};
 
 const PRICE: u128 = 1_000_000_000_000_000_000;
 const GAME_SPEED: usize = 1;
@@ -76,7 +72,7 @@ fn ACCOUNT_5() -> ContractAddress {
     contract_address_const::<'account_5'>()
 }
 
-#[derive(Clone, Copy, Serde)]
+#[derive(Clone, Copy, Drop, Serde)]
 struct Actions {
     colony: IColonyActionsDispatcher,
     compound: ICompoundActionsDispatcher,
@@ -123,35 +119,35 @@ fn setup_world() -> (IWorldDispatcher, Actions) {
 
     // deploy systems contract
     let contract_address = world
-        .deploy_contract('salt', compoundactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(1, compoundactions::TEST_CLASS_HASH.try_into().unwrap());
     let compound_actions = ICompoundActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', gameactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(2, gameactions::TEST_CLASS_HASH.try_into().unwrap());
     let game_actions = IGameActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', planetactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(3, planetactions::TEST_CLASS_HASH.try_into().unwrap());
     let planet_actions = IPlanetActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', techactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(4, techactions::TEST_CLASS_HASH.try_into().unwrap());
     let tech_actions = ITechActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', dockyardactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(5, dockyardactions::TEST_CLASS_HASH.try_into().unwrap());
     let dockyard_actions = IDockyardActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', defenceactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(6, defenceactions::TEST_CLASS_HASH.try_into().unwrap());
     let defence_actions = IDefenceActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', colonyactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(7, colonyactions::TEST_CLASS_HASH.try_into().unwrap());
     let colony_actions = IColonyActionsDispatcher { contract_address };
 
     let contract_address = world
-        .deploy_contract('salt', fleetactions::TEST_CLASS_HASH.try_into().unwrap());
+        .deploy_contract(8, fleetactions::TEST_CLASS_HASH.try_into().unwrap());
     let fleet_actions = IFleetActionsDispatcher { contract_address };
 
     let actions = Actions {
@@ -167,21 +163,4 @@ fn setup_world() -> (IWorldDispatcher, Actions) {
 
     (world, actions)
 }
-
-fn deploy_nft(calldata: Array<felt252>) -> ContractAddress {
-    let (address, _) = starknet::deploy_syscall(
-        ERC721NoGame::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
-    )
-        .unwrap();
-    address
-}
-
-fn deploy_eth(calldata: Array<felt252>) -> ContractAddress {
-    let (address, _) = starknet::deploy_syscall(
-        ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
-    )
-        .unwrap();
-    address
-}
-
 

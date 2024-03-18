@@ -57,16 +57,6 @@ mod libraries {
     mod shared;
 }
 
-mod token {
-    mod erc721 {
-        mod interface;
-        mod erc721;
-    }
-    mod erc20 {
-        mod erc20;
-    }
-}
-
 mod utils {
     #[cfg(test)]
     mod test_utils;

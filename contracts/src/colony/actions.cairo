@@ -36,7 +36,6 @@ mod colonyactions {
     use nogame::libraries::shared;
     use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -127,6 +126,7 @@ mod colonyactions {
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = upgrade_component(world, planet_id, colony_id, name, quantity);
+            shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }
 
@@ -137,6 +137,7 @@ mod colonyactions {
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = build_ship(world, planet_id, colony_id, name, quantity);
+            shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
 
@@ -147,6 +148,7 @@ mod colonyactions {
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = build_defence(world, planet_id, colony_id, name, quantity);
+            shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
         }
 

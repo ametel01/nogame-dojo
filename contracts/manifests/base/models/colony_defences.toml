@@ -1,0 +1,23 @@
+kind = "DojoModel"
+class_hash = "0x3a98bc21989e4a619d27fd7ecc534c912a039330208ea73bb01a588914139ad"
+name = "nogame::colony::models::colony_defences"
+
+[[members]]
+name = "planet_id"
+type = "u32"
+key = true
+
+[[members]]
+name = "colony_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "name"
+type = "u8"
+key = true
+
+[[members]]
+name = "count"
+type = "u32"
+key = false

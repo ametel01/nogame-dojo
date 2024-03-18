@@ -307,3 +307,10 @@ fn add_resources_to_planet(
         )
     );
 }
+
+fn update_planet_resources_spent(world: IWorldDispatcher, planet_id: u32, spent: Resources) {
+    let currunt_spent = get!(world, planet_id, PlanetResourcesSpent).spent;
+    set!(
+        world, PlanetResourcesSpent { planet_id, spent: currunt_spent + spent.steel + spent.quartz }
+    );
+}

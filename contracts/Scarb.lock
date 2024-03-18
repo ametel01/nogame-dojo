@@ -4,7 +4,7 @@ version = 1
 [[package]]
 name = "dojo"
 version = "0.5.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v0.5.1#4a6cad5f21d8da71714ae6ff48c9cc6ecaae642a"
+source = "git+https://github.com/dojoengine/dojo?tag=v0.6.0-alpha.4#8bfd5ada1a0263df155d0848a9a3c0996d8967bd"
 dependencies = [
  "dojo_plugin",
 ]
@@ -20,15 +20,9 @@ version = "0.4.0"
 dependencies = [
  "dojo",
  "nogame_fixed",
- "openzeppelin",
 ]
 
 [[package]]
 name = "nogame_fixed"
 version = "0.1.0"
 source = "git+https://github.com/ametel01/nogame-fixed.git?rev=e16cf2d#e16cf2d95bbb031907fc8e714191acd5260ae55b"
-
-[[package]]
-name = "openzeppelin"
-version = "0.8.0"
-source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v0.8.0#6f72a5236865f78380c194b4223783fa0f163be0"

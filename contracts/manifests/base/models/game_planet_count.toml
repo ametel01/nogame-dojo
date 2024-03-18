@@ -1,0 +1,13 @@
+kind = "DojoModel"
+class_hash = "0x2fec07591e25cc6c1ee7e999fc8b308ff1828dcd75574f8e5d6d86ccca9d349"
+name = "nogame::game::models::game_planet_count"
+
+[[members]]
+name = "game_id"
+type = "u8"
+key = true
+
+[[members]]
+name = "count"
+type = "u32"
+key = false
