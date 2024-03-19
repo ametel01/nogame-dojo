@@ -4,23 +4,23 @@ pushd $(dirname "$0")/..
 
 export RPC_URL="http://localhost:5050";
 
-export WORLD_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.world.address')
+export WORLD_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.world.address')
 
-export COLONY_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::colony::actions::colonyactions" ).address')
+export COLONY_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::colony::actions::colonyactions" ).address')
 
-export COMPOUND_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::compound::actions::compoundactions" ).address')
+export COMPOUND_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::compound::actions::compoundactions" ).address')
 
-export DEFENCE_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::defence::actions::defenceactions" ).address')
+export DEFENCE_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::defence::actions::defenceactions" ).address')
 
-export DOCKYARD_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::dockyard::actions::dockyardactions" ).address')
+export DOCKYARD_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::dockyard::actions::dockyardactions" ).address')
 
-export FLEET_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::fleet::actions::fleetactions" ).address')
+export FLEET_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::fleet::actions::fleetactions" ).address')
 
-export GAME_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::game::actions::gameactions" ).address')
+export GAME_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::game::actions::gameactions" ).address')
 
-export PLANET_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::planet::actions::planetactions" ).address')
+export PLANET_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::planet::actions::planetactions" ).address')
 
-export TECH_ADDRESS=$(cat ./target/dev/manifest.json | jq -r '.contracts[] | select(.name == "nogame::tech::actions::techactions" ).address')
+export TECH_ADDRESS=$(cat ./manifest/deployments/KATANA.toml | jq -r '.contracts[] | select(.name == "nogame::tech::actions::techactions" ).address')
 
 echo "---------------------------------------------------------------------------"
 echo world : $WORLD_ADDRESS 

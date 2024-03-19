@@ -32,7 +32,7 @@ name = "nogame::game::actions::gameactions"
 [[contracts]]
 kind = "DojoContract"
 address = "0x72ef8c2d8c59b1604bf7cceeb6f8aabe045204509aa954ced8aad2ef12b3c98"
-class_hash = "0x738ac62ff4bd14668c193191076c271aaea527367969d6bd9f036be8aaa8d5e"
+class_hash = "0x2b21cf450510910e0e3551400b76de9a9e6198706b653019cba0ae62e2e6f82"
 abi = "abis/deployments/KATANA/contracts/fleetactions.json"
 reads = []
 writes = []
