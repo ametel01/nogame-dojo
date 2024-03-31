@@ -1,8 +1,8 @@
 use nogame::data::types::{Resources, CompoundUpgradeType, CompoundsLevels};
 
-#[starknet::interface]
-trait ICompoundActions<TState> {
-    fn process_upgrade(ref self: TState, component: CompoundUpgradeType, quantity: u8);
+#[dojo::interface]
+trait ICompoundActions {
+    fn process_upgrade(component: CompoundUpgradeType, quantity: u8);
 }
 
 #[dojo::contract]
@@ -17,6 +17,7 @@ mod compoundactions {
     use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
     use nogame::libraries::shared;
     use starknet::{ContractAddress, get_caller_address};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -32,15 +33,22 @@ mod compoundactions {
 
     #[abi(embed_v0)]
     impl CompoundActionsImpl of super::ICompoundActions<ContractState> {
-        fn process_upgrade(ref self: ContractState, component: CompoundUpgradeType, quantity: u8) {
+        fn process_upgrade(component: CompoundUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = upgrade_component(world, planet_id, component, quantity);
+            let cost = private::upgrade_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }
     }
+}
+
+mod private {
+    use nogame::data::types::{Resources, CompoundUpgradeType, CompoundsLevels};
+    use nogame::libraries::{names::Names, shared};
+    use nogame::compound::{library as compound, models::{PlanetCompounds}};
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
