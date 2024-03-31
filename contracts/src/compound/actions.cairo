@@ -7,15 +7,15 @@ trait ICompoundActions {
 
 #[dojo::contract]
 mod compoundactions {
-    use nogame::data::types::{CompoundUpgradeType, CompoundsLevels, Resources};
-    use nogame::libraries::names::Names;
     use nogame::compound::{library as compound, models::{PlanetCompounds}};
+    use nogame::data::types::{CompoundUpgradeType, CompoundsLevels, Resources};
     use nogame::defence::models::{PlanetDefences};
     use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::libraries::constants;
-    use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
+    use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
+    use nogame::planet::models::{PlanetPosition, PlanetResourceTimer, PlanetResource};
     use starknet::{ContractAddress, get_caller_address};
     use super::private;
 
@@ -45,10 +45,10 @@ mod compoundactions {
 }
 
 mod private {
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::{library as compound, models::{PlanetCompounds}};
     use nogame::data::types::{Resources, CompoundUpgradeType, CompoundsLevels};
     use nogame::libraries::{names::Names, shared};
-    use nogame::compound::{library as compound, models::{PlanetCompounds}};
-    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
@@ -153,24 +153,24 @@ mod private {
 
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::data::types::{Position, CompoundUpgradeType};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::data::types::{Position, CompoundUpgradeType};
-    use nogame::libraries::names::Names;
-    use nogame::compound::models::{PlanetCompounds};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
+    use starknet::testing::{set_contract_address, set_block_timestamp};
     use super::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use debug::PrintTrait;
 
     #[test]
     fn test_upgrade_steel_mine_success() {

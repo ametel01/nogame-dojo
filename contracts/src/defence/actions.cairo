@@ -7,15 +7,15 @@ trait IDefenceActions {
 
 #[dojo::contract]
 mod defenceactions {
-    use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
-    use nogame::libraries::constants;
+    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{DefenceBuildType, Resources, TechLevels, Defences};
-    use nogame::defence::models::PlanetDefences;
     use nogame::defence::library as defence;
+    use nogame::defence::models::PlanetDefences;
+    use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
-    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
@@ -47,11 +47,11 @@ mod defenceactions {
 }
 
 mod private {
-    use nogame::libraries::shared;
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use nogame::data::types::{DefenceBuildType, Resources};
     use nogame::defence::{models::PlanetDefences, library as defence};
     use nogame::libraries::names::Names;
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use nogame::libraries::shared;
 
     fn build_component(
         world: IWorldDispatcher, planet_id: u32, component: DefenceBuildType, quantity: u32
@@ -163,26 +163,26 @@ mod private {
 
 #[cfg(test)]
 mod test {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::data::types::{Position, DefenceBuildType};
+    use nogame::defence::actions::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait};
+    use nogame::defence::models::{PlanetDefences};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::data::types::{Position, DefenceBuildType};
-    use nogame::libraries::names::Names;
-    use nogame::compound::models::{PlanetCompounds};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
+    use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::defence::actions::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
-    use nogame::defence::models::{PlanetDefences};
-    use debug::PrintTrait;
+    use starknet::testing::{set_contract_address, set_block_timestamp};
 
     #[test]
     fn test_build_celestia_success() {

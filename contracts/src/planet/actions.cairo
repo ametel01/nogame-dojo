@@ -10,22 +10,22 @@ trait IPlanetActions {
 
 #[dojo::contract]
 mod planetactions {
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
-    };
-    use super::IPlanetActions;
+    use nogame::compound::library as compound;
 
     use nogame::compound::models::PlanetCompounds;
-    use nogame::compound::library as compound;
     use nogame::data::types::{Position, Resources, CompoundsLevels};
     use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{
         GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
     };
+    use nogame::libraries::{names::Names, position, constants, shared};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
-    use nogame::libraries::{names::Names, position, constants, shared};
+    use starknet::{
+        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
+    };
+    use super::IPlanetActions;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -98,13 +98,14 @@ mod planetactions {
 
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::PlanetCompounds;
+    use nogame::data::types::{Position};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount,};
 
     use nogame::libraries::{constants, names::Names};
-    use nogame::data::types::{Position};
-    use nogame::compound::models::PlanetCompounds;
-    use nogame::game::models::{GameSetup, GamePlanetCount,};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -112,9 +113,8 @@ mod tests {
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY,
         PRICE
     };
+    use starknet::testing::{set_contract_address, set_block_timestamp};
     use super::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use debug::PrintTrait;
 
     #[test]
     fn test_generate_planet() {

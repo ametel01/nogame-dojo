@@ -1,6 +1,6 @@
 [package]
 name = "nogame"
-version = "0.4.0"
+version = "0.6.0"
 
 [cairo]
 sierra-replace-ids = true
@@ -11,6 +11,9 @@ dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.6.0-alpha.10" }
 nogame_fixed = {git = "https://github.com/ametel01/nogame-fixed.git", rev="e16cf2d"}
 
 [[target.dojo]]
+
+[tool.fmt]
+sort-module-level-items = true
 
 [tool.dojo]
 initializer_class_hash = "0xbeef"

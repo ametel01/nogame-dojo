@@ -14,16 +14,16 @@ trait IColonyActions {
 
 #[dojo::contract]
 mod colonyactions {
-    use nogame::data::types::{
-        Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
-        CompoundsLevels, Fleet, Defences
-    };
     use nogame::colony::models::{
         ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
         PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
     };
     use nogame::colony::positions;
     use nogame::compound::library as compound;
+    use nogame::data::types::{
+        Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
+        CompoundsLevels, Fleet, Defences
+    };
     use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
     use nogame::game::models::{GamePlanet, GameSetup};
@@ -156,20 +156,20 @@ mod colonyactions {
 }
 
 mod private {
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use nogame::colony::models::{
         ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
         PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
     };
-    use nogame::libraries::names::Names;
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    use nogame::libraries::shared;
     use nogame::compound::library as compound;
-    use nogame::defence::library as defence;
-    use nogame::dockyard::library as dockyard;
     use nogame::data::types::{
         CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, CompoundsLevels, Fleet,
         Defences
     };
+    use nogame::defence::library as defence;
+    use nogame::dockyard::library as dockyard;
+    use nogame::libraries::names::Names;
+    use nogame::libraries::shared;
 
     fn upgrade_component(
         world: IWorldDispatcher,
@@ -535,28 +535,28 @@ mod private {
 
 #[cfg(test)]
 mod test {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
     use nogame::colony::actions::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
     use nogame::colony::models::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     };
-    use nogame::libraries::{constants};
-    use nogame::data::types::{Position, ShipBuildType, CompoundUpgradeType, DefenceBuildType};
-    use nogame::libraries::names::Names;
     use nogame::compound::models::{PlanetCompounds};
+    use nogame::data::types::{Position, ShipBuildType, CompoundUpgradeType, DefenceBuildType};
+    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
+    use nogame::dockyard::models::{PlanetShips};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup};
+    use nogame::libraries::names::Names;
+    use nogame::libraries::{constants};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{PlanetPosition, PositionToPlanet,};
+    use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
-    use nogame::dockyard::models::{PlanetShips};
-    use debug::PrintTrait;
+    use starknet::testing::{set_contract_address, set_block_timestamp};
 
     #[test]
     fn test_generate_colony() {

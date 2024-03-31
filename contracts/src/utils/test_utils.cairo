@@ -1,7 +1,9 @@
-use starknet::testing::set_contract_address;
+use dojo::test_utils::{spawn_test_world};
 
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use dojo::test_utils::{spawn_test_world};
+use nogame::colony::actions::{
+    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
+};
 
 use nogame::colony::models::{
     ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
@@ -11,39 +13,37 @@ use nogame::colony::models::{
     colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
     colony_resource_timer, colony_compounds, colony_ships, colony_defences
 };
-use nogame::colony::actions::{
-    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
+use nogame::compound::actions::{
+    compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
 };
-use nogame::compound::models::{planet_compounds};
 use nogame::compound::models::{PlanetCompounds};
-use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
+use nogame::compound::models::{planet_compounds};
+use nogame::defence::actions::{
+    defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
+};
+use nogame::defence::models::{PlanetDefences, planet_defences};
+use nogame::dockyard::actions::{
+    dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
+};
+use nogame::dockyard::models::{PlanetShips, planet_ships};
+use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
+use nogame::fleet::models::{
+    active_mission, active_mission_len, incoming_missions, incoming_mission_len
+};
+use nogame::fleet::models::{ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen};
+use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
 use nogame::game::models::{GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount};
+use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
+use nogame::planet::actions::{
+    planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
+};
 use nogame::planet::models::{
     planet_position, position_to_planet, planet_resource, planet_resource_timer
 };
 use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
-use nogame::compound::actions::{
-    compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
-};
-use nogame::tech::models::{PlanetTechs, planet_techs};
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
-use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
-use nogame::planet::actions::{
-    planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
-};
-use nogame::dockyard::models::{PlanetShips, planet_ships};
-use nogame::dockyard::actions::{
-    dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
-};
-use nogame::defence::actions::{
-    defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
-};
-use nogame::fleet::models::{ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen};
-use nogame::fleet::models::{
-    active_mission, active_mission_len, incoming_missions, incoming_mission_len
-};
-use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
-use nogame::defence::models::{PlanetDefences, planet_defences};
+use nogame::tech::models::{PlanetTechs, planet_techs};
+use starknet::testing::set_contract_address;
 
 use starknet::{syscalls::deploy_syscall, ClassHash, ContractAddress, contract_address_const};
 

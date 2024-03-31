@@ -8,20 +8,19 @@ trait IGameActions<TContractState> {
 // dojo decorator
 #[dojo::contract]
 mod gameactions {
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
-    };
-
     use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
-    use super::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::data::types::{Position};
     use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner};
+    use nogame::libraries::{{auction::{LinearVRGDA, LinearVRGDATrait}}, names, position, constants};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
-    use nogame::libraries::{{auction::{LinearVRGDA, LinearVRGDATrait}}, names, position, constants};
     use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
+    use starknet::{
+        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
+    };
+    use super::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
 
     #[abi(embed_v0)]
     impl GameActionsImpl of super::IGameActions<ContractState> {
@@ -44,18 +43,18 @@ mod gameactions {
 
 #[cfg(test)]
 mod tests {
-    use starknet::testing::set_contract_address;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::libraries::{constants, names};
+    use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
     use nogame::data::types::Position;
     use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::{constants, names};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
     use nogame::utils::test_utils::{setup_world, OWNER, PRICE, GAME_SPEED, ACCOUNT_1};
+    use starknet::testing::set_contract_address;
     use super::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
 
     #[test]
     fn test_spawn() {

@@ -648,8 +648,8 @@ mod cost {
 
 mod production {
     use nogame::data::types::Resources;
-    use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
     use nogame::libraries::math::{BitShift};
+    use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 
     const _1_36: u128 = 25087571940244990000;
     const _0_004: u128 = 73786976294838210;

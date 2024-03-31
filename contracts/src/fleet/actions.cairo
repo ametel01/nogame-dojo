@@ -21,29 +21,29 @@ trait IFleetActions {
 
 #[dojo::contract]
 mod fleetactions {
+    use nogame::colony::actions::colonyactions;
+    use nogame::colony::models::{
+        ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
+    };
     use nogame::data::types::{
         Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
     };
-    use nogame::colony::models::{
-        ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
-    };
-    use nogame::colony::actions::colonyactions;
-    use nogame::defence::models::{PlanetDefences};
     use nogame::defence::library as defence;
-    use nogame::dockyard::models::{PlanetShips};
+    use nogame::defence::models::{PlanetDefences};
     use nogame::dockyard::library as dockyard;
+    use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::library as fleet;
-    use nogame::libraries::{constants, names::Names};
+    use nogame::fleet::models::{
+        ActiveMissionLen, ActiveMission, IncomingMissions, IncomingMissionLen
+    };
     use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::shared;
+    use nogame::libraries::{constants, names::Names};
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
         PlanetResourceTimer, PlanetResource
     };
-    use nogame::fleet::models::{
-        ActiveMissionLen, ActiveMission, IncomingMissions, IncomingMissionLen
-    };
-    use nogame::libraries::shared;
     use starknet::{get_caller_address, get_block_timestamp};
     use super::private;
 
@@ -165,7 +165,9 @@ mod fleetactions {
                     - get!(world, sender_mother_planet_id, LastActive).time > constants::WEEK;
                 if !is_inactive {
                     assert!(
-                        !private::get_is_noob_protected(world, sender_mother_planet_id, destination_id),
+                        !private::get_is_noob_protected(
+                            world, sender_mother_planet_id, destination_id
+                        ),
                         "Fleet: noob protection active between planet {} and {}",
                         sender_mother_planet_id,
                         destination_id
@@ -277,8 +279,12 @@ mod fleetactions {
             let defender_loss = private::calculate_fleet_loss(defender_fleet, f2);
             let defences_loss = private::calculate_defences_loss(defences, d);
 
-            private::update_points_after_attack(world, mission.origin, attacker_loss, Zeroable::zero());
-            private::update_points_after_attack(world, mission.destination, defender_loss, defences_loss);
+            private::update_points_after_attack(
+                world, mission.origin, attacker_loss, Zeroable::zero()
+            );
+            private::update_points_after_attack(
+                world, mission.destination, defender_loss, defences_loss
+            );
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
             emit!(
                 world,
@@ -410,17 +416,20 @@ mod fleetactions {
 }
 
 mod private {
-    use nogame::data::types::{Fleet, Defences, Resources};
-    use nogame::libraries::shared;
-    use nogame::planet::models::{PlanetResource,PlanetResourcesSpent};
-    use nogame::colony::{actions::private as colony, models::{ColonyResource, ColonyShips}};
-    use nogame::dockyard::{library as dockyard, models::{PlanetShips}};
-    use nogame::defence::models::{PlanetDefences};
-    use nogame::fleet::{library as fleet, models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}};
-    use nogame::defence::library as defence;
-    use nogame::libraries::names::Names;
-    use nogame::data::types::{IncomingMission,Mission, TechLevels};
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use nogame::colony::{actions::private as colony, models::{ColonyResource, ColonyShips}};
+    use nogame::data::types::{Fleet, Defences, Resources};
+    use nogame::data::types::{IncomingMission, Mission, TechLevels};
+    use nogame::defence::library as defence;
+    use nogame::defence::models::{PlanetDefences};
+    use nogame::dockyard::{library as dockyard, models::{PlanetShips}};
+    use nogame::fleet::{
+        library as fleet,
+        models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}
+    };
+    use nogame::libraries::names::Names;
+    use nogame::libraries::shared;
+    use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
 
     fn update_points_after_attack(
         world: IWorldDispatcher, planet_id: u32, fleet: Fleet, defences: Defences
@@ -1081,37 +1090,37 @@ mod private {
 
 #[cfg(test)]
 mod test {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
-    use starknet::{get_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
     use nogame::colony::actions::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
     use nogame::colony::models::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     };
-    use nogame::libraries::{constants};
+    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
         Debris, Resources
     };
-    use nogame::libraries::names::Names;
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::defence::models::{PlanetDefences};
+    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
+    use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
     use nogame::fleet::models::{ActiveMission, IncomingMission};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::names::Names;
+    use nogame::libraries::{constants};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField, PlanetResourcesSpent
     };
+    use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
-    use nogame::dockyard::models::{PlanetShips};
-    use debug::PrintTrait;
+    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use starknet::{get_block_timestamp};
 
     #[test]
     fn test_send_fleet() {
