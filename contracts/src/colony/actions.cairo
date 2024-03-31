@@ -146,7 +146,10 @@ mod colonyactions {
         fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources {
             let world = self.world_dispatcher.read();
             shared::calculate_production(
-                world, planet_id, colony_id, private::get_colony_compounds(world, planet_id, colony_id)
+                world,
+                planet_id,
+                colony_id,
+                private::get_colony_compounds(world, planet_id, colony_id)
             )
         }
     }
