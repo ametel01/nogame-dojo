@@ -1,8 +1,8 @@
 use starknet::ContractAddress;
 
-#[starknet::interface]
+#[dojo::interface]
 trait IGameActions<TContractState> {
-    fn spawn(self: @TContractState, speed: usize,);
+    fn spawn(speed: usize,);
 }
 
 // dojo decorator
@@ -26,7 +26,7 @@ mod gameactions {
     #[abi(embed_v0)]
     impl GameActionsImpl of super::IGameActions<ContractState> {
         // ContractState is defined by system decorator expansion
-        fn spawn(self: @ContractState, speed: usize,) {
+        fn spawn(speed: usize,) {
             let world = self.world_dispatcher.read();
 
             set!(
