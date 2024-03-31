@@ -304,12 +304,6 @@ function ButtonAttackPlanet({
         ? availableCapacityForResource
         : newValue;
 
-    // Log the values for debugging (These can be removed in production)
-    console.log('cargoCapacity:', cargoCapacity);
-    console.log('totalOtherResources:', totalOtherResources);
-    console.log('newValue:', newValue);
-    console.log('adjustedValue:', adjustedValue);
-
     // Update the state with either the new value or the adjusted value
     setCargo((prev) => ({
       ...prev,

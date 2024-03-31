@@ -78,7 +78,6 @@ function extractMission(response: any): Mission | undefined {
   const missionModel = response.data.activeMissionModels?.edges?.find(
     (edge: EdgeType) => isActiveMissionModel(edge.node.entity.models)
   )?.node.entity.models[0];
-  console.log(missionModel);
 
   if (missionModel) {
     return {

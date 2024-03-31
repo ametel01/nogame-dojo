@@ -379,6 +379,7 @@ export function createSystemCalls(
         'get_uncollected_resources',
         [planetId.toString()]
       )) as PlanetResourcesResponse;
+      console.log('tx', tx);
 
       return {
         steel: Number(tx.steel),

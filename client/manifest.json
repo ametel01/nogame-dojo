@@ -1,0 +1,1337 @@
+{
+  "world": {
+    "kind": "Contract",
+    "class_hash": "0x5ad96ceea29160aa7305bb078d1ade41f73b487363ae12778dbea6393cc00b2",
+    "address": "0x11ad8d1649e4a32a94a19bc189c61172e9ac95a1c36049964f93c37f7e5bd46",
+    "name": "dojo::world::world"
+  },
+  "base": {
+    "kind": "Class",
+    "class_hash": "0x794d5ed2f7eb970f92e0ed9be8f73bbbdf18f7db2a9a296fa12c2d9c33e6ab3",
+    "name": "dojo::base::base"
+  },
+  "contracts": [
+    {
+      "kind": "DojoContract",
+      "address": "0x59ac71ff8fd8dce1bfaaab100a2685f6039f265f46da4f7fd03b1b0bf0d51f0",
+      "class_hash": "0x3a58ae08c77dc7c0a0a53dee2dc2a196e504b9209add88dda83c95da4768dab",
+      "abi": "abis/deployments/KATANA/contracts/defenceactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::defence::actions::defenceactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x4fb92bcca3b0fdc722d3de509f1d157310b1714c4e697f373bde986a0a00528",
+      "class_hash": "0x16ba9305fe8c8db7d1c5657182730efac7db1a07688dd000eb284ba25fc1d3",
+      "abi": "abis/deployments/KATANA/contracts/gameactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::game::actions::gameactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x72ef8c2d8c59b1604bf7cceeb6f8aabe045204509aa954ced8aad2ef12b3c98",
+      "class_hash": "0x2b21cf450510910e0e3551400b76de9a9e6198706b653019cba0ae62e2e6f82",
+      "abi": "abis/deployments/KATANA/contracts/fleetactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::fleet::actions::fleetactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x5a95ad32f24cd1db18911e88271121243e44a25c0f82daaf11f69b473f40021",
+      "class_hash": "0x36b540854e7316cf29a40650f86a91a36d93201c0128b7fd7db2bd974896110",
+      "abi": "abis/deployments/KATANA/contracts/compoundactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::compound::actions::compoundactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x472ae739b42c1c57bd7a0879aa4e7492e3764f7eed2804de9c0cc73e9565bf6",
+      "class_hash": "0x4dee5860adfdf3813e031786a687338bb0fb8cb0bce1f4db5e9a34a0a61f5b2",
+      "abi": "abis/deployments/KATANA/contracts/dockyardactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::dockyard::actions::dockyardactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x15b6d94f0e1090e57009c7f3cafd2e7140d73f524ec3c3ac561ead80e629935",
+      "class_hash": "0x4812b2ffb06f04246fe3ace58492389820f82181d478cabfb1837b0550172f8",
+      "abi": "abis/deployments/KATANA/contracts/colonyactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::colony::actions::colonyactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x206341eb9dbdf84cae4779147a730331418f4c0b2cbe3d3a914e8a2a299b04f",
+      "class_hash": "0x4e21c4babf444355e9a017d9888e9a2fe854ee9ad3ca3faf038ab64385ae923",
+      "abi": "abis/deployments/KATANA/contracts/planetactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::planet::actions::planetactions"
+    },
+    {
+      "kind": "DojoContract",
+      "address": "0x51ed587cd93d58e7d68768ef7b4f41e3c9e3192b6021b8dbb923fa3ce223747",
+      "class_hash": "0x38a532312fd043d20fa7432678e7fdd1722c84bca6b9a0b5dc8b85e8035df43",
+      "abi": "abis/deployments/KATANA/contracts/techactions.json",
+      "reads": [],
+      "writes": [],
+      "computed": [],
+      "name": "nogame::tech::actions::techactions"
+    }
+  ],
+  "models": [
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x30e0a1bacfe8c773aa479da784bc4452e6a3a3221e17a5d2f7bc7a9e12f944e",
+      "name": "nogame::planet::models::planet_resources_spent",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "spent",
+          "type": "u128",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x6a181f1fe73501f37ad7c0ae0a8f8cc4e7850699047ec1931702eb94e085824",
+      "name": "nogame::planet::models::planet_resource_timer",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "last_collection",
+          "type": "u64",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x30d91be75f50fb884c35011950988edfccbed3baf156d35b9a35d3a326dc541",
+      "name": "nogame::colony::models::planet_colonies_count",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u8",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x5bfc3b3bf56cf05a048501757534721b393e9175015aa095eb54ccc33bfa5f8",
+      "name": "nogame::defence::models::planet_defences",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x764f152c3f2596373f6f3cbb38bdae9d8310e5d7a3b0caca104e4e40ec8290c",
+      "name": "nogame::compound::models::planet_compounds",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "level",
+          "type": "u8",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x62163e3fefc1f2d48707b6cc23ce8e469fc78823bd06c0be036c85ad5a227c3",
+      "name": "nogame::planet::models::last_active",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "time",
+          "type": "u64",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x3a98bc21989e4a619d27fd7ecc534c912a039330208ea73bb01a588914139ad",
+      "name": "nogame::colony::models::colony_defences",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x2bec9e62a9e8c73ad76ed185a4037a18d1c6fd1c64cbeb07af65d8da2e2c3f7",
+      "name": "nogame::colony::models::colony_position",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "position",
+          "type": "Position",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x6c85ef72b3ba0901758994fc9ae0a18e6e23aab63ca59a80977b1b63539b668",
+      "name": "nogame::colony::models::colony_count",
+      "members": [
+        {
+          "name": "game_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u8",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x44ed04ed95bba5a2912891479784149c37e61082b8f8ea1fea1777e9b67f486",
+      "name": "nogame::colony::models::colony_ships",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x3d27045397690562c4bacf11a1b65d37c9737c73f552a91e3b1c03347582b88",
+      "name": "nogame::tech::models::planet_techs",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "level",
+          "type": "u8",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x723f16e88f7f2634a90999d4573983e2bf793387948c876155c4789dddf9c5d",
+      "name": "nogame::fleet::models::incoming_mission_len",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "lenght",
+          "type": "usize",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x37aa53336bff1fb4fc49f123d99caef72d7bb4941725327e6f3726c2e9b8ac3",
+      "name": "nogame::planet::models::planet_position",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "position",
+          "type": "Position",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x6887eea56dcae2f8afb667b84707516e4624e970786d66963fca0d5f6fef141",
+      "name": "nogame::game::models::game_planet",
+      "members": [
+        {
+          "name": "owner",
+          "type": "ContractAddress",
+          "key": true
+        },
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x7c656c474de02606852c78cfdcfcd8888c9d8ed8a56dea302230d15875518a8",
+      "name": "nogame::colony::models::colony_compounds",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "level",
+          "type": "u8",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x38e52fc4d441b11011508f5a3ebe4d9950caeb788c54386229d665d232a0fc6",
+      "name": "nogame::game::models::game_setup",
+      "members": [
+        {
+          "name": "game_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "speed",
+          "type": "usize",
+          "key": false
+        },
+        {
+          "name": "start_time",
+          "type": "u64",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x488f3e553fa2c9ee18b664044258b50c04a3e4547c79a76bb65eab07cbb8bba",
+      "name": "nogame::game::models::game_owner_planet",
+      "members": [
+        {
+          "name": "owner",
+          "type": "ContractAddress",
+          "key": true
+        },
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x78bd1e3b02b6292468e5696b9104f2b06ee007a2f0a45232e9d28522614008",
+      "name": "nogame::game::models::game_planet_owner",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "owner",
+          "type": "ContractAddress",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x19fe556b5500ec029fdfb0d761abc40bc88b9f4c172b3160fa9089d5f11b7cc",
+      "name": "nogame::colony::models::colony_resource_timer",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "last_collection",
+          "type": "u64",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x6a156ad19ae4f927c2b263c9c064c137ec68fcf3281046bc232949285478082",
+      "name": "nogame::planet::models::position_to_planet",
+      "members": [
+        {
+          "name": "position",
+          "type": "Position",
+          "key": true
+        },
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0xc91fb86efa0b1ea9979aa293bf039b5b94af98434441a9e16270d01e780805",
+      "name": "nogame::planet::models::planet_resource",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "amount",
+          "type": "u128",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x4c90b1204c805d258151ba29823ed864c1254406c8104a04c77bbe0bec19e6e",
+      "name": "nogame::fleet::models::active_mission",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "mission_id",
+          "type": "usize",
+          "key": true
+        },
+        {
+          "name": "mission",
+          "type": "Mission",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x7334e31c89269a9b637b674dcb87b9b8462ffb4c94a407816d5bd099a54a4f3",
+      "name": "nogame::colony::models::colony_owner",
+      "members": [
+        {
+          "name": "colony_planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x38adb45bb1a44dff800a9ae74d62da501151573b0cdf81203589463946803d7",
+      "name": "nogame::fleet::models::incoming_missions",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "mission_id",
+          "type": "usize",
+          "key": true
+        },
+        {
+          "name": "mission",
+          "type": "IncomingMission",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x5bd321809c5e6138519ce71a7d086fda8eacadea3bc673aecab17454e76de94",
+      "name": "nogame::colony::models::colony_resource",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "colony_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "amount",
+          "type": "u128",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x3411c749f55738ea9312bcd9b3d384be63854f469b9e5893aca4d2ff596f03a",
+      "name": "nogame::planet::models::planet_debris_field",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "debris",
+          "type": "Debris",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x2fec07591e25cc6c1ee7e999fc8b308ff1828dcd75574f8e5d6d86ccca9d349",
+      "name": "nogame::game::models::game_planet_count",
+      "members": [
+        {
+          "name": "game_id",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x4a18279f4409ba81f2599dee8232c565ce08d084efff1d13007fd748621e5fb",
+      "name": "nogame::fleet::models::active_mission_len",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "lenght",
+          "type": "usize",
+          "key": false
+        }
+      ]
+    },
+    {
+      "kind": "DojoModel",
+      "class_hash": "0x6f3f9f84254cd62bfc1d3663d1c10e9ba4421a6d3d2608733fe9d5b8808e3c",
+      "name": "nogame::dockyard::models::planet_ships",
+      "members": [
+        {
+          "name": "planet_id",
+          "type": "u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "u8",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "u32",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "abi": [
+    {
+      "type": "impl",
+      "name": "World",
+      "interface_name": "dojo::world::IWorld"
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::felt252>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::resource_metadata::ResourceMetadata",
+      "members": [
+        {
+          "name": "resource_id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "metadata_uri",
+          "type": "core::array::Span::<core::felt252>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::integer::u8>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::integer::u8>"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "core::bool",
+      "variants": [
+        {
+          "name": "False",
+          "type": "()"
+        },
+        {
+          "name": "True",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::world::IWorld",
+      "items": [
+        {
+          "type": "function",
+          "name": "metadata",
+          "inputs": [
+            {
+              "name": "resource_id",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "dojo::resource_metadata::ResourceMetadata"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "set_metadata",
+          "inputs": [
+            {
+              "name": "metadata",
+              "type": "dojo::resource_metadata::ResourceMetadata"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "model",
+          "inputs": [
+            {
+              "name": "name",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "(core::starknet::class_hash::ClassHash, core::starknet::contract_address::ContractAddress)"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "register_model",
+          "inputs": [
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "deploy_contract",
+          "inputs": [
+            {
+              "name": "salt",
+              "type": "core::felt252"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "upgrade_contract",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "uuid",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u32"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "emit",
+          "inputs": [
+            {
+              "name": "keys",
+              "type": "core::array::Array::<core::felt252>"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::felt252>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "entity",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "keys",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "layout",
+              "type": "core::array::Span::<core::integer::u8>"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Span::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "set_entity",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "keys",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "layout",
+              "type": "core::array::Span::<core::integer::u8>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "base",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "delete_entity",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "keys",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "layout",
+              "type": "core::array::Span::<core::integer::u8>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "is_owner",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::bool"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "grant_owner",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "revoke_owner",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "is_writer",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "system",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::bool"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "grant_writer",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "system",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "revoke_writer",
+          "inputs": [
+            {
+              "name": "model",
+              "type": "core::felt252"
+            },
+            {
+              "name": "system",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "impl",
+      "name": "UpgradeableWorld",
+      "interface_name": "dojo::world::IUpgradeableWorld"
+    },
+    {
+      "type": "interface",
+      "name": "dojo::world::IUpgradeableWorld",
+      "items": [
+        {
+          "type": "function",
+          "name": "upgrade",
+          "inputs": [
+            {
+              "name": "new_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": [
+        {
+          "name": "contract_base",
+          "type": "core::starknet::class_hash::ClassHash"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::WorldSpawned",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "creator",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::ContractDeployed",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "salt",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::ContractUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::WorldUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::MetadataUpdate",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "resource",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "uri",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::ModelRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "prev_class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "prev_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::StoreSetRecord",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "table",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "keys",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        },
+        {
+          "name": "values",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::StoreDelRecord",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "table",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "keys",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::WriterUpdated",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "model",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "system",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "value",
+          "type": "core::bool",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::OwnerUpdated",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "resource",
+          "type": "core::felt252",
+          "kind": "data"
+        },
+        {
+          "name": "value",
+          "type": "core::bool",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "WorldSpawned",
+          "type": "dojo::world::world::WorldSpawned",
+          "kind": "nested"
+        },
+        {
+          "name": "ContractDeployed",
+          "type": "dojo::world::world::ContractDeployed",
+          "kind": "nested"
+        },
+        {
+          "name": "ContractUpgraded",
+          "type": "dojo::world::world::ContractUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldUpgraded",
+          "type": "dojo::world::world::WorldUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "MetadataUpdate",
+          "type": "dojo::world::world::MetadataUpdate",
+          "kind": "nested"
+        },
+        {
+          "name": "ModelRegistered",
+          "type": "dojo::world::world::ModelRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreSetRecord",
+          "type": "dojo::world::world::StoreSetRecord",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreDelRecord",
+          "type": "dojo::world::world::StoreDelRecord",
+          "kind": "nested"
+        },
+        {
+          "name": "WriterUpdated",
+          "type": "dojo::world::world::WriterUpdated",
+          "kind": "nested"
+        },
+        {
+          "name": "OwnerUpdated",
+          "type": "dojo::world::world::OwnerUpdated",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]
+}

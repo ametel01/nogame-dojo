@@ -4,6 +4,7 @@ use nogame::data::types::Resources;
 trait IPlanetActions<TContractState> {
     fn generate_planet(ref self: TContractState);
     fn get_uncollected_resources(self: @TContractState, planet_id: u32) -> Resources;
+    fn get_last_collection_time(self: @TContractState, planet_id: u32) -> u64;
 }
 
 
@@ -84,7 +85,13 @@ mod planetactions {
                 dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
                     .level,
             };
+            println!("time in get_uncollected_resources: {}", get_block_timestamp());
             shared::calculate_production(world, planet_id, 0, compounds)
+        }
+
+        fn get_last_collection_time(self: @ContractState, planet_id: u32) -> u64 {
+            let world = self.world_dispatcher.read();
+            get!(world, planet_id, PlanetResourceTimer).last_collection
         }
     }
 }
@@ -96,6 +103,7 @@ mod tests {
 
     use nogame::libraries::{constants, names::Names};
     use nogame::data::types::{Position};
+    use nogame::compound::models::PlanetCompounds;
     use nogame::game::models::{GameSetup, GamePlanetCount,};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
@@ -139,6 +147,37 @@ mod tests {
         let time_start = get!(world, planet_id, (PlanetResourceTimer)).last_collection;
         assert!(
             time_start == starknet::get_block_timestamp(), "test_generate_planet: wrong time start"
+        );
+    }
+
+    #[test]
+    fn test_get_uncollected_resources() {
+        let (world, actions) = setup_world();
+        actions.game.spawn(GAME_SPEED);
+
+        set_contract_address(ACCOUNT_1());
+        actions.planet.generate_planet();
+        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::STEEL, level: 10 });
+        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::QUARTZ, level: 10 });
+        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::TRITIUM, level: 10 });
+        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::ENERGY, level: 30 });
+
+        starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY);
+        let uncollected = actions.planet.get_uncollected_resources(1);
+        println!(
+            "steel: {}, quartz: {}, tritium: {}",
+            uncollected.steel,
+            uncollected.quartz,
+            uncollected.tritium
+        );
+
+        starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY * 10);
+        let uncollected = actions.planet.get_uncollected_resources(1);
+        println!(
+            "steel: {}, quartz: {}, tritium: {}",
+            uncollected.steel,
+            uncollected.quartz,
+            uncollected.tritium
         );
     }
 }

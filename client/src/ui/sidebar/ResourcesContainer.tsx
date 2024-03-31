@@ -10,7 +10,7 @@ import energyImg from '../../assets/gameElements/resources/energy-2.webp';
 import CompoundsFormulas, {
   getCelestiaProduction,
 } from '../../shared/utils/Formulas';
-import { usePlanetCompounds } from '../../hooks/usePlanetCompounds';
+import { Compounds, usePlanetCompounds } from '../../hooks/usePlanetCompounds';
 import { useColonyCompounds } from '../../hooks/useColonyCompounds';
 import { usePlanetDefences } from '../../hooks/usePlanetDefences';
 import { useColonyDefences } from '../../hooks/useColonyDefences';
@@ -155,11 +155,11 @@ const ResourcesContainer = ({
   selectedColonyId,
   planetPosition,
 }: ResourceContainerArgs) => {
-  const planetResources = usePlanetResources(planetId);
-
   const colonyResources = useColonyResources(planetId, selectedColonyId);
 
-  const compoundsLevels = usePlanetCompounds(planetId);
+  const compoundsLevels = usePlanetCompounds(planetId) as Compounds;
+  console.log('compoundsLevels', compoundsLevels);
+  const planetResources = usePlanetResources(planetId);
 
   const colonyCompounds = useColonyCompounds(planetId, selectedColonyId);
 

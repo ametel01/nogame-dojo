@@ -6,7 +6,7 @@ version = "0.4.0"
 sierra-replace-ids = true
 
 [dependencies]
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.6.0-alpha.4" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.5.1" }
 # dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.5.1" }
 nogame_fixed = {git = "https://github.com/ametel01/nogame-fixed.git", rev="e16cf2d"}
 
@@ -20,7 +20,7 @@ rpc_url = "http://localhost:5050/"
 # Default account for katana with seed = 0
 account_address = "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca"
 private_key = "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a"
-world_address = "0x11ad8d1649e4a32a94a19bc189c61172e9ac95a1c36049964f93c37f7e5bd46"
+world_address = "0x56d5e7d85f337c9a66c44915a698507a294f72ce8a7ca4c0b11a78aca4a4aa2"
 
 [profile.sepolia.tool.dojo.env]
 account_address = "0x00d5b7d5883c00d106c9df28f24a7c46472ef3006f1460d0649a4256f188b906"

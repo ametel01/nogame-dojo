@@ -1,7 +1,0 @@
-kind = "DojoContract"
-class_hash = "0x38a532312fd043d20fa7432678e7fdd1722c84bca6b9a0b5dc8b85e8035df43"
-abi = "abis/base/contracts/techactions.json"
-reads = []
-writes = []
-computed = []
-name = "nogame::tech::actions::techactions"

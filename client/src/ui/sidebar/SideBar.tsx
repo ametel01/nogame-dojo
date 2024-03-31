@@ -4,7 +4,7 @@ import LogoAndRankContainer from './LogoutAndRankContainer';
 import ResourcesContainer from './ResourcesContainer';
 import ColonySelect from './ColonySelect';
 import { SelectChangeEvent } from '@mui/material';
-import { Position } from '../../shared/types';
+import { Position } from '../../hooks/usePlanetPosition';
 
 const BodyContainer = styled.div`
   display: flex;

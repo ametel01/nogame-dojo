@@ -38,6 +38,7 @@
     "react-tabs": "^6.0.2",
     "starknet": "^5.25.0",
     "styled-components": "^6.1.8",
+    "toml": "^3.0.0",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0"
   },

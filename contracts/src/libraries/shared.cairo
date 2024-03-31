@@ -151,13 +151,20 @@ fn get_resources_available(world: IWorldDispatcher, planet_id: u32, colony_id: u
 fn calculate_production(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, compounds: CompoundsLevels
 ) -> Resources {
+    println!("steel mine: {}", compounds.steel);
+    println!("quartz mine: {}", compounds.quartz);
+    println!("tritium mine: {}", compounds.tritium);
+    println!("energy mine: {}", compounds.energy);
     let time_now = starknet::get_block_timestamp();
+    println!("Time now: {}", time_now);
     let last_collection_time = if colony_id == 0 {
         get!(world, planet_id, PlanetResourceTimer).last_collection
     } else {
         get!(world, (planet_id, colony_id), ColonyResourceTimer).last_collection
     };
+    println!("Last collection time: {}", last_collection_time);
     let time_elapsed = time_now - last_collection_time;
+    println!("Time elapsed: {}", time_elapsed);
 
     let position = if colony_id == 0 {
         get!(world, planet_id, PlanetPosition).position
