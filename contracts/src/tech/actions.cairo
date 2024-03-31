@@ -1,8 +1,8 @@
 use nogame::data::types::{TechLevels, TechUpgradeType};
 
-#[starknet::interface]
-trait ITechActions<TState> {
-    fn process_upgrade(ref self: TState, component: TechUpgradeType, quantity: u8);
+#[dojo::interface]
+trait ITechActions {
+    fn process_upgrade(component: TechUpgradeType, quantity: u8);
 }
 
 #[dojo::contract]
@@ -21,6 +21,7 @@ mod techactions {
     use nogame::tech::models::{PlanetTechs};
     use nogame::tech::library as tech;
     use starknet::{get_caller_address};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -36,15 +37,25 @@ mod techactions {
 
     #[abi(embed_v0)]
     impl TechActionsImpl of super::ITechActions<ContractState> {
-        fn process_upgrade(ref self: ContractState, component: TechUpgradeType, quantity: u8) {
+        fn process_upgrade(component: TechUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = upgrade_component(world, planet_id, component, quantity);
+            let cost = private::upgrade_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, TechSpent { planet_id, quantity, spent: cost });
         }
     }
+}
+
+mod private {
+    use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
+    use nogame::libraries::shared;
+    use nogame::libraries::names::Names;
+    use nogame::libraries::constants;
+    use nogame::planet::models::{PlanetResource};
+    use nogame::tech::{library as tech, models::PlanetTechs};
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: TechUpgradeType, quantity: u8
