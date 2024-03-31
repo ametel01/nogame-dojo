@@ -1,9 +1,8 @@
 use nogame::data::types::{Fleet, Position, SimulationResult, Defences, Debris, Resources};
 
-#[starknet::interface]
-trait IFleetActions<TState> {
+#[dojo::interface]
+trait IFleetActions {
     fn send_fleet(
-        ref self: TState,
         fleet: Fleet,
         destination: Position,
         cargo: Resources,
@@ -11,12 +10,12 @@ trait IFleetActions<TState> {
         speed_modifier: u32,
         colony_id: u8,
     );
-    fn attack_planet(ref self: TState, mission_id: usize);
-    fn recall_fleet(ref self: TState, mission_id: usize);
-    fn dock_fleet(ref self: TState, mission_id: usize);
-    fn collect_debris(ref self: TState, mission_id: usize);
+    fn attack_planet(mission_id: usize);
+    fn recall_fleet(mission_id: usize);
+    fn dock_fleet(mission_id: usize);
+    fn collect_debris(mission_id: usize);
     fn simulate_attack(
-        self: @TState, attacker_fleet: Fleet, defender_fleet: Fleet, defences: Defences
+        attacker_fleet: Fleet, defender_fleet: Fleet, defences: Defences
     ) -> SimulationResult;
 }
 
@@ -46,6 +45,7 @@ mod fleetactions {
     };
     use nogame::libraries::shared;
     use starknet::{get_caller_address, get_block_timestamp};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -82,7 +82,6 @@ mod fleetactions {
     #[abi(embed_v0)]
     impl FleetActionsImpl of super::IFleetActions<ContractState> {
         fn send_fleet(
-            ref self: ContractState,
             fleet: Fleet,
             destination: Position,
             cargo: Resources,
@@ -114,7 +113,7 @@ mod fleetactions {
                 }
             }
             let time_now = get_block_timestamp();
-            check_enough_ships(world, sender_mother_planet_id, colony_id, fleet);
+            private::check_enough_ships(world, sender_mother_planet_id, colony_id, fleet);
             // Calculate distance
             let distance = fleet::get_distance(
                 get!(world, (sender_mother_planet_id, colony_id), ColonyPosition).position,
@@ -157,23 +156,23 @@ mod fleetactions {
                 );
                 assert!(fleet.scraper >= 1, "Fleet: no scraper ships in fleet");
                 mission.category = MissionCategory::DEBRIS;
-                add_active_mission(world, sender_mother_planet_id, mission);
+                private::add_active_mission(world, sender_mother_planet_id, mission);
             } else if mission_type == MissionCategory::TRANSPORT {
                 mission.category = MissionCategory::TRANSPORT;
-                add_active_mission(world, sender_mother_planet_id, mission);
+                private::add_active_mission(world, sender_mother_planet_id, mission);
             } else {
                 let is_inactive = time_now
                     - get!(world, sender_mother_planet_id, LastActive).time > constants::WEEK;
                 if !is_inactive {
                     assert!(
-                        !get_is_noob_protected(world, sender_mother_planet_id, destination_id),
+                        !private::get_is_noob_protected(world, sender_mother_planet_id, destination_id),
                         "Fleet: noob protection active between planet {} and {}",
                         sender_mother_planet_id,
                         destination_id
                     );
                 }
                 mission.category = MissionCategory::ATTACK;
-                let id = add_active_mission(world, sender_mother_planet_id, mission);
+                let id = private::add_active_mission(world, sender_mother_planet_id, mission);
                 let mut hostile_mission: IncomingMission = Default::default();
                 hostile_mission.origin = origin_id;
                 hostile_mission.id_at_origin = id;
@@ -187,7 +186,7 @@ mod fleetactions {
                 } else {
                     mission.destination
                 };
-                add_incoming_mission(world, target_planet, hostile_mission);
+                private::add_incoming_mission(world, target_planet, hostile_mission);
             }
             set!(world, LastActive { planet_id: sender_mother_planet_id, time: time_now });
             let cargo_capacity = fleet::get_fleet_cargo_capacity(fleet);
@@ -195,10 +194,10 @@ mod fleetactions {
                 cargo_capacity >= cargo.steel + cargo.quartz + cargo.tritium,
                 "Fleet: cargo exceeds fleet capacity"
             );
-            fleet_leave_planet(world, sender_mother_planet_id, colony_id, fleet, cargo);
+            private::fleet_leave_planet(world, sender_mother_planet_id, colony_id, fleet, cargo);
         }
 
-        fn attack_planet(ref self: ContractState, mission_id: usize) {
+        fn attack_planet(mission_id: usize) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let origin = get!(world, caller, GamePlanet).planet_id;
@@ -220,7 +219,7 @@ mod fleetactions {
             };
 
             let mut t1 = shared::get_tech_levels(world, origin);
-            let (defender_fleet, defences, t2) = get_fleet_and_defences_before_battle(
+            let (defender_fleet, defences, t2) = private::get_fleet_and_defences_before_battle(
                 world, mission.destination
             );
 
@@ -248,12 +247,12 @@ mod fleetactions {
                 }
             );
 
-            update_defender_fleet_levels_after_attack(world, mission.destination, f2);
-            update_defences_after_attack(world, mission.destination, d);
+            private::update_defender_fleet_levels_after_attack(world, mission.destination, f2);
+            private::update_defences_after_attack(world, mission.destination, d);
 
-            let loot = calculate_loot_amount(world, mission.destination, f1);
-            receive_loot(world, mission.origin, loot);
-            process_loot_payment(world, mission.destination, loot);
+            let loot = private::calculate_loot_amount(world, mission.destination, f1);
+            private::receive_loot(world, mission.origin, loot);
+            private::process_loot_payment(world, mission.destination, loot);
             if is_colony {
                 set!(
                     world,
@@ -269,17 +268,17 @@ mod fleetactions {
                     }
                 );
             }
-            fleet_return_planet(world, mission.origin, f1, Zeroable::zero());
+            private::fleet_return_planet(world, mission.origin, f1, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
 
-            remove_incoming_mission(world, mission.destination, mission_id);
+            private::remove_incoming_mission(world, mission.destination, mission_id);
 
-            let attacker_loss = calculate_fleet_loss(mission.fleet, f1);
-            let defender_loss = calculate_fleet_loss(defender_fleet, f2);
-            let defences_loss = calculate_defences_loss(defences, d);
+            let attacker_loss = private::calculate_fleet_loss(mission.fleet, f1);
+            let defender_loss = private::calculate_fleet_loss(defender_fleet, f2);
+            let defences_loss = private::calculate_defences_loss(defences, d);
 
-            update_points_after_attack(world, mission.origin, attacker_loss, Zeroable::zero());
-            update_points_after_attack(world, mission.destination, defender_loss, defences_loss);
+            private::update_points_after_attack(world, mission.origin, attacker_loss, Zeroable::zero());
+            private::update_points_after_attack(world, mission.destination, defender_loss, defences_loss);
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
             emit!(
                 world,
@@ -301,18 +300,18 @@ mod fleetactions {
             );
         }
 
-        fn recall_fleet(ref self: ContractState, mission_id: usize) {
+        fn recall_fleet(mission_id: usize) {
             let world = self.world_dispatcher.read();
             let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
             let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
             assert!(!mission.is_zero(), "Fleet: mission not found");
-            fleet_return_planet(world, mission.origin, mission.fleet, mission.cargo);
+            private::fleet_return_planet(world, mission.origin, mission.fleet, mission.cargo);
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
-            remove_incoming_mission(world, mission.destination, mission_id);
+            private::remove_incoming_mission(world, mission.destination, mission_id);
             set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
         }
 
-        fn dock_fleet(ref self: ContractState, mission_id: usize) {
+        fn dock_fleet(mission_id: usize) {
             let world = self.world_dispatcher.read();
             let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
             let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
@@ -320,12 +319,12 @@ mod fleetactions {
             assert!(
                 mission.category == MissionCategory::TRANSPORT, "Fleet: not a transport mission"
             );
-            fleet_return_planet(world, mission.destination, mission.fleet, mission.cargo);
+            private::fleet_return_planet(world, mission.destination, mission.fleet, mission.cargo);
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             set!(world, LastActive { planet_id: mission.origin, time: get_block_timestamp() });
         }
 
-        fn collect_debris(ref self: ContractState, mission_id: usize) {
+        fn collect_debris(mission_id: usize) {
             let world = self.world_dispatcher.read();
             let origin = get!(world, get_caller_address(), GamePlanet).planet_id;
             let mut mission = get!(world, (origin, mission_id), ActiveMission).mission;
@@ -367,7 +366,7 @@ mod fleetactions {
             let available = shared::get_resources_available(world, mission.origin, colony_id);
             shared::receive_resources(world, mission.origin, 0, available, collection);
 
-            fleet_return_planet(world, mission.origin, collector_fleet, Zeroable::zero());
+            private::fleet_return_planet(world, mission.origin, collector_fleet, Zeroable::zero());
             set!(world, ActiveMission { planet_id: origin, mission_id, mission: Zeroable::zero() });
             set!(world, LastActive { planet_id: mission.origin, time: time_now });
             emit!(
@@ -382,13 +381,13 @@ mod fleetactions {
         }
 
         fn simulate_attack(
-            self: @ContractState, attacker_fleet: Fleet, defender_fleet: Fleet, defences: Defences
+            attacker_fleet: Fleet, defender_fleet: Fleet, defences: Defences
         ) -> SimulationResult {
             let techs: TechLevels = Default::default();
             let (f1, f2, d) = fleet::war(attacker_fleet, techs, defender_fleet, defences, techs);
-            let attacker_loss = calculate_fleet_loss(attacker_fleet, f1);
-            let defender_loss = calculate_fleet_loss(defender_fleet, f2);
-            let defences_loss = calculate_defences_loss(defences, d);
+            let attacker_loss = private::calculate_fleet_loss(attacker_fleet, f1);
+            let defender_loss = private::calculate_fleet_loss(defender_fleet, f2);
+            let defences_loss = private::calculate_defences_loss(defences, d);
             SimulationResult {
                 attacker_carrier: attacker_loss.carrier,
                 attacker_scraper: attacker_loss.scraper,
@@ -408,7 +407,20 @@ mod fleetactions {
             }
         }
     }
+}
 
+mod private {
+    use nogame::data::types::{Fleet, Defences, Resources};
+    use nogame::libraries::shared;
+    use nogame::planet::models::{PlanetResource,PlanetResourcesSpent};
+    use nogame::colony::{actions::private as colony, models::{ColonyResource, ColonyShips}};
+    use nogame::dockyard::{library as dockyard, models::{PlanetShips}};
+    use nogame::defence::models::{PlanetDefences};
+    use nogame::fleet::{library as fleet, models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}};
+    use nogame::defence::library as defence;
+    use nogame::libraries::names::Names;
+    use nogame::data::types::{IncomingMission,Mission, TechLevels};
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
     fn update_points_after_attack(
         world: IWorldDispatcher, planet_id: u32, fleet: Fleet, defences: Defences
@@ -496,7 +508,7 @@ mod fleetactions {
         if planet_id > 500 {
             let mother_planet = planet_id / 1000;
             let colony_id: u8 = (planet_id % 1000).try_into().expect('fleet return planet fail');
-            let fleet_levels = colonyactions::get_colony_ships(world, mother_planet, colony_id);
+            let fleet_levels = colony::get_colony_ships(world, mother_planet, colony_id);
             let resources = shared::get_resources_available(world, mother_planet, colony_id);
             if cargo.steel > 0 {
                 set!(
@@ -708,7 +720,7 @@ mod fleetactions {
             let mother_planet = destination_id / 1000;
             let colony_id: u8 = (destination_id % 1000).try_into().expect('calculate loot fail');
             available = shared::get_resources_available(world, mother_planet, colony_id);
-            let compounds = colonyactions::get_colony_compounds(world, mother_planet, colony_id);
+            let compounds = colony::get_colony_compounds(world, mother_planet, colony_id);
             shared::collect(world, mother_planet, colony_id, compounds);
         } else {
             let compounds = shared::get_compound_levels(world, destination_id);
@@ -807,8 +819,8 @@ mod fleetactions {
         if planet_id > 500 {
             let colony_id = (planet_id % 1000).try_into().unwrap();
             let colony_mother_planet = planet_id / 1000;
-            fleet = colonyactions::get_colony_ships(world, colony_mother_planet, colony_id);
-            defences = colonyactions::get_colony_defences(world, colony_mother_planet, colony_id);
+            fleet = colony::get_colony_ships(world, colony_mother_planet, colony_id);
+            defences = colony::get_colony_defences(world, colony_mother_planet, colony_id);
             techs = shared::get_tech_levels(world, colony_mother_planet);
         } else {
             fleet = shared::get_ships_levels(world, planet_id);
@@ -823,7 +835,7 @@ mod fleetactions {
             let ships_levels = shared::get_ships_levels(world, planet_id);
             assert!(ships_levels >= fleet, "Fleet: not enough ships for mission");
         } else {
-            let ships_levels = colonyactions::get_colony_ships(world, planet_id, colony_id);
+            let ships_levels = colony::get_colony_ships(world, planet_id, colony_id);
             assert!(ships_levels >= fleet, "Fleet: not enough ships for mission");
         }
     }
@@ -882,7 +894,7 @@ mod fleetactions {
     ) {
         let resources = shared::get_resources_available(world, planet_id, colony_id);
         if !colony_id.is_zero() {
-            let fleet_levels = colonyactions::get_colony_ships(world, planet_id, colony_id);
+            let fleet_levels = colony::get_colony_ships(world, planet_id, colony_id);
             if cargo.steel > 0 {
                 assert!(resources.steel >= cargo.steel, "Fleet: not enough steel for mission");
                 set!(
