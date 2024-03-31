@@ -1,4 +1,6 @@
-target
+contracts/target
 
-contracts/
+contracts/abis
+
+contracts/manifests
 
