@@ -1,17 +1,17 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::colony::models::{ColonyResource, ColonyResourceTimer, ColonyPosition};
+use nogame::compound::library as compound;
+use nogame::compound::models::PlanetCompounds;
+use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
 use nogame::defence::models::PlanetDefences;
+use nogame::dockyard::models::PlanetShips;
 use nogame::game::models::GameSetup;
+use nogame::libraries::constants;
+use nogame::libraries::names::Names;
 use nogame::planet::models::{
     PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent
 };
-use nogame::compound::models::PlanetCompounds;
-use nogame::compound::library as compound;
-use nogame::dockyard::models::PlanetShips;
 use nogame::tech::models::PlanetTechs;
-use nogame::libraries::names::Names;
-use nogame::libraries::constants;
-use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
 
 fn pay_resources(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: Resources, cost: Resources

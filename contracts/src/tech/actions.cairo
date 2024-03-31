@@ -1,26 +1,27 @@
 use nogame::data::types::{TechLevels, TechUpgradeType};
 
-#[starknet::interface]
-trait ITechActions<TState> {
-    fn process_upgrade(ref self: TState, component: TechUpgradeType, quantity: u8);
+#[dojo::interface]
+trait ITechActions {
+    fn process_upgrade(component: TechUpgradeType, quantity: u8);
 }
 
 #[dojo::contract]
 mod techactions {
     use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::compound::library as compound;
+    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
     use nogame::defence::models::{PlanetDefences};
-    use nogame::libraries::names::Names;
-    use nogame::libraries::constants;
-    use nogame::libraries::shared;
     use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
+    use nogame::libraries::constants;
+    use nogame::libraries::names::Names;
+    use nogame::libraries::shared;
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
+    use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::library as tech;
+    use nogame::tech::models::{PlanetTechs};
     use starknet::{get_caller_address};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -36,15 +37,25 @@ mod techactions {
 
     #[abi(embed_v0)]
     impl TechActionsImpl of super::ITechActions<ContractState> {
-        fn process_upgrade(ref self: ContractState, component: TechUpgradeType, quantity: u8) {
+        fn process_upgrade(component: TechUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = upgrade_component(world, planet_id, component, quantity);
+            let cost = private::upgrade_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, TechSpent { planet_id, quantity, spent: cost });
         }
     }
+}
+
+mod private {
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
+    use nogame::libraries::constants;
+    use nogame::libraries::names::Names;
+    use nogame::libraries::shared;
+    use nogame::planet::models::{PlanetResource};
+    use nogame::tech::{library as tech, models::PlanetTechs};
 
     fn upgrade_component(
         world: IWorldDispatcher, planet_id: u32, component: TechUpgradeType, quantity: u8
@@ -270,25 +281,25 @@ mod techactions {
 
 #[cfg(test)]
 mod test {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::data::types::{Position, TechUpgradeType};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::data::types::{Position, TechUpgradeType};
-    use nogame::libraries::names::Names;
-    use nogame::compound::models::{PlanetCompounds};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
+    use nogame::tech::actions::{ITechActionsDispatcher, ITechActionsDispatcherTrait};
+    use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::tech::actions::{ITechActionsDispatcher, ITechActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
-    use debug::PrintTrait;
+    use starknet::testing::{set_contract_address, set_block_timestamp};
 
     #[test]
     fn test_upgrade_energy_tech_success() {

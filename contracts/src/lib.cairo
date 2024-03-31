@@ -18,8 +18,8 @@ mod defence {
 
 mod dockyard {
     mod actions;
-    mod models;
     mod library;
+    mod models;
 }
 
 mod fleet {
@@ -51,9 +51,9 @@ mod data {
 mod libraries {
     mod auction;
     mod constants;
+    mod math;
     mod names;
     mod position;
-    mod math;
     mod shared;
 }
 

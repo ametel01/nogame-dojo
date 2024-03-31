@@ -1,8 +1,8 @@
-use starknet::ContractAddress;
+use dojo::database::introspect::Introspect;
 use nogame::compound::actions::ICompoundActionsDispatcher;
 use nogame::game::actions::IGameActionsDispatcher;
 use nogame::planet::actions::IPlanetActionsDispatcher;
-use dojo::database::introspect::Introspect;
+use starknet::ContractAddress;
 
 #[derive(Model, Drop, Serde)]
 struct GameSetup {

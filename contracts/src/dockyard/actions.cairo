@@ -1,25 +1,26 @@
 use nogame::data::types::{ShipBuildType};
 
-#[starknet::interface]
-trait IDockyardActions<TState> {
-    fn process_ship_build(ref self: TState, component: ShipBuildType, quantity: u32);
+#[dojo::interface]
+trait IDockyardActions {
+    fn process_ship_build(component: ShipBuildType, quantity: u32);
 }
 
 #[dojo::contract]
 mod dockyardactions {
-    use nogame::compound::models::PlanetCompounds;
     use nogame::compound::library as compound;
-    use nogame::libraries::constants;
+    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{ShipBuildType, Resources, TechLevels, Fleet};
     use nogame::defence::models::PlanetDefences;
-    use nogame::dockyard::models::PlanetShips;
     use nogame::dockyard::library as dockyard;
+    use nogame::dockyard::models::PlanetShips;
+    use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
-    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -35,15 +36,27 @@ mod dockyardactions {
 
     #[abi(embed_v0)]
     impl DockyardActionsImpl of super::IDockyardActions<ContractState> {
-        fn process_ship_build(ref self: ContractState, component: ShipBuildType, quantity: u32) {
+        fn process_ship_build(component: ShipBuildType, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = build_component(world, planet_id, component, quantity);
+            let cost = private::build_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
     }
+}
+
+mod private {
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::library as compound;
+    use nogame::compound::models::PlanetCompounds;
+    use nogame::data::types::{Resources, ShipBuildType, TechLevels};
+    use nogame::dockyard::library as dockyard;
+    use nogame::dockyard::models::PlanetShips;
+    use nogame::libraries::names::Names;
+    use nogame::libraries::shared;
+    use nogame::tech::models::PlanetTechs;
 
     fn build_component(
         world: IWorldDispatcher, planet_id: u32, component: ShipBuildType, quantity: u32
@@ -155,26 +168,26 @@ mod dockyardactions {
 
 #[cfg(test)]
 mod test {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::{PlanetCompounds};
+    use nogame::data::types::{Position, ShipBuildType};
+    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
+    use nogame::dockyard::models::{PlanetShips};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::data::types::{Position, ShipBuildType};
-    use nogame::libraries::names::Names;
-    use nogame::compound::models::{PlanetCompounds};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
+    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
+    use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
     };
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
-    use nogame::tech::models::{PlanetTechs};
-    use nogame::dockyard::models::{PlanetShips};
-    use debug::PrintTrait;
+    use starknet::testing::{set_contract_address, set_block_timestamp};
 
     #[test]
     fn test_build_carrier_success() {

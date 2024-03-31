@@ -1,5 +1,5 @@
-use nogame::libraries::math::pow;
 use nogame::data::types::{Resources, TechLevels, TechsCost};
+use nogame::libraries::math::pow;
 
 fn get_tech_cost(current_level: u8, quantity: u8, base_cost: Resources) -> Resources {
     let mut cost: Resources = Default::default();

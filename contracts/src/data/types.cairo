@@ -1,5 +1,5 @@
-use integer::{u128_overflowing_add, u128_overflowing_sub};
 use debug::PrintTrait;
+use integer::{u128_overflowing_add, u128_overflowing_sub};
 
 #[derive(Copy, Default, Drop, Serde, PartialEq, Introspect)]
 struct CompoundsLevels {

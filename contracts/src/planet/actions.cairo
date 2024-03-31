@@ -1,31 +1,31 @@
 use nogame::data::types::Resources;
 
-#[starknet::interface]
-trait IPlanetActions<TContractState> {
-    fn generate_planet(ref self: TContractState);
-    fn get_uncollected_resources(self: @TContractState, planet_id: u32) -> Resources;
-    fn get_last_collection_time(self: @TContractState, planet_id: u32) -> u64;
+#[dojo::interface]
+trait IPlanetActions {
+    fn generate_planet();
+    fn get_uncollected_resources(planet_id: u32) -> Resources;
+    fn get_last_collection_time(planet_id: u32) -> u64;
 }
 
 
 #[dojo::contract]
 mod planetactions {
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
-    };
-    use super::IPlanetActions;
+    use nogame::compound::library as compound;
 
     use nogame::compound::models::PlanetCompounds;
-    use nogame::compound::library as compound;
     use nogame::data::types::{Position, Resources, CompoundsLevels};
     use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{
         GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
     };
+    use nogame::libraries::{names::Names, position, constants, shared};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
-    use nogame::libraries::{names::Names, position, constants, shared};
+    use starknet::{
+        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
+    };
+    use super::IPlanetActions;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -42,7 +42,7 @@ mod planetactions {
 
     #[abi(embed_v0)]
     impl PlanetActionsImpl of IPlanetActions<ContractState> {
-        fn generate_planet(ref self: ContractState) {
+        fn generate_planet() {
             // Access the world dispatcher for reading.
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
@@ -74,7 +74,7 @@ mod planetactions {
             emit!(world, PlanetGenerated { planet_id, position, account: caller, });
         }
 
-        fn get_uncollected_resources(self: @ContractState, planet_id: u32) -> Resources {
+        fn get_uncollected_resources(planet_id: u32) -> Resources {
             let world = self.world_dispatcher.read();
             let compounds = CompoundsLevels {
                 steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
@@ -89,7 +89,7 @@ mod planetactions {
             shared::calculate_production(world, planet_id, 0, compounds)
         }
 
-        fn get_last_collection_time(self: @ContractState, planet_id: u32) -> u64 {
+        fn get_last_collection_time(planet_id: u32) -> u64 {
             let world = self.world_dispatcher.read();
             get!(world, planet_id, PlanetResourceTimer).last_collection
         }
@@ -98,13 +98,14 @@ mod planetactions {
 
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
+    use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::compound::models::PlanetCompounds;
+    use nogame::data::types::{Position};
+    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::game::models::{GameSetup, GamePlanetCount,};
 
     use nogame::libraries::{constants, names::Names};
-    use nogame::data::types::{Position};
-    use nogame::compound::models::PlanetCompounds;
-    use nogame::game::models::{GameSetup, GamePlanetCount,};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -112,9 +113,8 @@ mod tests {
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY,
         PRICE
     };
+    use starknet::testing::{set_contract_address, set_block_timestamp};
     use super::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use debug::PrintTrait;
 
     #[test]
     fn test_generate_planet() {
