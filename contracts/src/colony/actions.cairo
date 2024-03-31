@@ -3,17 +3,13 @@ use nogame::data::types::{
     CompoundsLevels, Fleet, Defences
 };
 
-#[starknet::interface]
-trait IColonyActions<TState> {
-    fn generate_colony(ref self: TState);
-    fn process_compound_upgrade(
-        ref self: TState, colony_id: u8, name: CompoundUpgradeType, quantity: u8
-    );
-    fn process_ship_build(ref self: TState, colony_id: u8, name: ShipBuildType, quantity: u32,);
-    fn process_defence_build(
-        ref self: TState, colony_id: u8, name: DefenceBuildType, quantity: u32,
-    );
-    fn get_uncollected_resources(self: @TState, planet_id: u32, colony_id: u8) -> Resources;
+#[dojo::interface]
+trait IColonyActions {
+    fn generate_colony();
+    fn process_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8);
+    fn process_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32,);
+    fn process_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,);
+    fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources;
 }
 
 #[dojo::contract]
@@ -36,6 +32,7 @@ mod colonyactions {
     use nogame::libraries::shared;
     use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -72,7 +69,7 @@ mod colonyactions {
 
     #[abi(embed_v0)]
     impl ColonyActionsImpl of super::IColonyActions<ContractState> {
-        fn generate_colony(ref self: ContractState) {
+        fn generate_colony() {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
@@ -119,49 +116,57 @@ mod colonyactions {
             emit!(world, PlanetGenerated { planet_id, position, account: get_caller_address() });
         }
 
-        fn process_compound_upgrade(
-            ref self: ContractState, colony_id: u8, name: CompoundUpgradeType, quantity: u8
-        ) {
+        fn process_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = upgrade_component(world, planet_id, colony_id, name, quantity);
+            let cost = private::upgrade_component(world, planet_id, colony_id, name, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }
 
-        fn process_ship_build(
-            ref self: ContractState, colony_id: u8, name: ShipBuildType, quantity: u32
-        ) {
+        fn process_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = build_ship(world, planet_id, colony_id, name, quantity);
+            let cost = private::build_ship(world, planet_id, colony_id, name, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
 
-        fn process_defence_build(
-            ref self: ContractState, colony_id: u8, name: DefenceBuildType, quantity: u32,
-        ) {
+        fn process_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = build_defence(world, planet_id, colony_id, name, quantity);
+            let cost = private::build_defence(world, planet_id, colony_id, name, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
         }
 
-        fn get_uncollected_resources(
-            self: @ContractState, planet_id: u32, colony_id: u8
-        ) -> Resources {
+        fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources {
             let world = self.world_dispatcher.read();
             shared::calculate_production(
-                world, planet_id, colony_id, get_colony_compounds(world, planet_id, colony_id)
+                world, planet_id, colony_id, private::get_colony_compounds(world, planet_id, colony_id)
             )
         }
     }
+}
 
+mod private {
+    use nogame::colony::models::{
+        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
+        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
+    };
+    use nogame::libraries::names::Names;
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use nogame::libraries::shared;
+    use nogame::compound::library as compound;
+    use nogame::defence::library as defence;
+    use nogame::dockyard::library as dockyard;
+    use nogame::data::types::{
+        CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, CompoundsLevels, Fleet,
+        Defences
+    };
 
     fn upgrade_component(
         world: IWorldDispatcher,
