@@ -1,8 +1,8 @@
 use nogame::data::types::{ShipBuildType};
 
-#[starknet::interface]
-trait IDockyardActions<TState> {
-    fn process_ship_build(ref self: TState, component: ShipBuildType, quantity: u32);
+#[dojo::interface]
+trait IDockyardActions {
+    fn process_ship_build(component: ShipBuildType, quantity: u32);
 }
 
 #[dojo::contract]
@@ -20,6 +20,7 @@ mod dockyardactions {
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
+    use super::private;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -35,15 +36,27 @@ mod dockyardactions {
 
     #[abi(embed_v0)]
     impl DockyardActionsImpl of super::IDockyardActions<ContractState> {
-        fn process_ship_build(ref self: ContractState, component: ShipBuildType, quantity: u32) {
+        fn process_ship_build(component: ShipBuildType, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = build_component(world, planet_id, component, quantity);
+            let cost = private::build_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, FleetSpent { planet_id, quantity, spent: cost });
         }
     }
+}
+
+mod private {
+    use nogame::compound::models::PlanetCompounds;
+    use nogame::compound::library as compound;
+    use nogame::libraries::names::Names;
+    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+    use nogame::libraries::shared;
+    use nogame::data::types::{Resources, ShipBuildType, TechLevels};
+    use nogame::dockyard::library as dockyard;
+    use nogame::tech::models::PlanetTechs;
+    use nogame::dockyard::models::PlanetShips;
 
     fn build_component(
         world: IWorldDispatcher, planet_id: u32, component: ShipBuildType, quantity: u32
