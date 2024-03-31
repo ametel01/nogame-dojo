@@ -1,10 +1,10 @@
 use nogame::data::types::Resources;
 
-#[starknet::interface]
-trait IPlanetActions<TContractState> {
-    fn generate_planet(ref self: TContractState);
-    fn get_uncollected_resources(self: @TContractState, planet_id: u32) -> Resources;
-    fn get_last_collection_time(self: @TContractState, planet_id: u32) -> u64;
+#[dojo::interface]
+trait IPlanetActions {
+    fn generate_planet();
+    fn get_uncollected_resources(planet_id: u32) -> Resources;
+    fn get_last_collection_time(planet_id: u32) -> u64;
 }
 
 
@@ -42,7 +42,7 @@ mod planetactions {
 
     #[abi(embed_v0)]
     impl PlanetActionsImpl of IPlanetActions<ContractState> {
-        fn generate_planet(ref self: ContractState) {
+        fn generate_planet() {
             // Access the world dispatcher for reading.
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
@@ -74,7 +74,7 @@ mod planetactions {
             emit!(world, PlanetGenerated { planet_id, position, account: caller, });
         }
 
-        fn get_uncollected_resources(self: @ContractState, planet_id: u32) -> Resources {
+        fn get_uncollected_resources(planet_id: u32) -> Resources {
             let world = self.world_dispatcher.read();
             let compounds = CompoundsLevels {
                 steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
@@ -89,7 +89,7 @@ mod planetactions {
             shared::calculate_production(world, planet_id, 0, compounds)
         }
 
-        fn get_last_collection_time(self: @ContractState, planet_id: u32) -> u64 {
+        fn get_last_collection_time(planet_id: u32) -> u64 {
             let world = self.world_dispatcher.read();
             get!(world, planet_id, PlanetResourceTimer).last_collection
         }
