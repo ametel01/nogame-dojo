@@ -1,11 +1,5 @@
 use dojo::test_utils::{spawn_test_world};
-
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-
-use nogame::dockyard::actions::{
-    dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
-};
-use nogame::dockyard::models::{PlanetShips, planet_ships};
 use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
 use nogame::fleet::models::{
     active_mission, active_mission_len, incoming_missions, incoming_mission_len
@@ -22,7 +16,8 @@ use nogame::models::{
         colony_count, planet_colonies_count, colony_position, colony_resource,
         colony_resource_timer, colony_compounds, colony_ships, colony_defences
     },
-    defence::{PlanetDefences, planet_defences}, compound::{PlanetCompounds, planet_compounds}
+    defence::{PlanetDefences, planet_defences}, compound::{PlanetCompounds, planet_compounds},
+    dockyard::{PlanetShips, planet_ships}
 };
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
@@ -36,7 +31,8 @@ use nogame::systems::{
     compound::contract::{
         compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
     },
-    defence::contract::{defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}}
+    defence::contract::{defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}},
+    dockyard::contract::{dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}},
 };
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};

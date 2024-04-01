@@ -1,13 +1,11 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
-use nogame::dockyard::models::PlanetShips;
 use nogame::game::models::GameSetup;
-use nogame::libraries::compound;
-use nogame::libraries::constants;
-use nogame::libraries::names::Names;
-use nogame::models::colony::{ColonyResource, ColonyResourceTimer, ColonyPosition};
-use nogame::models::compound::PlanetCompounds;
-use nogame::models::defence::PlanetDefences;
+use nogame::libraries::{compound, constants, names::Names};
+use nogame::models::{
+    colony::{ColonyResource, ColonyResourceTimer, ColonyPosition}, compound::PlanetCompounds,
+    defence::PlanetDefences, dockyard::PlanetShips
+};
 use nogame::planet::models::{
     PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent
 };

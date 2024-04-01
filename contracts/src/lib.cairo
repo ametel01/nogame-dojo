@@ -14,18 +14,18 @@ mod systems {
         #[cfg(test)]
         mod tests;
     }
+    mod dockyard {
+        mod contract;
+        #[cfg(test)]
+        mod tests;
+    }
 }
 
 mod models {
     mod colony;
     mod compound;
     mod defence;
-}
-
-mod dockyard {
-    mod actions;
-    mod library;
-    mod models;
+    mod dockyard;
 }
 
 mod fleet {
@@ -61,6 +61,7 @@ mod libraries {
     mod compound;
     mod constants;
     mod defence;
+    mod dockyard;
     mod math;
     mod names;
     mod position;

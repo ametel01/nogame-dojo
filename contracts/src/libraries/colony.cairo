@@ -1,8 +1,10 @@
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use nogame::data::types::{CompoundUpgradeType, DefenceBuildType, ShipBuildType, Resources, CompoundsLevels, Defences, Fleet};
-use nogame::libraries::{names::Names, shared, compound,  defence};
+use nogame::data::types::{
+    CompoundUpgradeType, DefenceBuildType, ShipBuildType, Resources, CompoundsLevels, Defences,
+    Fleet
+};
+use nogame::libraries::{names::Names, shared, compound, defence, dockyard};
 use nogame::models::colony::{ColonyCompounds, ColonyShips, ColonyDefences};
-use nogame::dockyard::library as dockyard;
 
 fn upgrade_component(
     world: IWorldDispatcher,

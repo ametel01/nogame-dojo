@@ -25,20 +25,17 @@ mod fleetactions {
         Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
     };
-    use nogame::dockyard::library as dockyard;
-    use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::library as fleet;
     use nogame::fleet::models::{
         ActiveMissionLen, ActiveMission, IncomingMissions, IncomingMissionLen
     };
     use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::libraries::defence;
-    use nogame::libraries::shared;
-    use nogame::libraries::{constants, names::Names};
-    use nogame::models::colony::{
-        ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
-    };
+    use nogame::libraries::{constants, defence, dockyard, names::Names, shared};
     use nogame::models::defence::{PlanetDefences};
+    use nogame::models::{
+        colony::{ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition},
+        dockyard::PlanetShips
+    };
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
         PlanetResourceTimer, PlanetResource
@@ -418,14 +415,14 @@ mod private {
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use nogame::data::types::{Fleet, Defences, Resources};
     use nogame::data::types::{IncomingMission, Mission, TechLevels};
-    use nogame::dockyard::{library as dockyard, models::{PlanetShips}};
     use nogame::fleet::{
         library as fleet,
         models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}
     };
-    use nogame::libraries::{shared, colony, names::Names, defence};
-    use nogame::models::colony::{ColonyShips, ColonyResource};
-    use nogame::models::defence::{PlanetDefences};
+    use nogame::libraries::{shared, colony, dockyard, names::Names, defence};
+    use nogame::models::{
+        colony::{ColonyShips, ColonyResource}, defence::PlanetDefences, dockyard::PlanetShips
+    };
     use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
 
     fn update_points_after_attack(
@@ -1093,18 +1090,17 @@ mod test {
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
         Debris, Resources
     };
-    use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
-    use nogame::dockyard::models::{PlanetShips};
+    use nogame::systems::dockyard::contract::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
     use nogame::fleet::models::{ActiveMission, IncomingMission};
     use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::libraries::names::Names;
     use nogame::libraries::{constants};
-    use nogame::models::colony::{
+    use nogame::models::{colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
-    };
+    }, dockyard::PlanetShips};
     use nogame::models::compound::PlanetCompounds;
     use nogame::models::defence::{PlanetDefences};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};

@@ -14,9 +14,9 @@ mod colonyactions {
     use nogame::data::types::{
         Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType,
     };
-    use nogame::dockyard::library as dockyard;
     use nogame::game::models::GamePlanet;
     use nogame::libraries::colonypositions;
+    use nogame::libraries::dockyard;
     use nogame::libraries::{colony, compound, constants, defence, names::Names, shared};
     use nogame::models::colony::{
         ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
