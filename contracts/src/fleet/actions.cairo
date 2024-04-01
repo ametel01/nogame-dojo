@@ -1096,7 +1096,6 @@ mod test {
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
         Debris, Resources
     };
-    use nogame::models::defence::{PlanetDefences};
     use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};
@@ -1110,6 +1109,7 @@ mod test {
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     };
     use nogame::models::compound::PlanetCompounds;
+    use nogame::models::defence::{PlanetDefences};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField, PlanetResourcesSpent
