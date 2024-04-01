@@ -1,7 +1,13 @@
-mod colony {
-    mod actions;
-    mod models;
-    mod positions;
+mod systems {
+    mod colony {
+        mod contract;
+        #[cfg(test)]
+        mod tests;
+    }
+}
+
+mod models {
+    mod colony;
 }
 
 mod compound {
@@ -50,6 +56,7 @@ mod data {
 
 mod libraries {
     mod auction;
+    mod colonypositions;
     mod constants;
     mod math;
     mod names;

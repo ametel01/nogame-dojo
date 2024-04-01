@@ -1,15 +1,15 @@
 use dojo::test_utils::{spawn_test_world};
 
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::colony::actions::{
+use nogame::systems::colony::contract::{
     colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
 };
 
-use nogame::colony::models::{
+use nogame::models::colony::{
     ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
     ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
 };
-use nogame::colony::models::{
+use nogame::models::colony::{
     colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
     colony_resource_timer, colony_compounds, colony_ships, colony_defences
 };

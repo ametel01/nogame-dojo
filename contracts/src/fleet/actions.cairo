@@ -21,8 +21,7 @@ trait IFleetActions {
 
 #[dojo::contract]
 mod fleetactions {
-    use nogame::colony::actions::colonyactions;
-    use nogame::colony::models::{
+    use nogame::models::colony::{
         ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
     };
     use nogame::data::types::{
@@ -417,7 +416,8 @@ mod fleetactions {
 
 mod private {
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    use nogame::colony::{actions::private as colony, models::{ColonyResource, ColonyShips}};
+    use nogame::models::colony::{ColonyShips, ColonyResource};
+    use nogame::systems::colony::contract::colony;
     use nogame::data::types::{Fleet, Defences, Resources};
     use nogame::data::types::{IncomingMission, Mission, TechLevels};
     use nogame::defence::library as defence;
@@ -1092,8 +1092,8 @@ mod private {
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::colony::actions::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
-    use nogame::colony::models::{
+    use nogame::systems::colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
+    use nogame::models::colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     };

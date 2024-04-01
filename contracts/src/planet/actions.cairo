@@ -85,7 +85,6 @@ mod planetactions {
                 dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
                     .level,
             };
-            println!("time in get_uncollected_resources: {}", get_block_timestamp());
             shared::calculate_production(world, planet_id, 0, compounds)
         }
 
@@ -164,20 +163,8 @@ mod tests {
 
         starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY);
         let uncollected = actions.planet.get_uncollected_resources(1);
-        println!(
-            "steel: {}, quartz: {}, tritium: {}",
-            uncollected.steel,
-            uncollected.quartz,
-            uncollected.tritium
-        );
 
         starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY * 10);
         let uncollected = actions.planet.get_uncollected_resources(1);
-        println!(
-            "steel: {}, quartz: {}, tritium: {}",
-            uncollected.steel,
-            uncollected.quartz,
-            uncollected.tritium
-        );
     }
 }
