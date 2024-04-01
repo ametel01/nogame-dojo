@@ -21,6 +21,7 @@ use nogame::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer, planet_position,
         position_to_planet, planet_resource, planet_resource_timer
     },
+    tech::{PlanetTechs, planet_techs}
 };
 use nogame::systems::{
     colony::contract::{colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}},
@@ -36,9 +37,8 @@ use nogame::systems::{
     fleet::contract::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}},
     game::contract::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}},
     planet::contract::{planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}},
+    tech::contract::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}}
 };
-use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
-use nogame::tech::models::{PlanetTechs, planet_techs};
 use starknet::testing::set_contract_address;
 
 use starknet::{syscalls::deploy_syscall, ClassHash, ContractAddress, contract_address_const};

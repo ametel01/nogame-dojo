@@ -34,6 +34,11 @@ mod systems {
         #[cfg(test)]
         mod tests;
     }
+    mod tech {
+        mod contract;
+        #[cfg(test)]
+        mod tests;
+    }
 }
 
 mod models {
@@ -44,12 +49,7 @@ mod models {
     mod fleet;
     mod game;
     mod planet;
-}
-
-mod tech {
-    mod actions;
-    mod library;
-    mod models;
+    mod tech;
 }
 
 mod data {
@@ -69,6 +69,7 @@ mod libraries {
     mod names;
     mod position;
     mod shared;
+    mod tech;
 }
 
 mod utils {

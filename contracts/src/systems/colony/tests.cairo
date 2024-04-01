@@ -7,14 +7,13 @@ use nogame::models::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     },
-    dockyard::PlanetShips
+    dockyard::PlanetShips,tech::PlanetTechs
 };
 use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
     planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
-use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};
 use starknet::testing::{set_contract_address, set_block_timestamp};
 

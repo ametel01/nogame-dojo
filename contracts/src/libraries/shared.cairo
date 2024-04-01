@@ -4,9 +4,9 @@ use nogame::libraries::{compound, constants, names::Names};
 use nogame::models::{
     colony::{ColonyResource, ColonyResourceTimer, ColonyPosition}, compound::PlanetCompounds,
     defence::PlanetDefences, dockyard::PlanetShips, game::GameSetup,
-    planet::{PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent}
+    planet::{PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent},
+    tech::PlanetTechs
 };
-use nogame::tech::models::PlanetTechs;
 
 fn pay_resources(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: Resources, cost: Resources

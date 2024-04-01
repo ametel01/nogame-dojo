@@ -5,7 +5,8 @@ use nogame::libraries::names::Names;
 use nogame::models::{
     colony::{ColonyPosition, ColonyResource, ColonyShips}, dockyard::PlanetShips,
     fleet::ActiveMission,
-    planet::{PlanetPosition, PlanetResource, PlanetDebrisField, PlanetResourcesSpent}
+    planet::{PlanetPosition, PlanetResource, PlanetDebrisField, PlanetResourcesSpent},
+    tech::PlanetTechs
 };
 use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
@@ -14,7 +15,6 @@ use nogame::systems::{
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
     planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
-use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};
 use starknet::testing::{set_contract_address, set_block_timestamp};
 use starknet::{get_block_timestamp};
