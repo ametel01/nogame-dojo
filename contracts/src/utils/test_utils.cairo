@@ -1,10 +1,7 @@
 use dojo::test_utils::{spawn_test_world};
 
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::defence::actions::{
-    defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
-};
-use nogame::defence::models::{PlanetDefences, planet_defences};
+
 use nogame::dockyard::actions::{
     dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
 };
@@ -18,16 +15,15 @@ use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDi
 use nogame::game::models::{GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount};
 use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
 
-use nogame::models::colony::{
-    ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
-    ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
+use nogame::models::{
+    colony::{
+        ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
+        ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences, colony_owner,
+        colony_count, planet_colonies_count, colony_position, colony_resource,
+        colony_resource_timer, colony_compounds, colony_ships, colony_defences
+    },
+    defence::{PlanetDefences, planet_defences}, compound::{PlanetCompounds, planet_compounds}
 };
-use nogame::models::colony::{
-    colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
-    colony_resource_timer, colony_compounds, colony_ships, colony_defences
-};
-use nogame::models::compound::PlanetCompounds;
-use nogame::models::compound::planet_compounds;
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
@@ -35,11 +31,12 @@ use nogame::planet::models::{
     planet_position, position_to_planet, planet_resource, planet_resource_timer
 };
 use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
-use nogame::systems::colony::contract::{
-    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
-};
-use nogame::systems::compound::contract::{
-    compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
+use nogame::systems::{
+    colony::contract::{colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}},
+    compound::contract::{
+        compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
+    },
+    defence::contract::{defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}}
 };
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};

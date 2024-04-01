@@ -25,8 +25,6 @@ mod fleetactions {
         Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
     };
-    use nogame::defence::library as defence;
-    use nogame::defence::models::{PlanetDefences};
     use nogame::dockyard::library as dockyard;
     use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::library as fleet;
@@ -34,11 +32,13 @@ mod fleetactions {
         ActiveMissionLen, ActiveMission, IncomingMissions, IncomingMissionLen
     };
     use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::defence;
     use nogame::libraries::shared;
     use nogame::libraries::{constants, names::Names};
     use nogame::models::colony::{
         ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
     };
+    use nogame::models::defence::{PlanetDefences};
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
         PlanetResourceTimer, PlanetResource
@@ -418,16 +418,16 @@ mod private {
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use nogame::data::types::{Fleet, Defences, Resources};
     use nogame::data::types::{IncomingMission, Mission, TechLevels};
-    use nogame::defence::library as defence;
-    use nogame::defence::models::{PlanetDefences};
     use nogame::dockyard::{library as dockyard, models::{PlanetShips}};
     use nogame::fleet::{
         library as fleet,
         models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}
     };
+    use nogame::libraries::defence;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::models::colony::{ColonyShips, ColonyResource};
+    use nogame::models::defence::{PlanetDefences};
     use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
     use nogame::systems::colony::contract::colony;
 
@@ -1096,7 +1096,7 @@ mod test {
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
         Debris, Resources
     };
-    use nogame::defence::models::{PlanetDefences};
+    use nogame::models::defence::{PlanetDefences};
     use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::dockyard::models::{PlanetShips};
     use nogame::fleet::actions::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait};

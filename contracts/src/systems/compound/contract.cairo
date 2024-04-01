@@ -7,7 +7,7 @@ trait ICompoundActions {
 mod compoundactions {
     use nogame::data::types::{CompoundUpgradeType, Resources};
     use nogame::game::models::GamePlanet;
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::shared;
 
     #[event]
@@ -28,7 +28,7 @@ mod compoundactions {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = compounds::upgrade_component(world, planet_id, component, quantity);
+            let cost = compound::upgrade_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
         }

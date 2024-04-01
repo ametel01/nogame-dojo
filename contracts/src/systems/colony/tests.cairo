@@ -2,20 +2,17 @@
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::data::types::{Position, ShipBuildType, CompoundUpgradeType, DefenceBuildType};
+    use nogame::data::types::{ShipBuildType, CompoundUpgradeType, DefenceBuildType};
     use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::dockyard::models::{PlanetShips};
     use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup};
-    use nogame::libraries::names::Names;
-    use nogame::libraries::{constants};
+    use nogame::libraries::{names::Names, constants};
     use nogame::models::colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     };
-    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::planet::models::{PlanetPosition, PositionToPlanet,};
     use nogame::systems::colony::contract::{
         IColonyActionsDispatcher, IColonyActionsDispatcherTrait
     };

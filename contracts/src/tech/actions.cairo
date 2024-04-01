@@ -8,13 +8,13 @@ trait ITechActions {
 #[dojo::contract]
 mod techactions {
     use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
-    use nogame::defence::models::{PlanetDefences};
     use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::models::compound::PlanetCompounds;
+    use nogame::models::defence::{PlanetDefences};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::systems::compound::contract::{

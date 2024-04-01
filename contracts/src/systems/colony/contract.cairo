@@ -18,12 +18,12 @@ mod colonyactions {
         Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
         CompoundsLevels, Fleet, Defences
     };
-    use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
     use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::libraries::colonypositions;
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::constants;
+    use nogame::libraries::defence;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::models::colony::{
@@ -161,9 +161,9 @@ mod colony {
         CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, CompoundsLevels, Fleet,
         Defences
     };
-    use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
+    use nogame::libraries::defence;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::models::colony::{
@@ -184,7 +184,7 @@ mod colony {
         let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
-                cost = compounds::cost::steel(compounds.steel, quantity);
+                cost = compound::cost::steel(compounds.steel, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
                 );
@@ -200,7 +200,7 @@ mod colony {
                 );
             },
             CompoundUpgradeType::QuartzMine => {
-                cost = compounds::cost::quartz(compounds.quartz, quantity);
+                cost = compound::cost::quartz(compounds.quartz, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade quartz mine"
@@ -217,7 +217,7 @@ mod colony {
                 );
             },
             CompoundUpgradeType::TritiumMine => {
-                cost = compounds::cost::tritium(compounds.tritium, quantity);
+                cost = compound::cost::tritium(compounds.tritium, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade tritium mine"
@@ -234,7 +234,7 @@ mod colony {
                 );
             },
             CompoundUpgradeType::EnergyPlant => {
-                cost = compounds::cost::energy(compounds.energy, quantity);
+                cost = compound::cost::energy(compounds.energy, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade energy plant"
@@ -252,7 +252,7 @@ mod colony {
             },
             CompoundUpgradeType::Lab => {},
             CompoundUpgradeType::Dockyard => {
-                cost = compounds::cost::dockyard(compounds.dockyard, quantity);
+                cost = compound::cost::dockyard(compounds.dockyard, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
                 );

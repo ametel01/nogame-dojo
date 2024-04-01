@@ -11,14 +11,14 @@ trait IPlanetActions {
 #[dojo::contract]
 mod planetactions {
     use nogame::data::types::{Position, Resources, CompoundsLevels};
-    use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{
         GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
     };
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::{names::Names, position, constants, shared};
 
     use nogame::models::compound::PlanetCompounds;
+    use nogame::models::defence::PlanetDefences;
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };

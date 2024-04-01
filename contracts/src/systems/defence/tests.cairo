@@ -1,182 +1,20 @@
-use nogame::data::types::{DefenceBuildType};
-
-#[dojo::interface]
-trait IDefenceActions {
-    fn process_defence_build(component: DefenceBuildType, quantity: u32);
-}
-
-#[dojo::contract]
-mod defenceactions {
-    use nogame::data::types::{DefenceBuildType, Resources, TechLevels, Defences};
-    use nogame::defence::library as defence;
-    use nogame::defence::models::PlanetDefences;
-    use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::libraries::compounds;
-    use nogame::libraries::constants;
-    use nogame::libraries::names::Names;
-    use nogame::libraries::shared;
-    use nogame::models::compound::PlanetCompounds;
-    use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
-    use nogame::tech::models::PlanetTechs;
-    use starknet::{get_caller_address, ContractAddress};
-    use super::private;
-
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        DefenceSpent: DefenceSpent,
-    }
-    #[derive(Drop, starknet::Event)]
-    struct DefenceSpent {
-        planet_id: u32,
-        quantity: u32,
-        spent: Resources
-    }
-
-    #[abi(embed_v0)]
-    impl DefenceActionsImpl of super::IDefenceActions<ContractState> {
-        fn process_defence_build(component: DefenceBuildType, quantity: u32) {
-            let world = self.world_dispatcher.read();
-            let caller = get_caller_address();
-            let planet_id = get!(world, caller, GamePlanet).planet_id;
-            let cost = private::build_component(world, planet_id, component, quantity);
-            shared::update_planet_resources_spent(world, planet_id, cost);
-            emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
-        }
-    }
-}
-
-mod private {
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    use nogame::data::types::{DefenceBuildType, Resources};
-    use nogame::defence::{models::PlanetDefences, library as defence};
-    use nogame::libraries::names::Names;
-    use nogame::libraries::shared;
-
-    fn build_component(
-        world: IWorldDispatcher, planet_id: u32, component: DefenceBuildType, quantity: u32
-    ) -> Resources {
-        let techs = shared::get_tech_levels(world, planet_id);
-        let compounds = shared::get_compound_levels(world, planet_id);
-        let defences_levels = shared::get_defences_levels(world, planet_id);
-        shared::collect(world, planet_id, 0, compounds);
-        let available_resources = shared::get_resources_available(world, planet_id, 0);
-        match component {
-            DefenceBuildType::Celestia => {
-                let cost = defence::get_defences_cost(
-                    quantity, defence::get_defences_unit_cost().celestia
-                );
-                assert!(available_resources >= cost, "Defence: Not enough resources");
-                defence::requirements::celestia(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, 0, available_resources, cost);
-                set!(
-                    world,
-                    (
-                        PlanetDefences {
-                            planet_id,
-                            name: Names::Defence::CELESTIA,
-                            count: defences_levels.celestia + quantity
-                        },
-                    )
-                );
-                return cost;
-            },
-            DefenceBuildType::Blaster => {
-                let cost = defence::get_defences_cost(
-                    quantity, defence::get_defences_unit_cost().blaster
-                );
-                assert!(available_resources >= cost, "Defence: Not enough resources");
-                defence::requirements::blaster(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, 0, available_resources, cost);
-                set!(
-                    world,
-                    (
-                        PlanetDefences {
-                            planet_id,
-                            name: Names::Defence::BLASTER,
-                            count: defences_levels.blaster + quantity
-                        },
-                    )
-                );
-                return cost;
-            },
-            DefenceBuildType::Beam => {
-                let cost = defence::get_defences_cost(
-                    quantity, defence::get_defences_unit_cost().beam
-                );
-                assert!(available_resources >= cost, "Defence: Not enough resources");
-                defence::requirements::beam(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, 0, available_resources, cost);
-                set!(
-                    world,
-                    (
-                        PlanetDefences {
-                            planet_id,
-                            name: Names::Defence::BEAM,
-                            count: defences_levels.beam + quantity
-                        },
-                    )
-                );
-                return cost;
-            },
-            DefenceBuildType::Astral => {
-                let cost = defence::get_defences_cost(
-                    quantity, defence::get_defences_unit_cost().astral
-                );
-                assert!(available_resources >= cost, "Defence: Not enough resources");
-                defence::requirements::astral(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, 0, available_resources, cost);
-                set!(
-                    world,
-                    (
-                        PlanetDefences {
-                            planet_id,
-                            name: Names::Defence::ASTRAL,
-                            count: defences_levels.astral + quantity
-                        },
-                    )
-                );
-                return cost;
-            },
-            DefenceBuildType::Plasma => {
-                let cost = defence::get_defences_cost(
-                    quantity, defence::get_defences_unit_cost().plasma
-                );
-                assert!(available_resources >= cost, "Defence: Not enough resources");
-                defence::requirements::plasma(compounds.dockyard, techs);
-                shared::pay_resources(world, planet_id, 0, available_resources, cost);
-                set!(
-                    world,
-                    (
-                        PlanetDefences {
-                            planet_id,
-                            name: Names::Defence::PLASMA,
-                            count: defences_levels.plasma + quantity
-                        },
-                    )
-                );
-                return cost;
-            },
-        }
-    }
-}
-
 #[cfg(test)]
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
     use nogame::data::types::{Position, DefenceBuildType};
-    use nogame::defence::actions::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait};
-    use nogame::defence::models::{PlanetDefences};
     use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::models::compound::{PlanetCompounds};
+    use nogame::models::{compound::PlanetCompounds, defence::PlanetDefences};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+    };
+    use nogame::systems::defence::contract::{
+        IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait
     };
     use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{

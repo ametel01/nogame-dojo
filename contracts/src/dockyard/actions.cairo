@@ -8,11 +8,10 @@ trait IDockyardActions {
 #[dojo::contract]
 mod dockyardactions {
     use nogame::data::types::{ShipBuildType, Resources, TechLevels, Fleet};
-    use nogame::defence::models::PlanetDefences;
     use nogame::dockyard::library as dockyard;
     use nogame::dockyard::models::PlanetShips;
     use nogame::game::models::{GamePlanet, GameSetup};
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
@@ -52,7 +51,7 @@ mod private {
     use nogame::data::types::{Resources, ShipBuildType, TechLevels};
     use nogame::dockyard::library as dockyard;
     use nogame::dockyard::models::PlanetShips;
-    use nogame::libraries::compounds;
+    use nogame::libraries::compound;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
     use nogame::models::compound::PlanetCompounds;
