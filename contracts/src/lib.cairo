@@ -56,6 +56,7 @@ mod data {
 
 mod libraries {
     mod auction;
+    mod colony;
     mod colonypositions;
     mod compound;
     mod constants;

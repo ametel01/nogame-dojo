@@ -423,13 +423,10 @@ mod private {
         library as fleet,
         models::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}
     };
-    use nogame::libraries::defence;
-    use nogame::libraries::names::Names;
-    use nogame::libraries::shared;
+    use nogame::libraries::{shared, colony, names::Names, defence};
     use nogame::models::colony::{ColonyShips, ColonyResource};
     use nogame::models::defence::{PlanetDefences};
     use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
-    use nogame::systems::colony::contract::colony;
 
     fn update_points_after_attack(
         world: IWorldDispatcher, planet_id: u32, fleet: Fleet, defences: Defences
