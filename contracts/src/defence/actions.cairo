@@ -7,15 +7,15 @@ trait IDefenceActions {
 
 #[dojo::contract]
 mod defenceactions {
-    use nogame::compound::library as compound;
-    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{DefenceBuildType, Resources, TechLevels, Defences};
     use nogame::defence::library as defence;
     use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::compounds;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
@@ -165,7 +165,6 @@ mod private {
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{Position, DefenceBuildType};
     use nogame::defence::actions::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait};
     use nogame::defence::models::{PlanetDefences};
@@ -174,6 +173,7 @@ mod test {
     use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
+    use nogame::models::compound::{PlanetCompounds};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer

@@ -10,15 +10,15 @@ trait IPlanetActions {
 
 #[dojo::contract]
 mod planetactions {
-    use nogame::compound::library as compound;
-
-    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{Position, Resources, CompoundsLevels};
     use nogame::defence::models::PlanetDefences;
     use nogame::game::models::{
         GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
     };
+    use nogame::libraries::compounds;
     use nogame::libraries::{names::Names, position, constants, shared};
+
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -99,12 +99,12 @@ mod planetactions {
 mod tests {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{Position};
     use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::game::models::{GameSetup, GamePlanetCount,};
 
     use nogame::libraries::{constants, names::Names};
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -147,24 +147,5 @@ mod tests {
         assert!(
             time_start == starknet::get_block_timestamp(), "test_generate_planet: wrong time start"
         );
-    }
-
-    #[test]
-    fn test_get_uncollected_resources() {
-        let (world, actions) = setup_world();
-        actions.game.spawn(GAME_SPEED);
-
-        set_contract_address(ACCOUNT_1());
-        actions.planet.generate_planet();
-        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::STEEL, level: 10 });
-        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::QUARTZ, level: 10 });
-        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::TRITIUM, level: 10 });
-        set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::ENERGY, level: 30 });
-
-        starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY);
-        let uncollected = actions.planet.get_uncollected_resources(1);
-
-        starknet::testing::set_block_timestamp(starknet::get_block_timestamp() + DAY * 10);
-        let uncollected = actions.planet.get_uncollected_resources(1);
     }
 }

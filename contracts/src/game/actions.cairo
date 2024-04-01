@@ -8,13 +8,15 @@ trait IGameActions<TContractState> {
 // dojo decorator
 #[dojo::contract]
 mod gameactions {
-    use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
     use nogame::data::types::{Position};
     use nogame::game::models::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner};
     use nogame::libraries::{{auction::{LinearVRGDA, LinearVRGDATrait}}, names, position, constants};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+    };
+    use nogame::systems::compound::contract::{
+        ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait
     };
     use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
     use starknet::{
@@ -44,13 +46,15 @@ mod gameactions {
 #[cfg(test)]
 mod tests {
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::compound::actions::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait};
     use nogame::data::types::Position;
     use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::libraries::{constants, names};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+    };
+    use nogame::systems::compound::contract::{
+        ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait
     };
     use nogame::utils::test_utils::{setup_world, OWNER, PRICE, GAME_SPEED, ACCOUNT_1};
     use starknet::testing::set_contract_address;

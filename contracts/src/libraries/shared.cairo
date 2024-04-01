@@ -1,13 +1,13 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::models::colony::{ColonyResource, ColonyResourceTimer, ColonyPosition};
-use nogame::compound::library as compound;
-use nogame::compound::models::PlanetCompounds;
 use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
 use nogame::defence::models::PlanetDefences;
 use nogame::dockyard::models::PlanetShips;
 use nogame::game::models::GameSetup;
+use nogame::libraries::compounds;
 use nogame::libraries::constants;
 use nogame::libraries::names::Names;
+use nogame::models::colony::{ColonyResource, ColonyResourceTimer, ColonyPosition};
+use nogame::models::compound::PlanetCompounds;
 use nogame::planet::models::{
     PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent
 };
@@ -165,41 +165,41 @@ fn calculate_production(
         get!(world, (planet_id, colony_id), ColonyPosition).position
     };
 
-    let temp = compound::calculate_avg_temperature(position.orbit);
+    let temp = compounds::calculate_avg_temperature(position.orbit);
 
     let speed = get!(world, constants::GAME_ID, GameSetup).speed;
 
-    let steel_available: u128 = compound::production::steel(compounds.steel)
+    let steel_available: u128 = compounds::production::steel(compounds.steel)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let quartz_available: u128 = compound::production::quartz(compounds.quartz)
+    let quartz_available: u128 = compounds::production::quartz(compounds.quartz)
         * speed.into()
         * time_elapsed.into()
         / constants::HOUR.into();
 
-    let tritium_available: u128 = compound::production::tritium(
+    let tritium_available: u128 = compounds::production::tritium(
         compounds.tritium, temp, speed.into()
     )
         * time_elapsed.into()
         / constants::HOUR.into();
-    let energy_available = compound::production::energy(compounds.energy);
-    let celestia_production = compound::celestia_production(position.orbit);
+    let energy_available = compounds::production::energy(compounds.energy);
+    let celestia_production = compounds::celestia_production(position.orbit);
     let celestia_available = get!(world, (planet_id, Names::Defence::CELESTIA), PlanetDefences)
         .count;
-    let energy_required = compound::consumption::base(compounds.steel)
-        + compound::consumption::base(compounds.quartz)
-        + compound::consumption::base(compounds.tritium);
+    let energy_required = compounds::consumption::base(compounds.steel)
+        + compounds::consumption::base(compounds.quartz)
+        + compounds::consumption::base(compounds.tritium);
     if energy_available
         + (celestia_production.into() * celestia_available).into() < energy_required {
-        let _steel = compound::production_scaler(
+        let _steel = compounds::production_scaler(
             steel_available, energy_available, energy_required
         );
-        let _quartz = compound::production_scaler(
+        let _quartz = compounds::production_scaler(
             quartz_available, energy_available, energy_required
         );
-        let _tritium = compound::production_scaler(
+        let _tritium = compounds::production_scaler(
             tritium_available, energy_available, energy_required
         );
 

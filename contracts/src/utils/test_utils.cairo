@@ -1,23 +1,6 @@
 use dojo::test_utils::{spawn_test_world};
 
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::systems::colony::contract::{
-    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
-};
-
-use nogame::models::colony::{
-    ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
-    ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
-};
-use nogame::models::colony::{
-    colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
-    colony_resource_timer, colony_compounds, colony_ships, colony_defences
-};
-use nogame::compound::actions::{
-    compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
-};
-use nogame::compound::models::{PlanetCompounds};
-use nogame::compound::models::{planet_compounds};
 use nogame::defence::actions::{
     defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
 };
@@ -34,6 +17,17 @@ use nogame::fleet::models::{ActiveMission, ActiveMissionLen, IncomingMissions, I
 use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
 use nogame::game::models::{GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount};
 use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
+
+use nogame::models::colony::{
+    ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
+    ColonyResourceTimer, ColonyCompounds, ColonyShips, ColonyDefences
+};
+use nogame::models::colony::{
+    colony_owner, colony_count, planet_colonies_count, colony_position, colony_resource,
+    colony_resource_timer, colony_compounds, colony_ships, colony_defences
+};
+use nogame::models::compound::PlanetCompounds;
+use nogame::models::compound::planet_compounds;
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
@@ -41,6 +35,12 @@ use nogame::planet::models::{
     planet_position, position_to_planet, planet_resource, planet_resource_timer
 };
 use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
+use nogame::systems::colony::contract::{
+    colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}
+};
+use nogame::systems::compound::contract::{
+    compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
+};
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};
 use starknet::testing::set_contract_address;

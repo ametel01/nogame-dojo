@@ -21,9 +21,6 @@ trait IFleetActions {
 
 #[dojo::contract]
 mod fleetactions {
-    use nogame::models::colony::{
-        ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
-    };
     use nogame::data::types::{
         Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
@@ -39,6 +36,9 @@ mod fleetactions {
     use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::libraries::shared;
     use nogame::libraries::{constants, names::Names};
+    use nogame::models::colony::{
+        ColonyOwner, ColonyShips, ColonyResourceTimer, ColonyResource, ColonyPosition
+    };
     use nogame::planet::models::{
         PlanetPosition, PlanetResourcesSpent, PlanetDebrisField, PositionToPlanet, LastActive,
         PlanetResourceTimer, PlanetResource
@@ -416,8 +416,6 @@ mod fleetactions {
 
 mod private {
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    use nogame::models::colony::{ColonyShips, ColonyResource};
-    use nogame::systems::colony::contract::colony;
     use nogame::data::types::{Fleet, Defences, Resources};
     use nogame::data::types::{IncomingMission, Mission, TechLevels};
     use nogame::defence::library as defence;
@@ -429,7 +427,9 @@ mod private {
     };
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::colony::{ColonyShips, ColonyResource};
     use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
+    use nogame::systems::colony::contract::colony;
 
     fn update_points_after_attack(
         world: IWorldDispatcher, planet_id: u32, fleet: Fleet, defences: Defences
@@ -1092,12 +1092,6 @@ mod private {
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::systems::colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
-    use nogame::models::colony::{
-        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
-        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
-    };
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{
         MissionCategory, Position, ShipBuildType, CompoundUpgradeType, Fleet, DefenceBuildType,
         Debris, Resources
@@ -1111,9 +1105,17 @@ mod test {
     use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::libraries::names::Names;
     use nogame::libraries::{constants};
+    use nogame::models::colony::{
+        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
+    };
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetDebrisField, PlanetResourcesSpent
+    };
+    use nogame::systems::colony::contract::{
+        IColonyActionsDispatcher, IColonyActionsDispatcherTrait
     };
     use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{

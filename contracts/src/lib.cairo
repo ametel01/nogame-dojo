@@ -4,16 +4,16 @@ mod systems {
         #[cfg(test)]
         mod tests;
     }
+    mod compound {
+        mod contract;
+        #[cfg(test)]
+        mod tests;
+    }
 }
 
 mod models {
     mod colony;
-}
-
-mod compound {
-    mod actions;
-    mod library;
-    mod models;
+    mod compound;
 }
 
 mod defence {
@@ -57,6 +57,7 @@ mod data {
 mod libraries {
     mod auction;
     mod colonypositions;
+    mod compounds;
     mod constants;
     mod math;
     mod names;

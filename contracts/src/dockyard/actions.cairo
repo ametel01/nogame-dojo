@@ -7,16 +7,16 @@ trait IDockyardActions {
 
 #[dojo::contract]
 mod dockyardactions {
-    use nogame::compound::library as compound;
-    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{ShipBuildType, Resources, TechLevels, Fleet};
     use nogame::defence::models::PlanetDefences;
     use nogame::dockyard::library as dockyard;
     use nogame::dockyard::models::PlanetShips;
     use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::compounds;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::tech::models::PlanetTechs;
     use starknet::{get_caller_address, ContractAddress};
@@ -49,13 +49,13 @@ mod dockyardactions {
 
 mod private {
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::compound::library as compound;
-    use nogame::compound::models::PlanetCompounds;
     use nogame::data::types::{Resources, ShipBuildType, TechLevels};
     use nogame::dockyard::library as dockyard;
     use nogame::dockyard::models::PlanetShips;
+    use nogame::libraries::compounds;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::compound::PlanetCompounds;
     use nogame::tech::models::PlanetTechs;
 
     fn build_component(
@@ -170,7 +170,6 @@ mod private {
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{Position, ShipBuildType};
     use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::dockyard::models::{PlanetShips};
@@ -179,6 +178,7 @@ mod test {
     use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer

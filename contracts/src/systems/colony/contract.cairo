@@ -14,12 +14,6 @@ trait IColonyActions {
 
 #[dojo::contract]
 mod colonyactions {
-    use nogame::models::colony::{
-        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
-        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
-    };
-    use nogame::libraries::colonypositions;
-    use nogame::compound::library as compound;
     use nogame::data::types::{
         Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, TechLevels,
         CompoundsLevels, Fleet, Defences
@@ -27,9 +21,15 @@ mod colonyactions {
     use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
     use nogame::game::models::{GamePlanet, GameSetup};
+    use nogame::libraries::colonypositions;
+    use nogame::libraries::compounds;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::colony::{
+        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
+        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
+    };
     use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
     use super::colony;
@@ -157,19 +157,19 @@ mod colonyactions {
 
 mod colony {
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use nogame::models::colony::{
-        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
-        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
-    };
-    use nogame::compound::library as compound;
     use nogame::data::types::{
         CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType, CompoundsLevels, Fleet,
         Defences
     };
     use nogame::defence::library as defence;
     use nogame::dockyard::library as dockyard;
+    use nogame::libraries::compounds;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
+    use nogame::models::colony::{
+        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
+        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
+    };
 
     fn upgrade_component(
         world: IWorldDispatcher,
@@ -184,7 +184,7 @@ use nogame::models::colony::{
         let mut cost: Resources = Default::default();
         match component {
             CompoundUpgradeType::SteelMine => {
-                cost = compound::cost::steel(compounds.steel, quantity);
+                cost = compounds::cost::steel(compounds.steel, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
                 );
@@ -200,7 +200,7 @@ use nogame::models::colony::{
                 );
             },
             CompoundUpgradeType::QuartzMine => {
-                cost = compound::cost::quartz(compounds.quartz, quantity);
+                cost = compounds::cost::quartz(compounds.quartz, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade quartz mine"
@@ -217,7 +217,7 @@ use nogame::models::colony::{
                 );
             },
             CompoundUpgradeType::TritiumMine => {
-                cost = compound::cost::tritium(compounds.tritium, quantity);
+                cost = compounds::cost::tritium(compounds.tritium, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade tritium mine"
@@ -234,7 +234,7 @@ use nogame::models::colony::{
                 );
             },
             CompoundUpgradeType::EnergyPlant => {
-                cost = compound::cost::energy(compounds.energy, quantity);
+                cost = compounds::cost::energy(compounds.energy, quantity);
                 assert!(
                     resource_available >= cost,
                     "Colony: not enough resources to upgrade energy plant"
@@ -252,7 +252,7 @@ use nogame::models::colony::{
             },
             CompoundUpgradeType::Lab => {},
             CompoundUpgradeType::Dockyard => {
-                cost = compound::cost::dockyard(compounds.dockyard, quantity);
+                cost = compounds::cost::dockyard(compounds.dockyard, quantity);
                 assert!(
                     resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
                 );

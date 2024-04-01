@@ -1,13 +1,108 @@
-use core::integer::U256Mul;
-use integer::U8Div;
-
-use nogame::data::types::{Resources};
+use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
+use nogame::data::types::{Resources, CompoundUpgradeType};
+use nogame::libraries::{names::Names, shared};
+use nogame::models::compound::PlanetCompounds;
 use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 
 const UNI_SPEED: u128 = 1;
 
 const _1_36: u128 = 25087571940244990000;
 const _0_004: u128 = 73786976294838210;
+
+fn upgrade_component(
+    world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
+) -> Resources {
+    let compounds = shared::get_compound_levels(world, planet_id);
+    shared::collect(world, planet_id, 0, compounds);
+    let available_resources = shared::get_resources_available(world, planet_id, 0);
+    let mut cost: Resources = Default::default();
+    match component {
+        CompoundUpgradeType::SteelMine => {
+            cost = cost::steel(compounds.steel, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id, name: Names::Compound::STEEL, level: compounds.steel + quantity
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::QuartzMine => {
+            cost = cost::quartz(compounds.quartz, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id, name: Names::Compound::QUARTZ, level: compounds.quartz + quantity
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::TritiumMine => {
+            cost = cost::tritium(compounds.tritium, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id,
+                        name: Names::Compound::TRITIUM,
+                        level: compounds.tritium + quantity
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::EnergyPlant => {
+            cost = cost::energy(compounds.energy, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id, name: Names::Compound::ENERGY, level: compounds.energy + quantity
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::Lab => {
+            cost = cost::lab(compounds.lab, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id, name: Names::Compound::LAB, level: compounds.lab + quantity
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::Dockyard => {
+            cost = cost::dockyard(compounds.dockyard, quantity);
+            assert!(available_resources >= cost, "Compound: Not enough resources");
+            shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            set!(
+                world,
+                (
+                    PlanetCompounds {
+                        planet_id,
+                        name: Names::Compound::DOCKYARD,
+                        level: compounds.dockyard + quantity
+                    },
+                )
+            );
+        },
+    };
+    cost
+}
+
 
 fn production_scaler(production: u128, available: u128, required: u128) -> u128 {
     if available > required {

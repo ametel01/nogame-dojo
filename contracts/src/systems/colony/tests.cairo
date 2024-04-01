@@ -2,12 +2,6 @@
 mod test {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::systems::colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
-    use nogame::models::colony::{
-        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
-        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
-    };
-    use nogame::compound::models::{PlanetCompounds};
     use nogame::data::types::{Position, ShipBuildType, CompoundUpgradeType, DefenceBuildType};
     use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
     use nogame::dockyard::models::{PlanetShips};
@@ -15,8 +9,16 @@ mod test {
     use nogame::game::models::{GameSetup};
     use nogame::libraries::names::Names;
     use nogame::libraries::{constants};
+    use nogame::models::colony::{
+        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
+    };
+    use nogame::models::compound::PlanetCompounds;
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{PlanetPosition, PositionToPlanet,};
+    use nogame::systems::colony::contract::{
+        IColonyActionsDispatcher, IColonyActionsDispatcherTrait
+    };
     use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
