@@ -7,7 +7,7 @@ use nogame::models::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
     },
-    dockyard::PlanetShips,tech::PlanetTechs
+    dockyard::PlanetShips, tech::PlanetTechs
 };
 use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},

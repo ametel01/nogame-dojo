@@ -1,7 +1,9 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::ShipBuildType;
 use nogame::libraries::names::Names;
-use nogame::models::{compound::PlanetCompounds, dockyard::PlanetShips, planet::PlanetResource, tech::PlanetTechs};
+use nogame::models::{
+    compound::PlanetCompounds, dockyard::PlanetShips, planet::PlanetResource, tech::PlanetTechs
+};
 use nogame::systems::{
     dockyard::contract::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait},
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},

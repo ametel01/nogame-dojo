@@ -2,7 +2,9 @@ use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::DefenceBuildType;
 use nogame::libraries::{constants, names::Names};
-use nogame::models::{compound::PlanetCompounds, defence::PlanetDefences, planet::PlanetResource, tech::PlanetTechs};
+use nogame::models::{
+    compound::PlanetCompounds, defence::PlanetDefences, planet::PlanetResource, tech::PlanetTechs
+};
 use nogame::systems::{
     defence::contract::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait},
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
