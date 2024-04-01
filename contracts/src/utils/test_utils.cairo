@@ -16,15 +16,12 @@ use nogame::models::{
     game::{
         GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount, game_setup, game_planet,
         game_planet_owner, game_planet_count
-    }
+    },
+    planet::{
+        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer, planet_position,
+        position_to_planet, planet_resource, planet_resource_timer
+    },
 };
-use nogame::planet::actions::{
-    planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
-};
-use nogame::planet::models::{
-    planet_position, position_to_planet, planet_resource, planet_resource_timer
-};
-use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
 use nogame::systems::{
     colony::contract::{colonyactions, {IColonyActionsDispatcher, IColonyActionsDispatcherTrait}},
     compound::contract::{
@@ -37,7 +34,8 @@ use nogame::systems::{
         dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
     },
     fleet::contract::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}},
-    game::contract::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}}
+    game::contract::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}},
+    planet::contract::{planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}},
 };
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};

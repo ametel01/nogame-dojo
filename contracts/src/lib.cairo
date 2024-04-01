@@ -29,6 +29,11 @@ mod systems {
         #[cfg(test)]
         mod tests;
     }
+    mod planet {
+        mod contract;
+        #[cfg(test)]
+        mod tests;
+    }
 }
 
 mod models {
@@ -38,10 +43,7 @@ mod models {
     mod dockyard;
     mod fleet;
     mod game;
-}
-mod planet {
-    mod actions;
-    mod models;
+    mod planet;
 }
 
 mod tech {

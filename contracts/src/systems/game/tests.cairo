@@ -1,9 +1,9 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::libraries::constants;
+use nogame::models::game::GameSetup;
+use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED};
 use starknet::testing::set_contract_address;
-use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-use nogame::models::game::GameSetup;
 
 #[test]
 fn test_spawn() {

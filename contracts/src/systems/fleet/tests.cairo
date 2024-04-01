@@ -5,16 +5,14 @@ use nogame::libraries::names::Names;
 use nogame::models::{
     colony::{ColonyPosition, ColonyResource, ColonyShips}, dockyard::PlanetShips,
     fleet::ActiveMission,
-};
-use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-use nogame::planet::models::{
-    PlanetPosition, PlanetResource, PlanetDebrisField, PlanetResourcesSpent
+    planet::{PlanetPosition, PlanetResource, PlanetDebrisField, PlanetResourcesSpent}
 };
 use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
     dockyard::contract::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait},
     fleet::contract::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait},
-    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+    planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
 use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};

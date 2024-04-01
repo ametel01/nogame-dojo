@@ -5,9 +5,9 @@ use nogame::data::types::{
 use nogame::libraries::{shared, colony, dockyard, names::Names, defence, math};
 use nogame::models::{
     colony::{ColonyShips, ColonyResource}, defence::PlanetDefences, dockyard::PlanetShips,
-    fleet::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission}
+    fleet::{IncomingMissions, IncomingMissionLen, ActiveMissionLen, ActiveMission},
+    planet::{PlanetResource, PlanetResourcesSpent}
 };
-use nogame::planet::models::{PlanetResource, PlanetResourcesSpent};
 use nogame_fixed::f128::core::{exp, sqrt, pow};
 use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 

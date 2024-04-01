@@ -1,18 +1,15 @@
 use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::data::types::{Position, DefenceBuildType};
+use nogame::data::types::DefenceBuildType;
 use nogame::libraries::{constants, names::Names};
-use nogame::models::{compound::PlanetCompounds, defence::PlanetDefences};
-use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
+use nogame::models::{compound::PlanetCompounds, defence::PlanetDefences, planet::PlanetResource};
 use nogame::systems::{
     defence::contract::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait},
-    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+    planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
 use nogame::tech::models::{PlanetTechs};
-use nogame::utils::test_utils::{
-    setup_world,  GAME_SPEED, ACCOUNT_1
-};
+use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1};
 use starknet::testing::set_contract_address;
 
 #[test]

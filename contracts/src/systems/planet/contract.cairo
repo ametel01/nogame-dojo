@@ -1,9 +1,7 @@
-use nogame::data::types::Resources;
-
 #[dojo::interface]
 trait IPlanetActions {
     fn generate_planet();
-    fn get_uncollected_resources(planet_id: u32) -> Resources;
+    fn get_uncollected_resources(planet_id: u32) -> nogame::data::types::Resources;
     fn get_last_collection_time(planet_id: u32) -> u64;
 }
 
@@ -16,10 +14,8 @@ mod planetactions {
 
     use nogame::models::{
         compound::PlanetCompounds, defence::PlanetDefences,
-        game::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet}
-    };
-    use nogame::planet::models::{
-        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+        game::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet},
+        planet::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer}
     };
     use starknet::{
         ContractAddress, get_caller_address, get_block_timestamp, contract_address_const
@@ -94,55 +90,3 @@ mod planetactions {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use debug::PrintTrait;
-    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use nogame::data::types::{Position};
-    use nogame::libraries::{constants, names::Names};
-    use nogame::models::{compound::PlanetCompounds, game::{GameSetup, GamePlanetCount}};
-    use nogame::planet::models::{
-        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
-    };
-    use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::utils::test_utils::{
-        setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY,
-        PRICE
-    };
-    use starknet::testing::{set_contract_address, set_block_timestamp};
-    use super::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-
-    #[test]
-    fn test_generate_planet() {
-        let (world, actions) = setup_world();
-        actions.game.spawn(GAME_SPEED);
-
-        set_contract_address(ACCOUNT_1());
-        actions.planet.generate_planet();
-
-        let planet_id = get!(world, constants::GAME_ID, (GamePlanetCount)).count;
-
-        let position = get!(world, planet_id, (PlanetPosition)).position;
-        assert!(
-            position.system == 86 && position.orbit == 1,
-            "test_generate_planet: wrong planet position"
-        );
-
-        let id_from_position = get!(world, position, (PositionToPlanet)).planet_id;
-        assert!(id_from_position == planet_id, "test_generate_planet: wrong position to planet");
-
-        let steel = get!(world, (planet_id, Names::Resource::STEEL), (PlanetResource)).amount;
-        assert!(steel == 500, "test_generate_planet: wrong initial steel");
-        let qurtz = get!(world, (planet_id, Names::Resource::QUARTZ), (PlanetResource)).amount;
-        assert!(qurtz == 300, "test_generate_planet: wrong initial qurtz");
-        let tritium = get!(world, (planet_id, Names::Resource::TRITIUM), (PlanetResource)).amount;
-        assert!(tritium == 100, "test_generate_planet: wrong initial tritium");
-        let energy = get!(world, (planet_id, Names::Resource::ENERGY), (PlanetResource)).amount;
-        assert!(energy == 0, "test_generate_planet: wrong initial energy");
-
-        let time_start = get!(world, planet_id, (PlanetResourceTimer)).last_collection;
-        assert!(
-            time_start == starknet::get_block_timestamp(), "test_generate_planet: wrong time start"
-        );
-    }
-}

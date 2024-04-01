@@ -1,20 +1,14 @@
-use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::data::types::{Position, CompoundUpgradeType};
+use nogame::data::types::CompoundUpgradeType;
 use nogame::libraries::names::Names;
-
-use nogame::libraries::{constants};
-use nogame::models::compound::PlanetCompounds;
-use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
+use nogame::models::{compound::PlanetCompounds, planet::PlanetResource};
 use nogame::systems::{
     compound::contract::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait},
-    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+    planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
-use nogame::utils::test_utils::{
-    setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
-};
-use starknet::testing::{set_contract_address, set_block_timestamp};
+use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1};
+use starknet::testing::set_contract_address;
 
 #[test]
 fn test_upgrade_steel_mine_success() {

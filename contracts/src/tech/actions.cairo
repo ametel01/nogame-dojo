@@ -12,9 +12,10 @@ mod techactions {
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
-    use nogame::models::{compound::PlanetCompounds, game::{GamePlanet, GameSetup}};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
+    use nogame::models::{
+        compound::PlanetCompounds, game::{GamePlanet, GameSetup},
+        planet::{PlanetResource, PlanetResourceTimer, PlanetPosition}
+    };
     use nogame::systems::compound::contract::{
         ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait
     };
@@ -54,7 +55,7 @@ mod private {
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
-    use nogame::planet::models::{PlanetResource};
+    use nogame::models::planet::PlanetResource;
     use nogame::tech::{library as tech, models::PlanetTechs};
 
     fn upgrade_component(
@@ -286,12 +287,14 @@ mod test {
     use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::models::{compound::PlanetCompounds, game::GameSetup};
-    use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-    use nogame::planet::models::{
-        PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
+    use nogame::models::{
+        compound::PlanetCompounds, game::GameSetup,
+        planet::{PlanetPosition, PlanetResource, PlanetResourceTimer}
     };
-    use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
+    use nogame::systems::{
+        game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+        planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
+    };
     use nogame::tech::actions::{ITechActionsDispatcher, ITechActionsDispatcherTrait};
     use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{

@@ -1,12 +1,12 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::ShipBuildType;
 use nogame::libraries::names::Names;
-use nogame::models::{compound::PlanetCompounds, dockyard::PlanetShips};
-use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-use nogame::planet::models::PlanetResource;
-use nogame::systems::{dockyard::contract::{
-    IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait
-}, game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}};
+use nogame::models::{compound::PlanetCompounds, dockyard::PlanetShips, planet::PlanetResource};
+use nogame::systems::{
+    dockyard::contract::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait},
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+    planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
+};
 use nogame::tech::models::PlanetTechs;
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};
 use starknet::testing::set_contract_address;

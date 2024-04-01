@@ -3,10 +3,8 @@ use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defence
 use nogame::libraries::{compound, constants, names::Names};
 use nogame::models::{
     colony::{ColonyResource, ColonyResourceTimer, ColonyPosition}, compound::PlanetCompounds,
-    defence::PlanetDefences, dockyard::PlanetShips, game::GameSetup
-};
-use nogame::planet::models::{
-    PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent
+    defence::PlanetDefences, dockyard::PlanetShips, game::GameSetup,
+    planet::{PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent}
 };
 use nogame::tech::models::PlanetTechs;
 

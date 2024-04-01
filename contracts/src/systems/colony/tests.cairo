@@ -9,10 +9,10 @@ use nogame::models::{
     },
     dockyard::PlanetShips
 };
-use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
 use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
-    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
+    planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
 use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};

@@ -22,9 +22,8 @@ mod colonyactions {
             ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
             PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
         },
-        game::GamePlanet
+        game::GamePlanet, planet::{PositionToPlanet, PlanetPosition}
     };
-    use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
 
     #[event]

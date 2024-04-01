@@ -28,10 +28,10 @@ mod fleetactions {
     use nogame::libraries::{constants, fleet, shared};
     use nogame::models::{
         colony::{ColonyOwner, ColonyResourceTimer, ColonyPosition},
-        fleet::{ActiveMissionLen, ActiveMission}, game::{GamePlanet, GameSetup}
-    };
-    use nogame::planet::models::{
-        PlanetPosition, PlanetDebrisField, PositionToPlanet, LastActive, PlanetResourceTimer
+        fleet::{ActiveMissionLen, ActiveMission}, game::{GamePlanet, GameSetup},
+        planet::{
+            PlanetPosition, PlanetDebrisField, PositionToPlanet, LastActive, PlanetResourceTimer
+        }
     };
     use starknet::{get_caller_address, get_block_timestamp};
 
