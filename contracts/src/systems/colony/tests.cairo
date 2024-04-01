@@ -5,10 +5,13 @@ use nogame::data::types::{ShipBuildType, CompoundUpgradeType, DefenceBuildType};
 use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
 use nogame::game::models::{GameSetup};
 use nogame::libraries::{names::Names, constants};
-use nogame::models::{colony::{
-    ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
-    ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
-}, dockyard::PlanetShips};
+use nogame::models::{
+    colony::{
+        ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
+    },
+    dockyard::PlanetShips
+};
 use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
 use nogame::systems::colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
 use nogame::tech::models::{PlanetTechs};

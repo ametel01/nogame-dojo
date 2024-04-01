@@ -1,10 +1,5 @@
 use dojo::test_utils::{spawn_test_world};
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::fleet::actions::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}};
-use nogame::fleet::models::{
-    active_mission, active_mission_len, incoming_missions, incoming_mission_len
-};
-use nogame::fleet::models::{ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen};
 use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
 use nogame::game::models::{GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount};
 use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
@@ -17,7 +12,11 @@ use nogame::models::{
         colony_resource_timer, colony_compounds, colony_ships, colony_defences
     },
     defence::{PlanetDefences, planet_defences}, compound::{PlanetCompounds, planet_compounds},
-    dockyard::{PlanetShips, planet_ships}
+    dockyard::{PlanetShips, planet_ships},
+    fleet::{
+        ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen, active_mission,
+        active_mission_len, incoming_missions, incoming_mission_len
+    }
 };
 use nogame::planet::actions::{
     planetactions, {IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
@@ -31,8 +30,13 @@ use nogame::systems::{
     compound::contract::{
         compoundactions, {ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait}
     },
-    defence::contract::{defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}},
-    dockyard::contract::{dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}},
+    defence::contract::{
+        defenceactions, {IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait}
+    },
+    dockyard::contract::{
+        dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
+    },
+    fleet::contract::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}}
 };
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};
