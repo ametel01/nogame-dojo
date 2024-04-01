@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  sozo-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Dojo
+        run: |
+          rm -rf /home/runner/.config/.dojo/bin
+          curl -L https://install.dojoengine.org | bash
+          /home/runner/.config/.dojo/bin/dojoup -v v0.6.0-alpha.10 
+      
+      - name: Run Dojo Build
+        run: |
+          cd contracts && sozo build
+
+      - name: Format Check
+        uses: software-mansion/setup-scarb@v1
+        with:
+          scarb-version: "2.5.4"
+      - run: scarb fmt --check
+  
+      - name: Run Dojo Test
+        run: |
+          cd contracts && sozo test 
