@@ -1,7 +1,4 @@
 use dojo::database::introspect::Introspect;
-use nogame::game::actions::IGameActionsDispatcher;
-use nogame::planet::actions::IPlanetActionsDispatcher;
-use nogame::systems::compound::contract::ICompoundActionsDispatcher;
 use starknet::ContractAddress;
 
 #[derive(Model, Drop, Serde)]

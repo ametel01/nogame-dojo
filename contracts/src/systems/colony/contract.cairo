@@ -14,13 +14,15 @@ mod colonyactions {
     use nogame::data::types::{
         Position, CompoundUpgradeType, Resources, ShipBuildType, DefenceBuildType,
     };
-    use nogame::game::models::GamePlanet;
     use nogame::libraries::colonypositions;
     use nogame::libraries::dockyard;
     use nogame::libraries::{colony, compound, constants, defence, names::Names, shared};
-    use nogame::models::colony::{
-        ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
-        PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
+    use nogame::models::{
+        colony::{
+            ColonyCompounds, ColonyCount, ColonyResourceTimer, ColonyPosition, ColonyDefences,
+            PlanetColoniesCount, ColonyResource, ColonyShips, ColonyOwner
+        },
+        game::GamePlanet
     };
     use nogame::planet::models::{PositionToPlanet, PlanetPosition, PlanetResourcesSpent};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};

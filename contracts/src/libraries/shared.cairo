@@ -1,10 +1,9 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{Resources, Fleet, TechLevels, CompoundsLevels, Defences};
-use nogame::game::models::GameSetup;
 use nogame::libraries::{compound, constants, names::Names};
 use nogame::models::{
     colony::{ColonyResource, ColonyResourceTimer, ColonyPosition}, compound::PlanetCompounds,
-    defence::PlanetDefences, dockyard::PlanetShips
+    defence::PlanetDefences, dockyard::PlanetShips, game::GameSetup
 };
 use nogame::planet::models::{
     PlanetResource, PlanetResourceTimer, PlanetPosition, PlanetResourcesSpent

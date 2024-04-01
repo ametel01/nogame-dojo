@@ -6,9 +6,9 @@ trait IDefenceActions {
 #[dojo::contract]
 mod defenceactions {
     use nogame::data::types::{DefenceBuildType, Resources};
-    use nogame::game::models::GamePlanet;
     use nogame::libraries::defence;
     use nogame::libraries::shared;
+    use nogame::models::game::GamePlanet;
 
     #[event]
     #[derive(Drop, starknet::Event)]

@@ -1,9 +1,6 @@
 use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{ShipBuildType, CompoundUpgradeType, DefenceBuildType};
-// use nogame::dockyard::actions::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait};
-use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-use nogame::game::models::{GameSetup};
 use nogame::libraries::{names::Names, constants};
 use nogame::models::{
     colony::{
@@ -13,11 +10,12 @@ use nogame::models::{
     dockyard::PlanetShips
 };
 use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
-use nogame::systems::colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait};
-use nogame::tech::models::{PlanetTechs};
-use nogame::utils::test_utils::{
-    setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
+use nogame::systems::{
+    colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
 };
+use nogame::tech::models::{PlanetTechs};
+use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};
 use starknet::testing::{set_contract_address, set_block_timestamp};
 
 #[test]

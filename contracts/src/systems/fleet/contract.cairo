@@ -25,11 +25,10 @@ mod fleetactions {
         Fleet, Position, SimulationResult, Defences, Debris, Mission, MissionCategory, Resources,
         IncomingMission, TechLevels
     };
-    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::libraries::{constants, fleet, shared};
     use nogame::models::{
         colony::{ColonyOwner, ColonyResourceTimer, ColonyPosition},
-        fleet::{ActiveMissionLen, ActiveMission}
+        fleet::{ActiveMissionLen, ActiveMission}, game::{GamePlanet, GameSetup}
     };
     use nogame::planet::models::{
         PlanetPosition, PlanetDebrisField, PositionToPlanet, LastActive, PlanetResourceTimer

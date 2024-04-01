@@ -8,13 +8,11 @@ trait ITechActions {
 #[dojo::contract]
 mod techactions {
     use nogame::data::types::{TechLevels, TechUpgradeType, Resources};
-    use nogame::game::models::{GamePlanet, GameSetup};
     use nogame::libraries::compound;
     use nogame::libraries::constants;
     use nogame::libraries::names::Names;
     use nogame::libraries::shared;
-    use nogame::models::compound::PlanetCompounds;
-    use nogame::models::defence::{PlanetDefences};
+    use nogame::models::{compound::PlanetCompounds, game::{GamePlanet, GameSetup}};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{PlanetResource, PlanetResourceTimer, PlanetPosition};
     use nogame::systems::compound::contract::{
@@ -285,16 +283,15 @@ mod private {
 mod test {
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
     use nogame::data::types::{Position, TechUpgradeType};
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::game::models::{GameSetup, GamePlanetCount};
     use nogame::libraries::names::Names;
 
     use nogame::libraries::{constants};
-    use nogame::models::compound::{PlanetCompounds};
+    use nogame::models::{compound::PlanetCompounds, game::GameSetup};
     use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
+    use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::tech::actions::{ITechActionsDispatcher, ITechActionsDispatcherTrait};
     use nogame::tech::models::{PlanetTechs};
     use nogame::utils::test_utils::{

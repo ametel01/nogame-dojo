@@ -1,9 +1,5 @@
 use dojo::test_utils::{spawn_test_world};
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-use nogame::game::actions::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}};
-use nogame::game::models::{GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount};
-use nogame::game::models::{game_setup, game_planet, game_planet_owner, game_planet_count};
-
 use nogame::models::{
     colony::{
         ColonyOwner, ColonyCount, PlanetColoniesCount, ColonyPosition, ColonyResource,
@@ -16,6 +12,10 @@ use nogame::models::{
     fleet::{
         ActiveMission, ActiveMissionLen, IncomingMissions, IncomingMissionLen, active_mission,
         active_mission_len, incoming_missions, incoming_mission_len
+    },
+    game::{
+        GameSetup, GamePlanet, GamePlanetOwner, GamePlanetCount, game_setup, game_planet,
+        game_planet_owner, game_planet_count
     }
 };
 use nogame::planet::actions::{
@@ -36,7 +36,8 @@ use nogame::systems::{
     dockyard::contract::{
         dockyardactions, {IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait}
     },
-    fleet::contract::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}}
+    fleet::contract::{fleetactions, {IFleetActionsDispatcher, IFleetActionsDispatcherTrait}},
+    game::contract::{gameactions, {IGameActionsDispatcher, IGameActionsDispatcherTrait}}
 };
 use nogame::tech::actions::{techactions, {ITechActionsDispatcher, ITechActionsDispatcherTrait}};
 use nogame::tech::models::{PlanetTechs, planet_techs};

@@ -11,14 +11,13 @@ trait IPlanetActions {
 #[dojo::contract]
 mod planetactions {
     use nogame::data::types::{Position, Resources, CompoundsLevels};
-    use nogame::game::models::{
-        GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet
-    };
     use nogame::libraries::compound;
     use nogame::libraries::{names::Names, position, constants, shared};
 
-    use nogame::models::compound::PlanetCompounds;
-    use nogame::models::defence::PlanetDefences;
+    use nogame::models::{
+        compound::PlanetCompounds, defence::PlanetDefences,
+        game::{GameSetup, GamePlanetCount, GamePlanet, GamePlanetOwner, GameOwnerPlanet}
+    };
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
@@ -100,14 +99,12 @@ mod tests {
     use debug::PrintTrait;
     use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
     use nogame::data::types::{Position};
-    use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-    use nogame::game::models::{GameSetup, GamePlanetCount,};
-
     use nogame::libraries::{constants, names::Names};
-    use nogame::models::compound::PlanetCompounds;
+    use nogame::models::{compound::PlanetCompounds, game::{GameSetup, GamePlanetCount}};
     use nogame::planet::models::{
         PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer
     };
+    use nogame::systems::game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
     use nogame::utils::test_utils::{
         setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY,
         PRICE

@@ -1,20 +1,19 @@
 use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{Position, DefenceBuildType};
-use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-use nogame::game::models::{GameSetup, GamePlanetCount};
-use nogame::libraries::names::Names;
-
-use nogame::libraries::{constants};
+use nogame::libraries::{constants, names::Names};
 use nogame::models::{compound::PlanetCompounds, defence::PlanetDefences};
 use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
 use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
-use nogame::systems::defence::contract::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait};
+use nogame::systems::{
+    defence::contract::{IDefenceActionsDispatcher, IDefenceActionsDispatcherTrait},
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
+};
 use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{
-    setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY
+    setup_world,  GAME_SPEED, ACCOUNT_1
 };
-use starknet::testing::{set_contract_address, set_block_timestamp};
+use starknet::testing::set_contract_address;
 
 #[test]
 fn test_build_celestia_success() {

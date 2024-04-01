@@ -1,7 +1,6 @@
 use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{MissionCategory, Fleet, Debris, Resources};
-use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
 use nogame::libraries::names::Names;
 use nogame::models::{
     colony::{ColonyPosition, ColonyResource, ColonyShips}, dockyard::PlanetShips,
@@ -15,6 +14,7 @@ use nogame::systems::{
     colony::contract::{IColonyActionsDispatcher, IColonyActionsDispatcherTrait},
     dockyard::contract::{IDockyardActionsDispatcher, IDockyardActionsDispatcherTrait},
     fleet::contract::{IFleetActionsDispatcher, IFleetActionsDispatcherTrait},
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
 };
 use nogame::tech::models::{PlanetTechs};
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};

@@ -1,16 +1,15 @@
 use debug::PrintTrait;
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{Position, CompoundUpgradeType};
-use nogame::game::actions::{IGameActionsDispatcher, IGameActionsDispatcherTrait};
-use nogame::game::models::{GameSetup, GamePlanetCount};
 use nogame::libraries::names::Names;
 
 use nogame::libraries::{constants};
 use nogame::models::compound::PlanetCompounds;
 use nogame::planet::actions::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait};
 use nogame::planet::models::{PlanetPosition, PositionToPlanet, PlanetResource, PlanetResourceTimer};
-use nogame::systems::compound::contract::{
-    ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait
+use nogame::systems::{
+    compound::contract::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait},
+    game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait}
 };
 use nogame::utils::test_utils::{
     setup_world, OWNER, GAME_SPEED, ACCOUNT_1, ACCOUNT_2, ACCOUNT_3, ACCOUNT_4, ACCOUNT_5, DAY

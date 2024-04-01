@@ -6,8 +6,8 @@ trait IDockyardActions {
 #[dojo::contract]
 mod dockyardactions {
     use nogame::data::types::{ShipBuildType, Resources};
-    use nogame::game::models::GamePlanet;
     use nogame::libraries::{dockyard, shared};
+    use nogame::models::game::GamePlanet;
 
     #[event]
     #[derive(Drop, starknet::Event)]

@@ -6,9 +6,9 @@ trait ICompoundActions {
 #[dojo::contract]
 mod compoundactions {
     use nogame::data::types::{CompoundUpgradeType, Resources};
-    use nogame::game::models::GamePlanet;
     use nogame::libraries::compound;
     use nogame::libraries::shared;
+    use nogame::models::game::GamePlanet;
 
     #[event]
     #[derive(Drop, starknet::Event)]
