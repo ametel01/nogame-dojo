@@ -19,7 +19,7 @@ jobs:
       
       - name: Run Dojo Build
         run: |
-          cd contracts && sozo build
+          cd contracts && /home/runner/.config/.dojo/bin/sozo build
 
       - name: Format Check
         uses: software-mansion/setup-scarb@v1
@@ -29,4 +29,4 @@ jobs:
   
       - name: Run Dojo Test
         run: |
-          cd contracts && sozo test 
+          cd contracts && /home/runner/.config/.dojo/bin/sozo test
