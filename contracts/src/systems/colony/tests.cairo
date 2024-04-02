@@ -5,7 +5,8 @@ use nogame::libraries::{names::Names, constants};
 use nogame::models::{
     colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
-        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds, ColonyCompoundTimer
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds, ColonyCompoundTimer,
+        ColonyDockyardTimer
     },
     dockyard::PlanetShips, tech::PlanetTechs
 };
@@ -210,11 +211,35 @@ fn test_build_colony_ships() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ION, level: 2 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WARP, level: 4 });
-    actions.colony.process_ship_build(1, ShipBuildType::Carrier, 1);
-    actions.colony.process_ship_build(1, ShipBuildType::Scraper, 1);
-    actions.colony.process_ship_build(1, ShipBuildType::Sparrow, 1);
-    actions.colony.process_ship_build(1, ShipBuildType::Frigate, 1);
-    actions.colony.process_ship_build(1, ShipBuildType::Armade, 1);
+    actions.colony.start_ship_build(1, ShipBuildType::Carrier, 1);
+    let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_ship_build(1);
+
+    actions.colony.start_ship_build(1, ShipBuildType::Scraper, 1);
+    let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_ship_build(1);
+
+    actions.colony.start_ship_build(1, ShipBuildType::Sparrow, 1);
+    let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_ship_build(1);
+
+    actions.colony.start_ship_build(1, ShipBuildType::Frigate, 1);
+    let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_ship_build(1);
+
+    actions.colony.start_ship_build(1, ShipBuildType::Armade, 1);
+    let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_ship_build(1);
 
     let carrier_count = get!(world, (1, 1, Names::Fleet::CARRIER), ColonyShips).count;
     assert!(carrier_count == 1, "Colony: carrier not built correctly");

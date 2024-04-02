@@ -153,10 +153,10 @@ fn test_upgrade_cybernetics_compound_success() {
 fn test_build_time() {
     let cost = compound::cost::steel(0, 1);
     let time = shared::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
-    println!("Time: {}", time);
+    assert!(time == 54, "Time should be 54");
 
     let cost = compound::cost::quartz(0, 10);
     let time = shared::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
-    println!("Time: {}", time);
+    assert!(time == 9406, "Time should be 9406");
 }
 

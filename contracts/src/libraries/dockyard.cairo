@@ -1,30 +1,34 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::{TechLevels, ShipsCost, Resources, ShipBuildType};
-use nogame::libraries::names::Names;
 use nogame::libraries::shared;
-use nogame::models::dockyard::PlanetShips;
+use nogame::libraries::{constants, names::Names};
+use nogame::models::{dockyard::{PlanetDockyardTimer, PlanetShips}, game::GameSetup};
 
 fn build_component(
     world: IWorldDispatcher, planet_id: u32, component: ShipBuildType, quantity: u32
 ) -> Resources {
     let techs = shared::get_tech_levels(world, planet_id);
     let compounds = shared::get_compound_levels(world, planet_id);
-    let ships_levels = shared::get_ships_levels(world, planet_id);
     shared::collect(world, planet_id, 0, compounds);
     let available_resources = shared::get_resources_available(world, planet_id, 0);
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetDockyardTimer).time_end;
+    assert!(time_now >= queue_status, "Dockyard: Already building");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         ShipBuildType::Carrier => {
             let cost = get_ships_cost(quantity, get_ships_unit_cost().carrier);
             assert!(available_resources >= cost, "Dockyard: Not enough resources");
             carrier_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetShips {
-                        planet_id,
-                        name: Names::Fleet::CARRIER,
-                        count: ships_levels.carrier + quantity
+                    PlanetDockyardTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -35,13 +39,14 @@ fn build_component(
             assert!(available_resources >= cost, "Dockyard: Not enough resources");
             scraper_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetShips {
-                        planet_id,
-                        name: Names::Fleet::SCRAPER,
-                        count: ships_levels.scraper + quantity
+                    PlanetDockyardTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -52,13 +57,14 @@ fn build_component(
             assert!(available_resources >= cost, "Dockyard: Not enough resources");
             sparrow_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetShips {
-                        planet_id,
-                        name: Names::Fleet::SPARROW,
-                        count: ships_levels.sparrow + quantity
+                    PlanetDockyardTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -69,13 +75,14 @@ fn build_component(
             assert!(available_resources >= cost, "Dockyard: Not enough resources");
             frigate_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetShips {
-                        planet_id,
-                        name: Names::Fleet::FRIGATE,
-                        count: ships_levels.frigate + quantity
+                    PlanetDockyardTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -86,15 +93,118 @@ fn build_component(
             assert!(available_resources >= cost, "Dockyard: Not enough resources");
             armade_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetShips {
-                        planet_id, name: Names::Fleet::ARMADE, count: ships_levels.armade + quantity
+                    PlanetDockyardTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
             return cost;
+        },
+    }
+}
+
+fn complete_build(world: IWorldDispatcher, planet_id: u32) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetDockyardTimer);
+    assert!(!queue_status.time_end.is_zero(), "Dockyard: No upgrade in progress");
+    assert!(time_now >= queue_status.time_end, "Dockyard: Upgrade not finished");
+    let ships = shared::get_ships_levels(world, planet_id);
+    match queue_status.name {
+        ShipBuildType::Carrier => {
+            set!(
+                world,
+                (
+                    PlanetShips {
+                        planet_id,
+                        name: Names::Fleet::CARRIER,
+                        count: ships.carrier + queue_status.quantity
+                    },
+                    PlanetDockyardTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        ShipBuildType::Scraper => {
+            set!(
+                world,
+                (
+                    PlanetShips {
+                        planet_id,
+                        name: Names::Fleet::SCRAPER,
+                        count: ships.scraper + queue_status.quantity
+                    },
+                    PlanetDockyardTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        ShipBuildType::Sparrow => {
+            set!(
+                world,
+                (
+                    PlanetShips {
+                        planet_id,
+                        name: Names::Fleet::SPARROW,
+                        count: ships.sparrow + queue_status.quantity
+                    },
+                    PlanetDockyardTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        ShipBuildType::Frigate => {
+            set!(
+                world,
+                (
+                    PlanetShips {
+                        planet_id,
+                        name: Names::Fleet::FRIGATE,
+                        count: ships.frigate + queue_status.quantity
+                    },
+                    PlanetDockyardTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        ShipBuildType::Armade => {
+            set!(
+                world,
+                (
+                    PlanetShips {
+                        planet_id,
+                        name: Names::Fleet::ARMADE,
+                        count: ships.armade + queue_status.quantity
+                    },
+                    PlanetDockyardTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
         },
     }
 }

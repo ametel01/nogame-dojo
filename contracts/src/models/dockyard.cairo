@@ -1,3 +1,5 @@
+use nogame::data::types::ShipBuildType;
+
 #[derive(Model, Copy, Drop, Serde)]
 struct PlanetShips {
     #[key]
@@ -5,4 +7,13 @@ struct PlanetShips {
     #[key]
     name: u8,
     count: u32,
+}
+
+#[derive(Model, Copy, Debug, Drop, Serde)]
+struct PlanetDockyardTimer {
+    #[key]
+    planet_id: u32,
+    name: ShipBuildType,
+    quantity: u32,
+    time_end: u64,
 }

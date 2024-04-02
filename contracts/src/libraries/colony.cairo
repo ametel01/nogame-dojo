@@ -5,7 +5,10 @@ use nogame::data::types::{
 };
 use nogame::libraries::{constants, names::Names, shared, compound, defence, dockyard};
 use nogame::models::{
-    colony::{ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer}, game::GameSetup
+    colony::{
+        ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer, ColonyDockyardTimer
+    },
+    game::GameSetup
 };
 
 fn upgrade_component(
@@ -294,17 +297,135 @@ fn build_ship(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, component: ShipBuildType, quantity: u32,
 ) -> Resources {
     let compounds = get_colony_compounds(world, planet_id, colony_id);
-    let ships_levels = get_colony_ships(world, planet_id, colony_id);
     shared::collect(world, planet_id, colony_id, compounds);
     let resource_available = shared::get_resources_available(world, planet_id, colony_id);
     let techs = shared::get_tech_levels(world, planet_id);
-    let mut cost: Resources = Default::default();
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyCompoundTimer).time_end;
+    assert!(time_now >= queue_status, "Colony: Already building ship");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         ShipBuildType::Carrier => {
-            cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().carrier);
+            let cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().carrier);
             assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
             dockyard::carrier_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+        ShipBuildType::Scraper => {
+            let cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().scraper);
+            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
+            dockyard::scraper_requirements_check(compounds.dockyard, techs);
+            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+        ShipBuildType::Sparrow => {
+            let cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().sparrow);
+            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
+            dockyard::sparrow_requirements_check(compounds.dockyard, techs);
+            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+        ShipBuildType::Frigate => {
+            let cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().frigate);
+            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
+            dockyard::frigate_requirements_check(compounds.dockyard, techs);
+            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+        ShipBuildType::Armade => {
+            let cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().armade);
+            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
+            dockyard::armade_requirements_check(compounds.dockyard, techs);
+            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+    }
+}
+
+fn complete_ship_build(world: IWorldDispatcher, planet_id: u32, colony_id: u8) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyDockyardTimer);
+    assert!(!queue_status.time_end.is_zero(), "Colony: No ship building in progress");
+    assert!(time_now >= queue_status.time_end, "Colony: Ship build not finished");
+    let ships = get_colony_ships(world, planet_id, colony_id);
+    match queue_status.name {
+        ShipBuildType::Carrier => {
             set!(
                 world,
                 (
@@ -312,17 +433,19 @@ fn build_ship(
                         planet_id,
                         colony_id,
                         name: Names::Fleet::CARRIER,
-                        count: ships_levels.carrier + quantity
+                        count: ships.carrier + queue_status.quantity
+                    },
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
         ShipBuildType::Scraper => {
-            cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().scraper);
-            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
-            dockyard::scraper_requirements_check(compounds.dockyard, techs);
-            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             set!(
                 world,
                 (
@@ -330,17 +453,19 @@ fn build_ship(
                         planet_id,
                         colony_id,
                         name: Names::Fleet::SCRAPER,
-                        count: ships_levels.scraper + quantity
+                        count: ships.scraper + queue_status.quantity
+                    },
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
         ShipBuildType::Sparrow => {
-            cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().sparrow);
-            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
-            dockyard::sparrow_requirements_check(compounds.dockyard, techs);
-            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             set!(
                 world,
                 (
@@ -348,17 +473,19 @@ fn build_ship(
                         planet_id,
                         colony_id,
                         name: Names::Fleet::SPARROW,
-                        count: ships_levels.sparrow + quantity
+                        count: ships.sparrow + queue_status.quantity
+                    },
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
         ShipBuildType::Frigate => {
-            cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().frigate);
-            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
-            dockyard::frigate_requirements_check(compounds.dockyard, techs);
-            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             set!(
                 world,
                 (
@@ -366,17 +493,19 @@ fn build_ship(
                         planet_id,
                         colony_id,
                         name: Names::Fleet::FRIGATE,
-                        count: ships_levels.frigate + quantity
+                        count: ships.frigate + queue_status.quantity
+                    },
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
         ShipBuildType::Armade => {
-            cost = dockyard::get_ships_cost(quantity, dockyard::get_ships_unit_cost().armade);
-            assert!(resource_available >= cost, "Colony Dockyard: Not enough resources");
-            dockyard::armade_requirements_check(compounds.dockyard, techs);
-            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             set!(
                 world,
                 (
@@ -384,14 +513,19 @@ fn build_ship(
                         planet_id,
                         colony_id,
                         name: Names::Fleet::ARMADE,
-                        count: ships_levels.armade + quantity
+                        count: ships.armade + queue_status.quantity
+                    },
+                    ColonyDockyardTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
     }
-    cost
 }
 
 fn build_defence(

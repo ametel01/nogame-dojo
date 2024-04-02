@@ -323,7 +323,7 @@ struct ShipsCost {
     armade: Resources,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Copy, Debug, Drop, Introspect, Serde)]
 enum ShipBuildType {
     Carrier,
     Scraper,

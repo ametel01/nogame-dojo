@@ -68,7 +68,7 @@ export function createSystemCalls(
       const { transaction_hash } = await provider.execute(
         account,
         'compoundactions',
-        'process_upgrade',
+        'start_upgrade',
         [component, quantity]
       );
 
@@ -95,7 +95,7 @@ export function createSystemCalls(
       const { transaction_hash } = await provider.execute(
         account,
         'colonyactions',
-        'process_compound_upgrade',
+        'start_compound_upgrade',
         [colonyId, component, quantity]
       );
 
@@ -147,7 +147,7 @@ export function createSystemCalls(
       const { transaction_hash } = await provider.execute(
         account,
         'dockyardactions',
-        'process_ship_build',
+        'start_build',
         [component, quantity]
       );
 
@@ -174,7 +174,7 @@ export function createSystemCalls(
       const { transaction_hash } = await provider.execute(
         account,
         'colonyactions',
-        'process_ship_build',
+        'start_ship_build',
         [colonyId, component, quantity]
       );
 
