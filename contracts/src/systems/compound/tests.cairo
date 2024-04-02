@@ -1,7 +1,7 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::CompoundUpgradeType;
-use nogame::libraries::{compound, names::Names};
-use nogame::models::{compound::{PlanetCompounds , PlanetCompoundTimer}, planet::PlanetResource};
+use nogame::libraries::{compound, names::Names, shared};
+use nogame::models::{compound::{PlanetCompounds, PlanetCompoundTimer}, planet::PlanetResource};
 use nogame::systems::{
     compound::contract::{ICompoundActionsDispatcher, ICompoundActionsDispatcherTrait},
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
@@ -61,7 +61,7 @@ fn test_upgrade_tritium_compound_success() {
     actions.planet.generate_planet();
 
     actions.compound.start_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
-let queue_status = get!(world, 1, PlanetCompoundTimer);
+    let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.compound.complete_upgrade();
@@ -152,11 +152,11 @@ fn test_upgrade_cybernetics_compound_success() {
 #[test]
 fn test_build_time() {
     let cost = compound::cost::steel(0, 1);
-    let time = compound::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
+    let time = shared::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
     println!("Time: {}", time);
 
     let cost = compound::cost::quartz(0, 10);
-    let time = compound::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
+    let time = shared::build_time_is_seconds(cost.steel + cost.quartz, 1, 1);
     println!("Time: {}", time);
 }
 

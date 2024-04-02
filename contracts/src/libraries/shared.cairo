@@ -8,6 +8,11 @@ use nogame::models::{
     tech::PlanetTechs
 };
 
+fn build_time_is_seconds(cost: u128, cyber_or_dock: u8, uni_speed: usize) -> u64 {
+    let cost_u64 = cost.try_into().expect('u128 to u64 error');
+    cost_u64 * 3600 / (2500 * (cyber_or_dock + 1).into() * uni_speed.into())
+}
+
 fn pay_resources(
     world: IWorldDispatcher, planet_id: u32, colony_id: u8, available: Resources, cost: Resources
 ) {

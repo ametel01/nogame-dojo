@@ -158,7 +158,6 @@ fn test_upgrade_colony_compound() {
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-
     let steel_level = get!(world, (1, 1, Names::Compound::STEEL), ColonyCompounds).level;
     assert!(steel_level == 1, "Colony: steel mine not upgraded correctly");
 
@@ -174,7 +173,8 @@ fn test_upgrade_colony_compound() {
     let dockyard_level = get!(world, (1, 1, Names::Compound::DOCKYARD), ColonyCompounds).level;
     assert!(dockyard_level == 1, "Colony: dockyard not upgraded correctly");
 
-    let cybernetics_level = get!(world, (1, 1, Names::Compound::CYBERNETICS), ColonyCompounds).level;
+    let cybernetics_level = get!(world, (1, 1, Names::Compound::CYBERNETICS), ColonyCompounds)
+        .level;
     assert!(cybernetics_level == 1, "Colony: cybernetics not upgraded correctly");
 }
 

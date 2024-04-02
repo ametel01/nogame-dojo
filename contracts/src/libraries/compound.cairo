@@ -20,7 +20,7 @@ fn upgrade_component(
             cost = cost::steel(compounds.steel, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -39,7 +39,7 @@ fn upgrade_component(
             cost = cost::quartz(compounds.quartz, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -58,7 +58,7 @@ fn upgrade_component(
             cost = cost::tritium(compounds.tritium, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -77,7 +77,7 @@ fn upgrade_component(
             cost = cost::energy(compounds.energy, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -96,7 +96,7 @@ fn upgrade_component(
             cost = cost::lab(compounds.lab, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -115,7 +115,7 @@ fn upgrade_component(
             cost = cost::dockyard(compounds.dockyard, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -134,7 +134,7 @@ fn upgrade_component(
             cost = cost::cybernetics(compounds.cybernetics, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -360,11 +360,6 @@ fn celestia_production(orbit: u8) -> u32 {
     } else {
         return 11;
     }
-}
-
-fn build_time_is_seconds(cost: u128, cybernetics: u8, uni_speed: usize) -> u64 {
-    let cost_u64 = cost.try_into().expect('u128 to u64 error');
-    cost_u64 * 3600 / (2500 * (cybernetics + 1).into() * uni_speed.into())
 }
 
 mod cost {

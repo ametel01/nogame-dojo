@@ -4,7 +4,9 @@ use nogame::data::types::{
     Fleet
 };
 use nogame::libraries::{constants, names::Names, shared, compound, defence, dockyard};
-use nogame::models::{colony::{ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer}, game::GameSetup};
+use nogame::models::{
+    colony::{ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer}, game::GameSetup
+};
 
 fn upgrade_component(
     world: IWorldDispatcher,
@@ -28,7 +30,7 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -50,7 +52,7 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade quartz mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -72,7 +74,7 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade tritium mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -94,7 +96,7 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade energy mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -113,11 +115,9 @@ fn upgrade_component(
         CompoundUpgradeType::Lab => {},
         CompoundUpgradeType::Dockyard => {
             cost = compound::cost::dockyard(compounds.dockyard, quantity);
-            assert!(
-                resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
-            );
+            assert!(resource_available >= cost, "Colony: not enough resources to upgrade dockyard");
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
@@ -139,7 +139,7 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade cybernetics"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
-            let built_time = compound::build_time_is_seconds(
+            let built_time = shared::build_time_is_seconds(
                 cost.steel + cost.quartz, compounds.cybernetics, game_speed
             );
             set!(
