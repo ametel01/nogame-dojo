@@ -1,4 +1,4 @@
-use nogame::data::types::Position;
+use nogame::data::types::{CompoundUpgradeType, Position};
 
 #[derive(Model, Copy, Drop, Serde)]
 struct ColonyOwner {
@@ -59,6 +59,17 @@ struct ColonyCompounds {
     #[key]
     name: u8,
     level: u8,
+}
+
+#[derive(Model, Copy, Debug, Drop, Serde)]
+struct ColonyCompoundTimer {
+    #[key]
+    planet_id: u32,
+    #[key]
+    colony_id: u8,
+    name: CompoundUpgradeType,
+    levels: u8,
+    time_end: u64,
 }
 
 #[derive(Model, Copy, Drop, Serde)]

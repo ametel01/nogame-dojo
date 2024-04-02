@@ -3,8 +3,8 @@ use nogame::data::types::{
     CompoundUpgradeType, DefenceBuildType, ShipBuildType, Resources, CompoundsLevels, Defences,
     Fleet
 };
-use nogame::libraries::{names::Names, shared, compound, defence, dockyard};
-use nogame::models::colony::{ColonyCompounds, ColonyShips, ColonyDefences};
+use nogame::libraries::{constants, names::Names, shared, compound, defence, dockyard};
+use nogame::models::{colony::{ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer}, game::GameSetup};
 
 fn upgrade_component(
     world: IWorldDispatcher,
@@ -17,6 +17,10 @@ fn upgrade_component(
     shared::collect(world, planet_id, colony_id, compounds);
     let resource_available = shared::get_resources_available(world, planet_id, colony_id);
     let mut cost: Resources = Default::default();
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyCompoundTimer).time_end;
+    assert!(time_now >= queue_status, "Colony: Already building compound");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         CompoundUpgradeType::SteelMine => {
             cost = compound::cost::steel(compounds.steel, quantity);
@@ -24,14 +28,20 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade steel mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
-                ColonyCompounds {
-                    planet_id,
-                    colony_id,
-                    name: Names::Compound::STEEL,
-                    level: compounds.steel + quantity
-                }
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
             );
         },
         CompoundUpgradeType::QuartzMine => {
@@ -40,14 +50,20 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade quartz mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
-                ColonyCompounds {
-                    planet_id,
-                    colony_id,
-                    name: Names::Compound::QUARTZ,
-                    level: compounds.quartz + quantity
-                }
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
             );
         },
         CompoundUpgradeType::TritiumMine => {
@@ -56,49 +72,222 @@ fn upgrade_component(
                 resource_available >= cost, "Colony: not enough resources to upgrade tritium mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
-                ColonyCompounds {
-                    planet_id,
-                    colony_id,
-                    name: Names::Compound::TRITIUM,
-                    level: compounds.tritium + quantity
-                }
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
             );
         },
         CompoundUpgradeType::EnergyPlant => {
             cost = compound::cost::energy(compounds.energy, quantity);
             assert!(
-                resource_available >= cost, "Colony: not enough resources to upgrade energy plant"
+                resource_available >= cost, "Colony: not enough resources to upgrade energy mine"
             );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
-                ColonyCompounds {
-                    planet_id,
-                    colony_id,
-                    name: Names::Compound::ENERGY,
-                    level: compounds.energy + quantity
-                }
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
             );
         },
         CompoundUpgradeType::Lab => {},
         CompoundUpgradeType::Dockyard => {
             cost = compound::cost::dockyard(compounds.dockyard, quantity);
-            assert!(resource_available >= cost, "Colony: not enough resources to upgrade dockyard");
+            assert!(
+                resource_available >= cost, "Colony: not enough resources to upgrade dockyard"
+            );
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
-                ColonyCompounds {
-                    planet_id,
-                    colony_id,
-                    name: Names::Compound::DOCKYARD,
-                    level: compounds.dockyard + quantity
-                }
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::Cybernetics => {
+            cost = compound::cost::cybernetics(compounds.cybernetics, quantity);
+            assert!(
+                resource_available >= cost, "Colony: not enough resources to upgrade cybernetics"
+            );
+            shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = compound::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
+                    },
+                )
             );
         },
     }
     cost
+}
+
+fn complete_upgrade(world: IWorldDispatcher, planet_id: u32, colony_id: u8) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyCompoundTimer);
+    assert!(!queue_status.time_end.is_zero(), "Colony: No compound upgrade in progress");
+    assert!(time_now >= queue_status.time_end, "Colony: Compound upgrade not finished");
+    let compounds = get_colony_compounds(world, planet_id, colony_id);
+    match queue_status.name {
+        CompoundUpgradeType::SteelMine => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::STEEL,
+                        level: compounds.steel + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::QuartzMine => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::QUARTZ,
+                        level: compounds.quartz + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::TritiumMine => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::TRITIUM,
+                        level: compounds.tritium + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::EnergyPlant => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::ENERGY,
+                        level: compounds.energy + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::Lab => {},
+        CompoundUpgradeType::Dockyard => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::DOCKYARD,
+                        level: compounds.dockyard + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        CompoundUpgradeType::Cybernetics => {
+            set!(
+                world,
+                (
+                    ColonyCompounds {
+                        planet_id,
+                        colony_id,
+                        name: Names::Compound::CYBERNETICS,
+                        level: compounds.cybernetics + queue_status.levels
+                    },
+                    ColonyCompoundTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+    }
 }
 
 fn build_ship(
@@ -323,6 +512,10 @@ fn get_colony_compounds(world: IWorldDispatcher, planet_id: u32, colony_id: u8) 
         energy: get!(world, (planet_id, colony_id, Names::Compound::ENERGY), ColonyCompounds).level,
         lab: 0,
         dockyard: get!(world, (planet_id, colony_id, Names::Compound::DOCKYARD), ColonyCompounds)
+            .level,
+        cybernetics: get!(
+            world, (planet_id, colony_id, Names::Compound::CYBERNETICS), ColonyCompounds
+        )
             .level,
     }
 }

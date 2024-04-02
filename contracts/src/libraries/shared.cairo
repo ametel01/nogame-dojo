@@ -240,7 +240,8 @@ fn get_compound_levels(world: IWorldDispatcher, planet_id: u32) -> CompoundsLeve
         tritium: get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level,
         energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
         lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
-        dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level
+        dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds).level,
+        cybernetics: get!(world, (planet_id, Names::Compound::CYBERNETICS), PlanetCompounds).level,
     }
 }
 

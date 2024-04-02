@@ -13,6 +13,7 @@ mod Names {
         const ENERGY: u8 = 4;
         const LAB: u8 = 5;
         const DOCKYARD: u8 = 6;
+        const CYBERNETICS: u8 = 7;
     }
 
     mod Tech {

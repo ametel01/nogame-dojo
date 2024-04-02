@@ -5,7 +5,7 @@ use nogame::libraries::{names::Names, constants};
 use nogame::models::{
     colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
-        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds
+        ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds, ColonyCompoundTimer
     },
     dockyard::PlanetShips, tech::PlanetTechs
 };
@@ -15,7 +15,7 @@ use nogame::systems::{
     planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait}
 };
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1, ACCOUNT_2};
-use starknet::testing::{set_contract_address, set_block_timestamp};
+use starknet::{get_block_timestamp, testing::{set_contract_address, set_block_timestamp}};
 
 #[test]
 fn test_generate_colony() {
@@ -122,11 +122,42 @@ fn test_upgrade_colony_compound() {
         ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 10000 }
     );
 
-    actions.colony.process_compound_upgrade(1, CompoundUpgradeType::SteelMine, 1);
-    actions.colony.process_compound_upgrade(1, CompoundUpgradeType::QuartzMine, 1);
-    actions.colony.process_compound_upgrade(1, CompoundUpgradeType::TritiumMine, 1);
-    actions.colony.process_compound_upgrade(1, CompoundUpgradeType::EnergyPlant, 1);
-    actions.colony.process_compound_upgrade(1, CompoundUpgradeType::Dockyard, 1);
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::SteelMine, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::QuartzMine, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::TritiumMine, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::EnergyPlant, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::Dockyard, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
+    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::Cybernetics, 1);
+    let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_compound_upgrade(1);
+
 
     let steel_level = get!(world, (1, 1, Names::Compound::STEEL), ColonyCompounds).level;
     assert!(steel_level == 1, "Colony: steel mine not upgraded correctly");
@@ -142,6 +173,9 @@ fn test_upgrade_colony_compound() {
 
     let dockyard_level = get!(world, (1, 1, Names::Compound::DOCKYARD), ColonyCompounds).level;
     assert!(dockyard_level == 1, "Colony: dockyard not upgraded correctly");
+
+    let cybernetics_level = get!(world, (1, 1, Names::Compound::CYBERNETICS), ColonyCompounds).level;
+    assert!(cybernetics_level == 1, "Colony: cybernetics not upgraded correctly");
 }
 
 #[test]

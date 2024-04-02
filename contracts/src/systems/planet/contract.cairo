@@ -71,15 +71,7 @@ mod planetactions {
 
         fn get_uncollected_resources(planet_id: u32) -> Resources {
             let world = self.world_dispatcher.read();
-            let compounds = CompoundsLevels {
-                steel: get!(world, (planet_id, Names::Compound::STEEL), PlanetCompounds).level,
-                quartz: get!(world, (planet_id, Names::Compound::QUARTZ), PlanetCompounds).level,
-                tritium: get!(world, (planet_id, Names::Compound::TRITIUM), PlanetCompounds).level,
-                energy: get!(world, (planet_id, Names::Compound::ENERGY), PlanetCompounds).level,
-                lab: get!(world, (planet_id, Names::Compound::LAB), PlanetCompounds).level,
-                dockyard: get!(world, (planet_id, Names::Compound::DOCKYARD), PlanetCompounds)
-                    .level,
-            };
+            let compounds = shared::get_compound_levels(world, planet_id);
             shared::calculate_production(world, planet_id, 0, compounds)
         }
 

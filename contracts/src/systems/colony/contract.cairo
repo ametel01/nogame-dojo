@@ -3,7 +3,8 @@ use nogame::data::types::{CompoundUpgradeType, Resources, ShipBuildType, Defence
 #[dojo::interface]
 trait IColonyActions {
     fn generate_colony();
-    fn process_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8);
+    fn start_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8);
+    fn complete_compound_upgrade(colony_id: u8);
     fn process_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32,);
     fn process_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,);
     fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources;
@@ -108,13 +109,20 @@ mod colonyactions {
             emit!(world, PlanetGenerated { planet_id, position, account: get_caller_address() });
         }
 
-        fn process_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8) {
+        fn start_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = colony::upgrade_component(world, planet_id, colony_id, name, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, CompoundSpent { planet_id, quantity, spent: cost });
+        }
+
+        fn complete_compound_upgrade(colony_id: u8) {
+            let world = self.world_dispatcher.read();
+            let caller = starknet::get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            colony::complete_upgrade(world, planet_id, colony_id);
         }
 
         fn process_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32) {

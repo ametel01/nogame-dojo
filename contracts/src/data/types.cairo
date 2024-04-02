@@ -9,6 +9,7 @@ struct CompoundsLevels {
     energy: u8,
     lab: u8,
     dockyard: u8,
+    cybernetics: u8,
 }
 
 #[derive(Copy, Drop, Serde, Introspect)]
@@ -250,7 +251,7 @@ impl IncomingMissionZeroable of Zeroable<IncomingMission> {
     }
 }
 
-#[derive(Drop, Serde)]
+#[derive(Copy, Debug, Drop, Introspect, Serde)]
 enum CompoundUpgradeType {
     SteelMine,
     QuartzMine,
@@ -258,6 +259,7 @@ enum CompoundUpgradeType {
     EnergyPlant,
     Lab,
     Dockyard,
+    Cybernetics,
 }
 
 #[derive(Copy, Default, Drop, Serde)]
@@ -416,6 +418,7 @@ enum ColonyUpgradeType {
     TritiumMine,
     EnergyPlant,
     Dockyard,
+    Cybernetics,
 }
 
 mod MissionCategory {
