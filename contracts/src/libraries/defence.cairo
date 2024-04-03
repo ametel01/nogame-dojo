@@ -1,7 +1,7 @@
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use nogame::data::types::{Resources, TechLevels, DefencesCost, DefenceBuildType};
-use nogame::libraries::{names::Names, shared};
-use nogame::models::defence::PlanetDefences;
+use nogame::libraries::{constants, names::Names, shared};
+use nogame::models::{defence::{PlanetDefences, PlanetDefenceTimer}, game::GameSetup};
 
 
 fn build_component(
@@ -9,22 +9,26 @@ fn build_component(
 ) -> Resources {
     let techs = shared::get_tech_levels(world, planet_id);
     let compounds = shared::get_compound_levels(world, planet_id);
-    let defences_levels = shared::get_defences_levels(world, planet_id);
     shared::collect(world, planet_id, 0, compounds);
     let available_resources = shared::get_resources_available(world, planet_id, 0);
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetDefenceTimer).time_end;
+    assert!(time_now >= queue_status, "PlanetDefenceTimer: Already building");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         DefenceBuildType::Celestia => {
             let cost = get_defences_cost(quantity, get_defences_unit_cost().celestia);
             assert!(available_resources >= cost, "Defence: Not enough resources");
             requirements::celestia(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetDefences {
-                        planet_id,
-                        name: Names::Defence::CELESTIA,
-                        count: defences_levels.celestia + quantity
+                    PlanetDefenceTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -35,13 +39,14 @@ fn build_component(
             assert!(available_resources >= cost, "Defence: Not enough resources");
             requirements::blaster(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetDefences {
-                        planet_id,
-                        name: Names::Defence::BLASTER,
-                        count: defences_levels.blaster + quantity
+                    PlanetDefenceTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -52,13 +57,14 @@ fn build_component(
             assert!(available_resources >= cost, "Defence: Not enough resources");
             requirements::beam(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetDefences {
-                        planet_id,
-                        name: Names::Defence::BEAM,
-                        count: defences_levels.beam + quantity
+                    PlanetDefenceTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -69,13 +75,14 @@ fn build_component(
             assert!(available_resources >= cost, "Defence: Not enough resources");
             requirements::astral(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetDefences {
-                        planet_id,
-                        name: Names::Defence::ASTRAL,
-                        count: defences_levels.astral + quantity
+                    PlanetDefenceTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
                     },
                 )
             );
@@ -86,17 +93,118 @@ fn build_component(
             assert!(available_resources >= cost, "Defence: Not enough resources");
             requirements::plasma(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
+            set!(
+                world,
+                (
+                    PlanetDefenceTimer {
+                        planet_id, name: component, quantity, time_end: time_now + built_time
+                    },
+                )
+            );
+            return cost;
+        },
+    }
+}
+
+fn complete_build(world: IWorldDispatcher, planet_id: u32) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetDefenceTimer);
+    assert!(!queue_status.time_end.is_zero(), "Defence: No builds in progress");
+    assert!(time_now >= queue_status.time_end, "Defence: Build process not finished");
+    let defences = shared::get_defences_levels(world, planet_id);
+    match queue_status.name {
+        DefenceBuildType::Celestia => {
+            set!(
+                world,
+                (
+                    PlanetDefences {
+                        planet_id,
+                        name: Names::Defence::CELESTIA,
+                        count: defences.celestia + queue_status.quantity
+                    },
+                    PlanetDefenceTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Blaster => {
+            set!(
+                world,
+                (
+                    PlanetDefences {
+                        planet_id,
+                        name: Names::Defence::BLASTER,
+                        count: defences.blaster + queue_status.quantity
+                    },
+                    PlanetDefenceTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Beam => {
+            set!(
+                world,
+                (
+                    PlanetDefences {
+                        planet_id,
+                        name: Names::Defence::BEAM,
+                        count: defences.beam + queue_status.quantity
+                    },
+                    PlanetDefenceTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Astral => {
+            set!(
+                world,
+                (
+                    PlanetDefences {
+                        planet_id,
+                        name: Names::Defence::ASTRAL,
+                        count: defences.astral + queue_status.quantity
+                    },
+                    PlanetDefenceTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Plasma => {
             set!(
                 world,
                 (
                     PlanetDefences {
                         planet_id,
                         name: Names::Defence::PLASMA,
-                        count: defences_levels.plasma + quantity
+                        count: defences.plasma + queue_status.quantity
+                    },
+                    PlanetDefenceTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
                     },
                 )
             );
-            return cost;
         },
     }
 }

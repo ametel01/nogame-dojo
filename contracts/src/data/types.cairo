@@ -331,7 +331,7 @@ enum ShipBuildType {
     Frigate,
     Armade,
 }
-#[derive(Drop, Serde)]
+#[derive(Copy, Debug, Drop, Introspect, Serde)]
 enum DefenceBuildType {
     Celestia,
     Blaster,

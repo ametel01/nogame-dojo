@@ -1,6 +1,7 @@
 #[dojo::interface]
 trait IDefenceActions {
-    fn process_defence_build(component: nogame::data::types::DefenceBuildType, quantity: u32);
+    fn start_build(component: nogame::data::types::DefenceBuildType, quantity: u32);
+    fn complete_build();
 }
 
 #[dojo::contract]
@@ -24,13 +25,20 @@ mod defenceactions {
 
     #[abi(embed_v0)]
     impl DefenceActionsImpl of super::IDefenceActions<ContractState> {
-        fn process_defence_build(component: DefenceBuildType, quantity: u32) {
+        fn start_build(component: DefenceBuildType, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = defence::build_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
+        }
+
+        fn complete_build() {
+            let world = self.world_dispatcher.read();
+            let caller = starknet::get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            defence::complete_build(world, planet_id);
         }
     }
 }
