@@ -1,4 +1,4 @@
-use nogame::data::types::{CompoundUpgradeType, ShipBuildType, Position};
+use nogame::data::types::{CompoundUpgradeType, ShipBuildType, Position, DefenceBuildType};
 
 #[derive(Model, Copy, Drop, Serde)]
 struct ColonyOwner {
@@ -103,4 +103,15 @@ struct ColonyDefences {
     #[key]
     name: u8,
     count: u32,
+}
+
+#[derive(Model, Copy, Debug, Drop, Serde)]
+struct ColonyDefenceTimer {
+    #[key]
+    planet_id: u32,
+    #[key]
+    colony_id: u8,
+    name: DefenceBuildType,
+    quantity: u32,
+    time_end: u64,
 }

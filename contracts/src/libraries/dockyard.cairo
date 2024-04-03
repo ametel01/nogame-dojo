@@ -22,7 +22,7 @@ fn build_component(
             carrier_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -40,7 +40,7 @@ fn build_component(
             scraper_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -58,7 +58,7 @@ fn build_component(
             sparrow_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -76,7 +76,7 @@ fn build_component(
             frigate_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -94,7 +94,7 @@ fn build_component(
             armade_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,

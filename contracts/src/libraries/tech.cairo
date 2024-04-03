@@ -23,8 +23,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::energy(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -43,8 +43,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::digital(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -63,8 +63,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::beam(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -83,8 +83,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::armour(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -103,8 +103,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::ion(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -123,8 +123,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::plasma(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -143,8 +143,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::weapons(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -163,8 +163,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::shield(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -183,8 +183,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::spacetime(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -203,8 +203,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::combustion(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -223,8 +223,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::thrust(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -243,8 +243,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::warp(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,
@@ -263,8 +263,8 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::exocraft(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            let built_time = shared::tech_up_time_is_seconds(
+                cost.steel + cost.quartz, compounds.lab, game_speed
             );
             set!(
                 world,

@@ -6,7 +6,8 @@ use nogame::data::types::{
 use nogame::libraries::{constants, names::Names, shared, compound, defence, dockyard};
 use nogame::models::{
     colony::{
-        ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer, ColonyDockyardTimer
+        ColonyCompounds, ColonyShips, ColonyDefences, ColonyCompoundTimer, ColonyDockyardTimer,
+        ColonyDefenceTimer
     },
     game::GameSetup
 };
@@ -301,7 +302,7 @@ fn build_ship(
     let resource_available = shared::get_resources_available(world, planet_id, colony_id);
     let techs = shared::get_tech_levels(world, planet_id);
     let time_now = starknet::get_block_timestamp();
-    let queue_status = get!(world, (planet_id, colony_id), ColonyCompoundTimer).time_end;
+    let queue_status = get!(world, (planet_id, colony_id), ColonyDockyardTimer).time_end;
     assert!(time_now >= queue_status, "Colony: Already building ship");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
@@ -311,7 +312,7 @@ fn build_ship(
             dockyard::carrier_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -333,7 +334,7 @@ fn build_ship(
             dockyard::scraper_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -355,7 +356,7 @@ fn build_ship(
             dockyard::sparrow_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -377,7 +378,7 @@ fn build_ship(
             dockyard::frigate_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -399,7 +400,7 @@ fn build_ship(
             dockyard::armade_requirements_check(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
             let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
             );
             set!(
                 world,
@@ -536,26 +537,33 @@ fn build_defence(
     quantity: u32,
 ) -> Resources {
     let compounds = get_colony_compounds(world, planet_id, colony_id);
-    let defences_levels = get_colony_defences(world, planet_id, colony_id);
     let costs = defence::get_defences_unit_cost();
     shared::collect(world, planet_id, colony_id, compounds);
     let resource_available = shared::get_resources_available(world, planet_id, colony_id);
     let techs = shared::get_tech_levels(world, planet_id);
     let mut cost: Resources = Default::default();
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyDefenceTimer).time_end;
+    assert!(time_now >= queue_status, "Colony: Already building defence");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         DefenceBuildType::Celestia => {
             cost = defence::get_defences_cost(quantity, costs.celestia);
             assert!(resource_available >= cost, "Colony Defence: Not enough resources");
             defence::requirements::celestia(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
+            );
             set!(
                 world,
                 (
-                    ColonyDefences {
+                    ColonyDefenceTimer {
                         planet_id,
                         colony_id,
-                        name: Names::Defence::CELESTIA,
-                        count: defences_levels.celestia + quantity
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -566,14 +574,18 @@ fn build_defence(
             assert!(resource_available >= cost, "Colony Defence: Not enough resources");
             defence::requirements::blaster(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
+            );
             set!(
                 world,
                 (
-                    ColonyDefences {
+                    ColonyDefenceTimer {
                         planet_id,
                         colony_id,
-                        name: Names::Defence::BLASTER,
-                        count: defences_levels.blaster + quantity
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -584,14 +596,18 @@ fn build_defence(
             assert!(resource_available >= cost, "Colony Defence: Not enough resources");
             defence::requirements::beam(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
+            );
             set!(
                 world,
                 (
-                    ColonyDefences {
+                    ColonyDefenceTimer {
                         planet_id,
                         colony_id,
-                        name: Names::Defence::BEAM,
-                        count: defences_levels.beam + quantity
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -602,14 +618,18 @@ fn build_defence(
             assert!(resource_available >= cost, "Colony Defence: Not enough resources");
             defence::requirements::astral(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
+            );
             set!(
                 world,
                 (
-                    ColonyDefences {
+                    ColonyDefenceTimer {
                         planet_id,
                         colony_id,
-                        name: Names::Defence::ASTRAL,
-                        count: defences_levels.astral + quantity
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -620,14 +640,18 @@ fn build_defence(
             assert!(resource_available >= cost, "Colony Defence: Not enough resources");
             defence::requirements::plasma(compounds.dockyard, techs);
             shared::pay_resources(world, planet_id, colony_id, resource_available, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.dockyard, game_speed
+            );
             set!(
                 world,
                 (
-                    ColonyDefences {
+                    ColonyDefenceTimer {
                         planet_id,
                         colony_id,
-                        name: Names::Defence::PLASMA,
-                        count: defences_levels.plasma + quantity
+                        name: component,
+                        quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -635,6 +659,116 @@ fn build_defence(
         },
     }
     cost
+}
+
+fn complete_defence_build(world: IWorldDispatcher, planet_id: u32, colony_id: u8) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, (planet_id, colony_id), ColonyDefenceTimer);
+    assert!(!queue_status.time_end.is_zero(), "Colony: No defence building in progress");
+    assert!(time_now >= queue_status.time_end, "Colony: Defence build not finished");
+    let defences = get_colony_defences(world, planet_id, colony_id);
+    match queue_status.name {
+        DefenceBuildType::Celestia => {
+            set!(
+                world,
+                (
+                    ColonyDefences {
+                        planet_id,
+                        colony_id,
+                        name: Names::Defence::CELESTIA,
+                        count: defences.celestia + queue_status.quantity
+                    },
+                    ColonyDefenceTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Blaster => {
+            set!(
+                world,
+                (
+                    ColonyDefences {
+                        planet_id,
+                        colony_id,
+                        name: Names::Defence::BLASTER,
+                        count: defences.blaster + queue_status.quantity
+                    },
+                    ColonyDefenceTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Beam => {
+            set!(
+                world,
+                (
+                    ColonyDefences {
+                        planet_id,
+                        colony_id,
+                        name: Names::Defence::BEAM,
+                        count: defences.beam + queue_status.quantity
+                    },
+                    ColonyDefenceTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Astral => {
+            set!(
+                world,
+                (
+                    ColonyDefences {
+                        planet_id,
+                        colony_id,
+                        name: Names::Defence::ASTRAL,
+                        count: defences.astral + queue_status.quantity
+                    },
+                    ColonyDefenceTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        DefenceBuildType::Plasma => {
+            set!(
+                world,
+                (
+                    ColonyDefences {
+                        planet_id,
+                        colony_id,
+                        name: Names::Defence::PLASMA,
+                        count: defences.plasma + queue_status.quantity
+                    },
+                    ColonyDefenceTimer {
+                        planet_id,
+                        colony_id,
+                        name: queue_status.name,
+                        quantity: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+    }
 }
 
 fn get_colony_compounds(world: IWorldDispatcher, planet_id: u32, colony_id: u8) -> CompoundsLevels {

@@ -7,7 +7,8 @@ trait IColonyActions {
     fn complete_compound_upgrade(colony_id: u8);
     fn start_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32,);
     fn complete_ship_build(colony_id: u8);
-    fn process_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,);
+    fn start_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,);
+    fn complete_defence_build(colony_id: u8);
     fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources;
 }
 
@@ -142,13 +143,20 @@ mod colonyactions {
             colony::complete_ship_build(world, planet_id, colony_id);
         }
 
-        fn process_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,) {
+        fn start_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = colony::build_defence(world, planet_id, colony_id, name, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, DefenceSpent { planet_id, quantity, spent: cost });
+        }
+
+        fn complete_defence_build(colony_id: u8) {
+            let world = self.world_dispatcher.read();
+            let caller = starknet::get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            colony::complete_defence_build(world, planet_id, colony_id);
         }
 
         fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources {

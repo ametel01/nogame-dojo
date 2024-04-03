@@ -6,7 +6,7 @@ use nogame::models::{
     colony::{
         ColonyOwner, ColonyPosition, ColonyCount, ColonyResourceTimer, PlanetColoniesCount,
         ColonyResource, ColonyShips, ColonyDefences, ColonyCompounds, ColonyCompoundTimer,
-        ColonyDockyardTimer
+        ColonyDockyardTimer, ColonyDefenceTimer
     },
     dockyard::PlanetShips, tech::PlanetTechs
 };
@@ -288,11 +288,36 @@ fn test_build_colony_defence() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 6 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WEAPONS, level: 3 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::PLASMA, level: 7 });
-    actions.colony.process_defence_build(1, DefenceBuildType::Celestia, 1);
-    actions.colony.process_defence_build(1, DefenceBuildType::Blaster, 1);
-    actions.colony.process_defence_build(1, DefenceBuildType::Beam, 1);
-    actions.colony.process_defence_build(1, DefenceBuildType::Astral, 1);
-    actions.colony.process_defence_build(1, DefenceBuildType::Plasma, 1);
+
+    actions.colony.start_defence_build(1, DefenceBuildType::Celestia, 1);
+    let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_defence_build(1);
+
+    actions.colony.start_defence_build(1, DefenceBuildType::Blaster, 1);
+    let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_defence_build(1);
+
+    actions.colony.start_defence_build(1, DefenceBuildType::Beam, 1);
+    let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_defence_build(1);
+
+    actions.colony.start_defence_build(1, DefenceBuildType::Astral, 1);
+    let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_defence_build(1);
+
+    actions.colony.start_defence_build(1, DefenceBuildType::Plasma, 1);
+    let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.colony.complete_defence_build(1);
 
     let celestia_count = get!(world, (1, 1, Names::Defence::CELESTIA), ColonyDefences).count;
     assert!(celestia_count == 1, "Colony: celestia not built correctly");
