@@ -295,7 +295,7 @@ struct TechsCost {
     warp: Resources,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Copy, Debug, Drop, Introspect, Serde)]
 enum TechUpgradeType {
     Energy,
     Digital,

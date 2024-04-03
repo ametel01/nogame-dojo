@@ -1,8 +1,7 @@
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use nogame::data::types::{Resources, TechLevels, TechsCost, TechUpgradeType};
-use nogame::libraries::math::pow;
-use nogame::libraries::{names::Names, shared};
-use nogame::models::tech::PlanetTechs;
+use nogame::libraries::{constants, math::pow, names::Names, shared};
+use nogame::models::{tech::{PlanetTechs, PlanetTechTimer}, game::GameSetup};
 
 fn upgrade_component(
     world: IWorldDispatcher, planet_id: u32, component: TechUpgradeType, quantity: u8
@@ -13,6 +12,10 @@ fn upgrade_component(
     shared::collect(world, planet_id, 0, compounds);
     let available_resources = shared::get_resources_available(world, planet_id, 0);
     let mut cost: Resources = Default::default();
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetTechTimer).time_end;
+    assert!(time_now >= queue_status, "Tech: Already upgrading");
+    let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
 
     match component {
         TechUpgradeType::Energy => {
@@ -20,11 +23,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::energy(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::ENERGY, level: tech_levels.energy + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -34,11 +43,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::digital(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::DIGITAL, level: tech_levels.digital + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -48,11 +63,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::beam(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::BEAM, level: tech_levels.beam + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -62,11 +83,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::armour(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::ARMOUR, level: tech_levels.armour + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -76,11 +103,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::ion(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::ION, level: tech_levels.ion + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -90,11 +123,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::plasma(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::PLASMA, level: tech_levels.plasma + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -104,11 +143,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::weapons(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::WEAPONS, level: tech_levels.weapons + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -118,11 +163,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::shield(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::SHIELD, level: tech_levels.shield + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -132,13 +183,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::spacetime(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
+                    PlanetTechTimer {
                         planet_id,
-                        name: Names::Tech::SPACETIME,
-                        level: tech_levels.spacetime + quantity
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -148,13 +203,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::combustion(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
+                    PlanetTechTimer {
                         planet_id,
-                        name: Names::Tech::COMBUSTION,
-                        level: tech_levels.combustion + quantity
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -164,11 +223,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::thrust(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::THRUST, level: tech_levels.thrust + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -178,11 +243,17 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::warp(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
-                        planet_id, name: Names::Tech::WARP, level: tech_levels.warp + quantity
+                    PlanetTechTimer {
+                        planet_id,
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
@@ -192,19 +263,261 @@ fn upgrade_component(
             assert!(available_resources >= cost, "Tech: Not enough resources");
             requirements::exocraft(compounds.lab, tech_levels);
             shared::pay_resources(world, planet_id, 0, available_resources, cost);
+            let built_time = shared::build_time_is_seconds(
+                cost.steel + cost.quartz, compounds.cybernetics, game_speed
+            );
             set!(
                 world,
                 (
-                    PlanetTechs {
+                    PlanetTechTimer {
                         planet_id,
-                        name: Names::Tech::EXOCRAFT,
-                        level: tech_levels.exocraft + quantity
+                        name: component,
+                        levels: quantity,
+                        time_end: time_now + built_time
                     },
                 )
             );
         },
     };
     cost
+}
+
+fn complete_upgrade(world: IWorldDispatcher, planet_id: u32) {
+    let time_now = starknet::get_block_timestamp();
+    let queue_status = get!(world, planet_id, PlanetTechTimer);
+    assert!(!queue_status.time_end.is_zero(), "Tech: No upgrade in progress");
+    assert!(time_now >= queue_status.time_end, "Tech: Upgrade not finished");
+    let techs = shared::get_tech_levels(world, planet_id);
+    match queue_status.name {
+        TechUpgradeType::Energy => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::ENERGY,
+                        level: techs.energy + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Digital => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::DIGITAL,
+                        level: techs.digital + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Beam => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id, name: Names::Tech::BEAM, level: techs.beam + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Armour => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::ARMOUR,
+                        level: techs.armour + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Ion => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id, name: Names::Tech::ION, level: techs.ion + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Plasma => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::PLASMA,
+                        level: techs.plasma + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Weapons => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::WEAPONS,
+                        level: techs.weapons + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Shield => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::SHIELD,
+                        level: techs.shield + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Spacetime => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::SPACETIME,
+                        level: techs.spacetime + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Combustion => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::COMBUSTION,
+                        level: techs.combustion + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Thrust => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::THRUST,
+                        level: techs.thrust + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Warp => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id, name: Names::Tech::WARP, level: techs.warp + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        },
+        TechUpgradeType::Exocraft => {
+            set!(
+                world,
+                (
+                    PlanetTechs {
+                        planet_id,
+                        name: Names::Tech::EXOCRAFT,
+                        level: techs.exocraft + queue_status.levels
+                    },
+                    PlanetTechTimer {
+                        planet_id,
+                        name: queue_status.name,
+                        levels: Zeroable::zero(),
+                        time_end: Zeroable::zero()
+                    },
+                )
+            );
+        }
+    }
 }
 
 fn get_tech_cost(current_level: u8, quantity: u8, base_cost: Resources) -> Resources {

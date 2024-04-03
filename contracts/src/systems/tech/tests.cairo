@@ -1,14 +1,16 @@
 use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
 use nogame::data::types::TechUpgradeType;
 use nogame::libraries::names::Names;
-use nogame::models::{compound::PlanetCompounds, planet::PlanetResource, tech::PlanetTechs};
+use nogame::models::{
+    compound::PlanetCompounds, planet::PlanetResource, tech::{PlanetTechs, PlanetTechTimer}
+};
 use nogame::systems::{
     game::contract::{IGameActionsDispatcher, IGameActionsDispatcherTrait},
     planet::contract::{IPlanetActionsDispatcher, IPlanetActionsDispatcherTrait},
     tech::contract::{ITechActionsDispatcher, ITechActionsDispatcherTrait}
 };
 use nogame::utils::test_utils::{setup_world, GAME_SPEED, ACCOUNT_1};
-use starknet::testing::set_contract_address;
+use starknet::{get_block_timestamp, testing::{set_contract_address, set_block_timestamp}};
 
 #[test]
 fn test_upgrade_energy_tech_success() {
@@ -21,7 +23,13 @@ fn test_upgrade_energy_tech_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 400 });
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Energy(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Energy(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let energy_tech = get!(world, (1, Names::Tech::ENERGY), PlanetTechs).level;
     assert(energy_tech == 1, 'Energy tech level should be 1');
 
@@ -42,7 +50,13 @@ fn test_upgrade_digital_tech_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 600 });
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Digital(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Digital(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let digital_tech = get!(world, (1, Names::Tech::DIGITAL), PlanetTechs).level;
     assert(digital_tech == 1, 'Digital tech level should be 1');
 
@@ -64,7 +78,13 @@ fn test_upgrade_beam_tech_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 2 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Beam(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Beam(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let beam_tech = get!(world, (1, Names::Tech::BEAM), PlanetTechs).level;
     assert(beam_tech == 1, 'Beam tech level should be 1');
 
@@ -84,7 +104,13 @@ fn test_upgrade_armour_tech_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 1000 });
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 2 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Armour(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Armour(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let armour_tech = get!(world, (1, Names::Tech::ARMOUR), PlanetTechs).level;
     assert(armour_tech == 1, 'Armour tech level should be 1');
 
@@ -106,7 +132,13 @@ fn test_upgrade_ion_tech_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 4 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 5 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Ion(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Ion(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let ion_tech = get!(world, (1, Names::Tech::ION), PlanetTechs).level;
     assert(ion_tech == 1, 'Ion tech level should be 1');
 
@@ -133,7 +165,13 @@ fn test_upgrade_plasma_tech_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 10 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ION, level: 5 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Plasma(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Plasma(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let plasma_tech = get!(world, (1, Names::Tech::PLASMA), PlanetTechs).level;
     assert(plasma_tech == 1, 'Plasma tech level should be 1');
 
@@ -156,7 +194,13 @@ fn test_upgrade_weapons_tech_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 200 });
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 4 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Weapons(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Weapons(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let weapons_tech = get!(world, (1, Names::Tech::WEAPONS), PlanetTechs).level;
     assert(weapons_tech == 1, 'Weapons tech level should be 1');
 
@@ -178,7 +222,13 @@ fn test_upgrade_shield_tech_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 6 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 3 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Shield(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Shield(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let shield_tech = get!(world, (1, Names::Tech::SHIELD), PlanetTechs).level;
     assert(shield_tech == 1, 'Shield tech level should be 1');
 
@@ -201,7 +251,13 @@ fn test_upgrade_spacetime_tech_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 5 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SHIELD, level: 5 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Spacetime(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Spacetime(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let spacetime_tech = get!(world, (1, Names::Tech::SPACETIME), PlanetTechs).level;
     assert!(spacetime_tech == 1, "Spacetime tech level should be 1");
 
@@ -223,7 +279,13 @@ fn test_upgrade_combustion_tech_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 1 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 1 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Combustion(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Combustion(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let combustion_tech = get!(world, (1, Names::Tech::COMBUSTION), PlanetTechs).level;
     assert!(combustion_tech == 1, "Combustion tech level should be 1");
 
@@ -246,7 +308,13 @@ fn test_upgrade_thrust_tech_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 2 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 1 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Thrust(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Thrust(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let thrust_tech = get!(world, (1, Names::Tech::THRUST), PlanetTechs).level;
     assert!(thrust_tech == 1, "Thrust tech level should be 1");
 
@@ -272,7 +340,13 @@ fn test_upgrade_warp_tech_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 5 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SPACETIME, level: 3 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Warp(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Warp(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let warp_tech = get!(world, (1, Names::Tech::WARP), PlanetTechs).level;
     assert!(warp_tech == 1, "Warp tech level should be 1");
 
@@ -297,7 +371,13 @@ fn test_upgrade_exocraft_tech_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::LAB, level: 3 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 3 });
 
-    actions.tech.process_upgrade(TechUpgradeType::Exocraft(()), 1);
+    actions.tech.start_upgrade(TechUpgradeType::Exocraft(()), 1);
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end > 0, "Queue should have a time_end");
+    set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
+    actions.tech.complete_upgrade();
+    let queue_status = get!(world, 1, PlanetTechTimer);
+    assert!(queue_status.time_end == 0, "Queue time_end should be 0");
     let exocraft_tech = get!(world, (1, Names::Tech::EXOCRAFT), PlanetTechs).level;
     assert!(exocraft_tech == 1, "Exocraft tech level should be 1");
 

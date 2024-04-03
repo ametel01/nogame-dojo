@@ -1,6 +1,7 @@
 #[dojo::interface]
 trait ITechActions {
-    fn process_upgrade(component: nogame::data::types::TechUpgradeType, quantity: u8);
+    fn start_upgrade(component: nogame::data::types::TechUpgradeType, quantity: u8);
+    fn complete_upgrade();
 }
 
 #[dojo::contract]
@@ -29,13 +30,20 @@ mod techactions {
 
     #[abi(embed_v0)]
     impl TechActionsImpl of super::ITechActions<ContractState> {
-        fn process_upgrade(component: TechUpgradeType, quantity: u8) {
+        fn start_upgrade(component: TechUpgradeType, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
             let cost = tech::upgrade_component(world, planet_id, component, quantity);
             shared::update_planet_resources_spent(world, planet_id, cost);
             emit!(world, TechSpent { planet_id, quantity, spent: cost });
+        }
+
+        fn complete_upgrade() {
+            let world = self.world_dispatcher.read();
+            let caller = starknet::get_caller_address();
+            let planet_id = get!(world, caller, GamePlanet).planet_id;
+            tech::complete_upgrade(world, planet_id);
         }
     }
 }

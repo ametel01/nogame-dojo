@@ -112,8 +112,8 @@ fn build_component(
 fn complete_build(world: IWorldDispatcher, planet_id: u32) {
     let time_now = starknet::get_block_timestamp();
     let queue_status = get!(world, planet_id, PlanetDockyardTimer);
-    assert!(!queue_status.time_end.is_zero(), "Dockyard: No upgrade in progress");
-    assert!(time_now >= queue_status.time_end, "Dockyard: Upgrade not finished");
+    assert!(!queue_status.time_end.is_zero(), "Dockyard: No builds in progress");
+    assert!(time_now >= queue_status.time_end, "Dockyard: Build process not finished");
     let ships = shared::get_ships_levels(world, planet_id);
     match queue_status.name {
         ShipBuildType::Carrier => {
