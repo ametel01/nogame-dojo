@@ -112,6 +112,7 @@ fn upgrade_component(
             );
         },
         CompoundUpgradeType::Dockyard => {
+            assert!(compounds.cybernetics >= 2, "Compound: Cybernetics level too low, required 2");
             cost = cost::dockyard(compounds.dockyard, quantity);
             assert!(available_resources >= cost, "Compound: Not enough resources");
             shared::pay_resources(world, planet_id, 0, available_resources, cost);

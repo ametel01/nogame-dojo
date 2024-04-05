@@ -91,7 +91,7 @@ fn test_upgrade_energy_compound_success() {
 }
 
 #[test]
-fn test_upgrade_compound_success() {
+fn test_upgrade_lab_compound_success() {
     let (world, actions) = setup_world();
     actions.game.spawn(GAME_SPEED);
 
@@ -120,6 +120,7 @@ fn test_upgrade_dockyard_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
+    set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::CYBERNETICS, level: 2 });
     actions.compound.start_upgrade(CompoundUpgradeType::Dockyard(()), 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
