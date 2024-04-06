@@ -14,7 +14,7 @@ fn upgrade_component(
     let mut cost: Resources = Default::default();
     let time_now = starknet::get_block_timestamp();
     let queue_status = get!(world, planet_id, PlanetTechTimer).time_end;
-    assert!(time_now >= queue_status, "Tech: Already upgrading");
+    assert!(queue_status.is_zero(), "Tech: Already upgrading");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
 
     match component {

@@ -13,7 +13,7 @@ fn build_component(
     let available_resources = shared::get_resources_available(world, planet_id, 0);
     let time_now = starknet::get_block_timestamp();
     let queue_status = get!(world, planet_id, PlanetDefenceTimer).time_end;
-    assert!(time_now >= queue_status, "PlanetDefenceTimer: Already building");
+    assert!(queue_status.is_zero(), "PlanetDefenceTimer: Already building");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         DefenceBuildType::Celestia => {

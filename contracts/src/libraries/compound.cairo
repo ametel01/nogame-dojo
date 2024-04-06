@@ -13,7 +13,7 @@ fn upgrade_component(
     let mut cost: Resources = Default::default();
     let time_now = starknet::get_block_timestamp();
     let queue_status = get!(world, planet_id, PlanetCompoundTimer).time_end;
-    assert!(time_now >= queue_status, "Compound: Already building");
+    assert!(queue_status.is_zero(), "Compound: Already building");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         CompoundUpgradeType::SteelMine => {

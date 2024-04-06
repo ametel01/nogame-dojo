@@ -13,7 +13,7 @@ fn build_component(
     let available_resources = shared::get_resources_available(world, planet_id, 0);
     let time_now = starknet::get_block_timestamp();
     let queue_status = get!(world, planet_id, PlanetDockyardTimer).time_end;
-    assert!(time_now >= queue_status, "Dockyard: Already building");
+    assert!(queue_status.is_zero(), "Dockyard: Already building");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     match component {
         ShipBuildType::Carrier => {
