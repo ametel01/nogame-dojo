@@ -7,7 +7,6 @@ sierra-replace-ids = true
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.6.0" }
-# dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.5.1" }
 nogame_fixed = {git = "https://github.com/ametel01/nogame-fixed.git", rev="e16cf2d"}
 
 [[target.dojo]]
