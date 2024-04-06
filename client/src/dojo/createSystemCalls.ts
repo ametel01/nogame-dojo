@@ -1,27 +1,35 @@
-import { Account, BigNumberish } from 'starknet';
+import { Account } from 'starknet';
 import { getEvents, setComponentsFromEvents } from '@dojoengine/utils';
-import { ContractComponents } from './generated/contractComponents';
-import type { IWorld } from './generated/generated';
-import { DojoProvider } from '@dojoengine/core';
-import { Fleet } from '../hooks/usePlanetShips';
-import { Position } from '../hooks/usePlanetPosition';
-import { Resources } from '../hooks/usePlanetResources';
+import {
+  CompoundUpgradeType,
+  ContractComponents,
+  DefenceBuildType,
+  ShipBuildType,
+  TechUpgradeType,
+  Resources,
+  Position,
+  Fleet,
+} from './generated/typescript/models.gen';
+import type { IWorld } from './generated/typescript/contracts.gen';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
 export function createSystemCalls(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   { client }: { client: IWorld },
-  contractComponents: ContractComponents,
-  provider: DojoProvider
+  contractComponents: ContractComponents
+  // { PlanetCompound }: ClientComponents
 ) {
   const generatePlanet = async (account: Account) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.planetactions.generatePlanet({
         account,
-        'planetactions',
-        'generate_planet',
-        []
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -39,11 +47,14 @@ export function createSystemCalls(
 
   const generateColony = async (account: Account) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.colonyactions.generateColony({
         account,
-        'colonyactions',
-        'generate_colony',
-        []
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -59,17 +70,22 @@ export function createSystemCalls(
     }
   };
 
-  const upgradeCompound = async (
+  const startCompoundUpgrade = async (
     account: Account,
-    component: BigNumberish,
+    component: CompoundUpgradeType,
     quantity: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.compoundactions.startUpgrade({
         account,
-        'compoundactions',
-        'start_upgrade',
-        [component, quantity]
+        component,
+        quantity,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -85,18 +101,18 @@ export function createSystemCalls(
     }
   };
 
-  const upgradeColonyCompound = async (
-    account: Account,
-    colonyId: BigNumberish,
-    component: BigNumberish,
-    quantity: number
-  ) => {
+  const completeCompoundUpgrade = async (account: Account) => {
     try {
-      const { transaction_hash } = await provider.execute(
-        account,
-        'colonyactions',
-        'start_compound_upgrade',
-        [colonyId, component, quantity]
+      const { transaction_hash } = await client.compoundactions.completeUpgrade(
+        {
+          account,
+        }
+      );
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -112,17 +128,25 @@ export function createSystemCalls(
     }
   };
 
-  const upgradeTech = async (
+  const startColonyCompoundUpgrade = async (
     account: Account,
-    component: BigNumberish,
+    colonyId: number,
+    component: CompoundUpgradeType,
     quantity: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
-        account,
-        'techactions',
-        'process_upgrade',
-        [component, quantity]
+      const { transaction_hash } =
+        await client.colonyactions.startCompoundUpgrade({
+          account,
+          colony_id: colonyId,
+          name: component,
+          quantity,
+        });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -138,17 +162,21 @@ export function createSystemCalls(
     }
   };
 
-  const buildShip = async (
+  const completColonyCompoundUpgrade = async (
     account: Account,
-    component: BigNumberish,
-    quantity: number
+    colonyId: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
-        account,
-        'dockyardactions',
-        'start_build',
-        [component, quantity]
+      const { transaction_hash } =
+        await client.colonyactions.completeCompoundUpgrade({
+          account,
+          colony_id: colonyId,
+        });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -164,18 +192,22 @@ export function createSystemCalls(
     }
   };
 
-  const buildColonyShip = async (
+  const startTechUpgrade = async (
     account: Account,
-    colonyId: BigNumberish,
-    component: BigNumberish,
+    component: TechUpgradeType,
     quantity: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.techactions.startUpgrade({
         account,
-        'colonyactions',
-        'start_ship_build',
-        [colonyId, component, quantity]
+        component,
+        quantity,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -191,17 +223,16 @@ export function createSystemCalls(
     }
   };
 
-  const buildDefence = async (
-    account: Account,
-    component: BigNumberish,
-    quantity: number
-  ) => {
+  const completeTechUpgrade = async (account: Account) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.techactions.completeUpgrade({
         account,
-        'defenceactions',
-        'process_defence_build',
-        [component, quantity]
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -217,18 +248,227 @@ export function createSystemCalls(
     }
   };
 
-  const buildColonyDefence = async (
+  const startShipBuild = async (
     account: Account,
-    colonyId: BigNumberish,
-    component: BigNumberish,
+    component: ShipBuildType,
     quantity: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.dockyardactions.startBuild({
         account,
-        'colonyactions',
-        'process_defence_build',
-        [colonyId, component, quantity]
+        component,
+        quantity,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const completeShipBuild = async (account: Account) => {
+    try {
+      const { transaction_hash } = await client.dockyardactions.completeBuild({
+        account,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const startColonyShipBuild = async (
+    account: Account,
+    colonyId: number,
+    component: ShipBuildType,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await client.colonyactions.startShipBuild({
+        account,
+        colony_id: colonyId,
+        name: component,
+        quantity,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const completeColonyShipBuild = async (
+    account: Account,
+    colonyId: number
+  ) => {
+    try {
+      const { transaction_hash } = await client.colonyactions.completeShipBuild(
+        {
+          account,
+          colony_id: colonyId,
+        }
+      );
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const startDefenceBuild = async (
+    account: Account,
+    component: DefenceBuildType,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await client.defenceactions.startBuild({
+        account,
+        component,
+        quantity,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const completeDefenceBuild = async (account: Account) => {
+    try {
+      const { transaction_hash } = await client.defenceactions.completeBuild({
+        account,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const startColonyDefenceBuild = async (
+    account: Account,
+    colonyId: number,
+    component: DefenceBuildType,
+    quantity: number
+  ) => {
+    try {
+      const { transaction_hash } = await client.colonyactions.startDefenceBuild(
+        { account, colony_id: colonyId, name: component, quantity }
+      );
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
+      );
+
+      setComponentsFromEvents(
+        contractComponents,
+        getEvents(
+          await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+          })
+        )
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const completColonyDefenceBuild = async (
+    account: Account,
+    colonyId: number
+  ) => {
+    try {
+      const { transaction_hash } =
+        await client.colonyactions.completeDefenceBuild({
+          account,
+          colony_id: colonyId,
+        });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -254,13 +494,20 @@ export function createSystemCalls(
     colonyId: number
   ) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.fleetactions.sendFleet({
         account,
-        'fleetactions',
-        'send_fleet',
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        [fleet, destination, cargo, missionType, speedModifier, colonyId]
+        fleet,
+        destination,
+        cargo,
+        mission_type: missionType,
+        speed_modifier: speedModifier,
+        colony_id: colonyId,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -278,11 +525,15 @@ export function createSystemCalls(
 
   const attackPlanet = async (account: Account, missionId: number) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.fleetactions.attackPlanet({
         account,
-        'fleetactions',
-        'attack_planet',
-        [missionId]
+        mission_id: missionId,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -300,11 +551,15 @@ export function createSystemCalls(
 
   const collectDebris = async (account: Account, missionId: number) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.fleetactions.collectDebris({
         account,
-        'fleetactions',
-        'collect_debris',
-        [missionId]
+        mission_id: missionId,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -322,11 +577,15 @@ export function createSystemCalls(
 
   const recallFleet = async (account: Account, missionId: number) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.fleetactions.recallFleet({
         account,
-        'fleetactions',
-        'recall_fleet',
-        [missionId]
+        mission_id: missionId,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -344,11 +603,15 @@ export function createSystemCalls(
 
   const dockFleet = async (account: Account, missionId: number) => {
     try {
-      const { transaction_hash } = await provider.execute(
+      const { transaction_hash } = await client.fleetactions.dockFleet({
         account,
-        'fleetactions',
-        'dock_fleet',
-        [missionId]
+        mission_id: missionId,
+      });
+
+      console.log(
+        await account.waitForTransaction(transaction_hash, {
+          retryInterval: 100,
+        })
       );
 
       setComponentsFromEvents(
@@ -364,28 +627,14 @@ export function createSystemCalls(
     }
   };
 
-  interface PlanetResourcesResponse {
-    steel: bigint;
-    quartz: bigint;
-    tritium: bigint;
-  }
-
-  const getPlanetUncollectedResources = async (
-    planetId: number
-  ): Promise<Resources> => {
+  const getPlanetUncollectedResources = async (planetId: number) => {
     try {
-      const tx = (await provider.callContract(
-        'planetactions',
-        'get_uncollected_resources',
-        [planetId.toString()]
-      )) as PlanetResourcesResponse;
-      console.log('tx', tx);
+      const response: Resources =
+        await client.planetactions.getUncollectedResources({
+          planet_id: planetId,
+        });
 
-      return {
-        steel: Number(tx.steel),
-        quartz: Number(tx.quartz),
-        tritium: Number(tx.tritium),
-      };
+      return response;
     } catch (e) {
       console.log(e);
       throw e;
@@ -397,17 +646,13 @@ export function createSystemCalls(
     colonyId: number
   ): Promise<Resources> => {
     try {
-      const tx = (await provider.callContract(
-        'colonyactions',
-        'get_uncollected_resources',
-        [planetId, colonyId]
-      )) as PlanetResourcesResponse;
+      const response: Resources =
+        await client.colonyactions.getUncollectedResources({
+          planet_id: planetId,
+          colony_id: colonyId,
+        });
 
-      return {
-        steel: Number(tx.steel),
-        quartz: Number(tx.quartz),
-        tritium: Number(tx.tritium),
-      };
+      return response;
     } catch (e) {
       console.log(e);
       throw e;
@@ -417,13 +662,20 @@ export function createSystemCalls(
   return {
     generatePlanet,
     generateColony,
-    upgradeCompound,
-    upgradeColonyCompound,
-    upgradeTech,
-    buildShip,
-    buildColonyShip,
-    buildDefence,
-    buildColonyDefence,
+    startCompoundUpgrade,
+    completeCompoundUpgrade,
+    startColonyCompoundUpgrade,
+    completColonyCompoundUpgrade,
+    startTechUpgrade,
+    completeTechUpgrade,
+    startShipBuild,
+    completeShipBuild,
+    startColonyShipBuild,
+    completeColonyShipBuild,
+    startDefenceBuild,
+    completeDefenceBuild,
+    startColonyDefenceBuild,
+    completColonyDefenceBuild,
     sendFleet,
     attackPlanet,
     collectDebris,
