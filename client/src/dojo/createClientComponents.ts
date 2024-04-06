@@ -1,5 +1,5 @@
 import { overridableComponent } from '@dojoengine/recs';
-import { ContractComponents } from './generated/contractComponents';
+import { ContractComponents } from './generated/typescript/models.gen';
 
 export type ClientComponents = ReturnType<typeof createClientComponents>;
 
@@ -11,8 +11,14 @@ export function createClientComponents({
   return {
     ...contractComponents,
     ColonyCompounds: overridableComponent(contractComponents.ColonyCompounds),
+    ColonyCompoundTimer: overridableComponent(
+      contractComponents.ColonyCompoundTimer
+    ),
     ColonyCount: overridableComponent(contractComponents.ColonyCount),
     ColonyDefence: overridableComponent(contractComponents.ColonyDefences),
+    ColonyDefenceTimer: overridableComponent(
+      contractComponents.ColonyDefenceTimer
+    ),
     ColonyOwner: overridableComponent(contractComponents.ColonyOwner),
     ColonyPosition: overridableComponent(contractComponents.ColonyPosition),
     ColonyResounce: overridableComponent(contractComponents.ColonyResource),
@@ -20,12 +26,24 @@ export function createClientComponents({
       contractComponents.ColonyResourceTimer
     ),
     ColonyShip: overridableComponent(contractComponents.ColonyShips),
+    ColonyDockyardTimer: overridableComponent(
+      contractComponents.ColonyDockyardTimer
+    ),
     PlanetColoniesCount: overridableComponent(
       contractComponents.PlanetColoniesCount
     ),
     PlanetCompound: overridableComponent(contractComponents.PlanetCompounds),
+    PlanetCompoundTimer: overridableComponent(
+      contractComponents.PlanetCompoundTimer
+    ),
     PlanetDefence: overridableComponent(contractComponents.PlanetDefences),
+    PlanetDefenceTimer: overridableComponent(
+      contractComponents.PlanetDefenceTimer
+    ),
     PlanetShip: overridableComponent(contractComponents.PlanetShips),
+    PlanetShipTimer: overridableComponent(
+      contractComponents.PlanetDockyardTimer
+    ),
     ActiveMission: overridableComponent(contractComponents.ActiveMission),
     ActiveMissionLen: overridableComponent(contractComponents.ActiveMissionLen),
     IncomingMissionLen: overridableComponent(
@@ -50,5 +68,6 @@ export function createClientComponents({
     ),
     PositionToPlanet: overridableComponent(contractComponents.PositionToPlanet),
     PlanetTech: overridableComponent(contractComponents.PlanetTechs),
+    PlanetTechTimer: overridableComponent(contractComponents.PlanetTechTimer),
   };
 }
