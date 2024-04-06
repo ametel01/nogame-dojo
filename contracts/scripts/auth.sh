@@ -50,14 +50,14 @@ grant_authorization() {
 }
 
 # Arrays of component names for each contract type
-COLONY_COMPONENTS=(PlanetResourcesSpent ColonyCompounds ColonyResource ColonyShips ColonyDefences ColonyPosition PositionToColony ColonyResourceTimer ColonyOwner PositionToPlanet PlanetPosition PlanetColoniesCount ColonyCount )
-COMPOUND_COMPONENTS=(PlanetCompounds PlanetResource PlanetResourceTimer PlanetResourcesSpent)
-DEFENCE_COMPONENTS=(PlanetDefences PlanetResource PlanetResourceTimer PlanetResourcesSpent)
-DOCKYARD_COMPONENTS=(PlanetShips PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+COLONY_COMPONENTS=(ColonyCompoundTimer ColonyDockyardTimer ColonyDefenceTimer PlanetResourcesSpent ColonyCompounds ColonyResource ColonyShips ColonyDefences ColonyPosition PositionToColony ColonyResourceTimer ColonyOwner PositionToPlanet PlanetPosition PlanetColoniesCount ColonyCount )
+COMPOUND_COMPONENTS=(PlanetCompoundTimer PlanetCompounds PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+DEFENCE_COMPONENTS=(PlanetDefenceTimer PlanetDefences PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+DOCKYARD_COMPONENTS=(PlanetDockyardTimer PlanetShips PlanetResource PlanetResourceTimer PlanetResourcesSpent)
 FLEET_COMPONENTS=(PlanetResourcesSpent LastActive PlanetDebrisField ColonyResourceTimer PlanetResourceTimer ActiveMission ActiveMissionLen IncomingMissions IncomingMissionLen ColonyShips PlanetShips PlanetDefences PlanetResource ColonyResource)
 GAME_COMPONENTS=(GameSetup GamePlanetCount)
 PLANET_COMPONENTS=(PlanetPosition PositionToPlanet PlanetResourceTimer PlanetResource  GamePlanetCount GamePlanet GamePlanetOwner GameOwnerPlanet)
-TECH_COMPONENTS=(PlanetTechs PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+TECH_COMPONENTS=(PlanetTechTimer PlanetTechs PlanetResource PlanetResourceTimer PlanetResourcesSpent)
 
 # Granting authorizations
 grant_authorization COLONY_COMPONENTS[@] "$COLONY_ADDRESS"
@@ -70,5 +70,6 @@ grant_authorization PLANET_COMPONENTS[@] "$PLANET_ADDRESS"
 grant_authorization TECH_COMPONENTS[@] "$TECH_ADDRESS"
 
 sozo execute --world $WORLD_ADDRESS $GAME_ADDRESS spawn -c 10000 --wait
+echo "Executed spawn on game contract."
 
 echo "Default authorizations have been successfully set."

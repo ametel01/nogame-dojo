@@ -22,7 +22,7 @@ rpc_url = "http://localhost:5050/"
 # Default account for katana with seed = 0
 account_address = "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca"
 private_key = "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a"
-world_address = "0x56d5e7d85f337c9a66c44915a698507a294f72ce8a7ca4c0b11a78aca4a4aa2"
+world_address = "0x59e3b50e0ec04f863a3838f13995348624fdbe33de62779c47156d04b41ee81"
 
 [profile.sepolia.tool.dojo.env]
 account_address = "0x00d5b7d5883c00d106c9df28f24a7c46472ef3006f1460d0649a4256f188b906"
