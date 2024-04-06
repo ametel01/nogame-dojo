@@ -8,11 +8,11 @@ export type ContractComponents = Awaited<
 
 // Type definition for `nogame::models::colony::ColonyDockyardTimer` struct
 export interface ColonyDockyardTimer {
-  planet_id: Number;
-  colony_id: Number;
+  planet_id: number;
+  colony_id: number;
   name: ShipBuildType;
-  quantity: Number;
-  time_end: Number;
+  quantity: number;
+  time_end: number;
 }
 
 export const ColonyDockyardTimerDefinition = {
@@ -34,11 +34,11 @@ export enum ShipBuildType {
 
 // Type definition for `nogame::models::colony::ColonyDefenceTimer` struct
 export interface ColonyDefenceTimer {
-  planet_id: Number;
-  colony_id: Number;
+  planet_id: number;
+  colony_id: number;
   name: DefenceBuildType;
-  quantity: Number;
-  time_end: Number;
+  quantity: number;
+  time_end: number;
 }
 
 export const ColonyDefenceTimerDefinition = {
@@ -60,9 +60,9 @@ export enum DefenceBuildType {
 
 // Type definition for `nogame::models::compound::PlanetCompounds` struct
 export interface PlanetCompounds {
-  planet_id: Number;
-  name: Number;
-  level: Number;
+  planet_id: number;
+  name: number;
+  level: number;
 }
 
 export const PlanetCompoundsDefinition = {
@@ -73,8 +73,8 @@ export const PlanetCompoundsDefinition = {
 
 // Type definition for `nogame::data::types::Position` struct
 export interface Position {
-  system: Number;
-  orbit: Number;
+  system: number;
+  orbit: number;
 }
 
 export const PositionDefinition = {
@@ -84,8 +84,8 @@ export const PositionDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyPosition` struct
 export interface ColonyPosition {
-  planet_id: Number;
-  colony_id: Number;
+  planet_id: number;
+  colony_id: number;
   position: Position;
 }
 
@@ -97,9 +97,9 @@ export const ColonyPositionDefinition = {
 
 // Type definition for `nogame::data::types::Resources` struct
 export interface Resources {
-  steel: BigInt;
-  quartz: BigInt;
-  tritium: BigInt;
+  steel: bigint;
+  quartz: bigint;
+  tritium: bigint;
 }
 
 export const ResourcesDefinition = {
@@ -110,11 +110,11 @@ export const ResourcesDefinition = {
 
 // Type definition for `nogame::data::types::Fleet` struct
 export interface Fleet {
-  carrier: Number;
-  scraper: Number;
-  sparrow: Number;
-  frigate: Number;
-  armade: Number;
+  carrier: number;
+  scraper: number;
+  sparrow: number;
+  frigate: number;
+  armade: number;
 }
 
 export const FleetDefinition = {
@@ -127,15 +127,15 @@ export const FleetDefinition = {
 
 // Type definition for `nogame::data::types::Mission` struct
 export interface Mission {
-  id: Number;
-  time_start: Number;
-  origin: Number;
-  destination: Number;
+  id: number;
+  time_start: number;
+  origin: number;
+  destination: number;
   cargo: Resources;
-  time_arrival: Number;
+  time_arrival: number;
   fleet: Fleet;
-  category: Number;
-  is_return: Boolean;
+  category: number;
+  is_return: boolean;
 }
 
 export const MissionDefinition = {
@@ -152,8 +152,8 @@ export const MissionDefinition = {
 
 // Type definition for `nogame::models::fleet::ActiveMission` struct
 export interface ActiveMission {
-  planet_id: Number;
-  mission_id: Number;
+  planet_id: number;
+  mission_id: number;
   mission: Mission;
 }
 
@@ -165,10 +165,10 @@ export const ActiveMissionDefinition = {
 
 // Type definition for `nogame::models::tech::PlanetTechTimer` struct
 export interface PlanetTechTimer {
-  planet_id: Number;
+  planet_id: number;
   name: TechUpgradeType;
-  levels: Number;
-  time_end: Number;
+  levels: number;
+  time_end: number;
 }
 
 export const PlanetTechTimerDefinition = {
@@ -197,10 +197,10 @@ export enum TechUpgradeType {
 
 // Type definition for `nogame::models::colony::ColonyResource` struct
 export interface ColonyResource {
-  planet_id: Number;
-  colony_id: Number;
-  name: Number;
-  amount: BigInt;
+  planet_id: number;
+  colony_id: number;
+  name: number;
+  amount: bigint;
 }
 
 export const ColonyResourceDefinition = {
@@ -212,10 +212,10 @@ export const ColonyResourceDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyDefences` struct
 export interface ColonyDefences {
-  planet_id: Number;
-  colony_id: Number;
-  name: Number;
-  count: Number;
+  planet_id: number;
+  colony_id: number;
+  name: number;
+  count: number;
 }
 
 export const ColonyDefencesDefinition = {
@@ -227,13 +227,13 @@ export const ColonyDefencesDefinition = {
 
 // Type definition for `nogame::data::types::Position` struct
 export interface Position {
-  system: Number;
-  orbit: Number;
+  system: number;
+  orbit: number;
 }
 
 // Type definition for `nogame::models::planet::PlanetPosition` struct
 export interface PlanetPosition {
-  planet_id: Number;
+  planet_id: number;
   position: Position;
 }
 
@@ -244,8 +244,8 @@ export const PlanetPositionDefinition = {
 
 // Type definition for `nogame::models::game::GameOwnerPlanet` struct
 export interface GameOwnerPlanet {
-  owner: BigInt;
-  planet_id: Number;
+  owner: bigint;
+  planet_id: number;
 }
 
 export const GameOwnerPlanetDefinition = {
@@ -255,8 +255,8 @@ export const GameOwnerPlanetDefinition = {
 
 // Type definition for `nogame::models::colony::PlanetColoniesCount` struct
 export interface PlanetColoniesCount {
-  planet_id: Number;
-  count: Number;
+  planet_id: number;
+  count: number;
 }
 
 export const PlanetColoniesCountDefinition = {
@@ -266,8 +266,8 @@ export const PlanetColoniesCountDefinition = {
 
 // Type definition for `nogame::models::game::GamePlanetOwner` struct
 export interface GamePlanetOwner {
-  planet_id: Number;
-  owner: BigInt;
+  planet_id: number;
+  owner: bigint;
 }
 
 export const GamePlanetOwnerDefinition = {
@@ -277,8 +277,8 @@ export const GamePlanetOwnerDefinition = {
 
 // Type definition for `nogame::models::game::GamePlanet` struct
 export interface GamePlanet {
-  owner: BigInt;
-  planet_id: Number;
+  owner: bigint;
+  planet_id: number;
 }
 
 export const GamePlanetDefinition = {
@@ -288,10 +288,10 @@ export const GamePlanetDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyCompounds` struct
 export interface ColonyCompounds {
-  planet_id: Number;
-  colony_id: Number;
-  name: Number;
-  level: Number;
+  planet_id: number;
+  colony_id: number;
+  name: number;
+  level: number;
 }
 
 export const ColonyCompoundsDefinition = {
@@ -303,8 +303,8 @@ export const ColonyCompoundsDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyCount` struct
 export interface ColonyCount {
-  game_id: Number;
-  count: Number;
+  game_id: number;
+  count: number;
 }
 
 export const ColonyCountDefinition = {
@@ -314,11 +314,11 @@ export const ColonyCountDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyCompoundTimer` struct
 export interface ColonyCompoundTimer {
-  planet_id: Number;
-  colony_id: Number;
+  planet_id: number;
+  colony_id: number;
   name: CompoundUpgradeType;
-  levels: Number;
-  time_end: Number;
+  levels: number;
+  time_end: number;
 }
 
 export const ColonyCompoundTimerDefinition = {
@@ -342,10 +342,10 @@ export enum CompoundUpgradeType {
 
 // Type definition for `nogame::models::dockyard::PlanetDockyardTimer` struct
 export interface PlanetDockyardTimer {
-  planet_id: Number;
+  planet_id: number;
   name: ShipBuildType;
-  quantity: Number;
-  time_end: Number;
+  quantity: number;
+  time_end: number;
 }
 
 export const PlanetDockyardTimerDefinition = {
@@ -357,9 +357,9 @@ export const PlanetDockyardTimerDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyResourceTimer` struct
 export interface ColonyResourceTimer {
-  planet_id: Number;
-  colony_id: Number;
-  last_collection: Number;
+  planet_id: number;
+  colony_id: number;
+  last_collection: number;
 }
 
 export const ColonyResourceTimerDefinition = {
@@ -370,8 +370,8 @@ export const ColonyResourceTimerDefinition = {
 
 // Type definition for `nogame::models::fleet::IncomingMissionLen` struct
 export interface IncomingMissionLen {
-  planet_id: Number;
-  lenght: Number;
+  planet_id: number;
+  lenght: number;
 }
 
 export const IncomingMissionLenDefinition = {
@@ -381,8 +381,8 @@ export const IncomingMissionLenDefinition = {
 
 // Type definition for `nogame::data::types::Debris` struct
 export interface Debris {
-  steel: BigInt;
-  quartz: BigInt;
+  steel: bigint;
+  quartz: bigint;
 }
 
 export const DebrisDefinition = {
@@ -392,7 +392,7 @@ export const DebrisDefinition = {
 
 // Type definition for `nogame::models::planet::PlanetDebrisField` struct
 export interface PlanetDebrisField {
-  planet_id: Number;
+  planet_id: number;
   debris: Debris;
 }
 
@@ -403,9 +403,9 @@ export const PlanetDebrisFieldDefinition = {
 
 // Type definition for `nogame::models::game::GameSetup` struct
 export interface GameSetup {
-  game_id: Number;
-  speed: Number;
-  start_time: Number;
+  game_id: number;
+  speed: number;
+  start_time: number;
 }
 
 export const GameSetupDefinition = {
@@ -416,10 +416,10 @@ export const GameSetupDefinition = {
 
 // Type definition for `nogame::models::compound::PlanetCompoundTimer` struct
 export interface PlanetCompoundTimer {
-  planet_id: Number;
+  planet_id: number;
   name: CompoundUpgradeType;
-  levels: Number;
-  time_end: Number;
+  levels: number;
+  time_end: number;
 }
 
 export const PlanetCompoundTimerDefinition = {
@@ -431,8 +431,8 @@ export const PlanetCompoundTimerDefinition = {
 
 // Type definition for `nogame::models::fleet::ActiveMissionLen` struct
 export interface ActiveMissionLen {
-  planet_id: Number;
-  lenght: Number;
+  planet_id: number;
+  lenght: number;
 }
 
 export const ActiveMissionLenDefinition = {
@@ -442,11 +442,11 @@ export const ActiveMissionLenDefinition = {
 
 // Type definition for `nogame::data::types::IncomingMission` struct
 export interface IncomingMission {
-  origin: Number;
-  id_at_origin: Number;
-  time_arrival: Number;
-  number_of_ships: Number;
-  destination: Number;
+  origin: number;
+  id_at_origin: number;
+  time_arrival: number;
+  number_of_ships: number;
+  destination: number;
 }
 
 export const IncomingMissionDefinition = {
@@ -459,8 +459,8 @@ export const IncomingMissionDefinition = {
 
 // Type definition for `nogame::models::fleet::IncomingMissions` struct
 export interface IncomingMissions {
-  planet_id: Number;
-  mission_id: Number;
+  planet_id: number;
+  mission_id: number;
   mission: IncomingMission;
 }
 
@@ -472,8 +472,8 @@ export const IncomingMissionsDefinition = {
 
 // Type definition for `nogame::models::planet::PlanetResourcesSpent` struct
 export interface PlanetResourcesSpent {
-  planet_id: Number;
-  spent: BigInt;
+  planet_id: number;
+  spent: bigint;
 }
 
 export const PlanetResourcesSpentDefinition = {
@@ -483,9 +483,9 @@ export const PlanetResourcesSpentDefinition = {
 
 // Type definition for `nogame::models::defence::PlanetDefences` struct
 export interface PlanetDefences {
-  planet_id: Number;
-  name: Number;
-  count: Number;
+  planet_id: number;
+  name: number;
+  count: number;
 }
 
 export const PlanetDefencesDefinition = {
@@ -496,8 +496,8 @@ export const PlanetDefencesDefinition = {
 
 // Type definition for `nogame::models::planet::PlanetResourceTimer` struct
 export interface PlanetResourceTimer {
-  planet_id: Number;
-  last_collection: Number;
+  planet_id: number;
+  last_collection: number;
 }
 
 export const PlanetResourceTimerDefinition = {
@@ -507,14 +507,14 @@ export const PlanetResourceTimerDefinition = {
 
 // Type definition for `nogame::data::types::Position` struct
 export interface Position {
-  system: Number;
-  orbit: Number;
+  system: number;
+  orbit: number;
 }
 
 // Type definition for `nogame::models::planet::PositionToPlanet` struct
 export interface PositionToPlanet {
   position: Position;
-  planet_id: Number;
+  planet_id: number;
 }
 
 export const PositionToPlanetDefinition = {
@@ -524,9 +524,9 @@ export const PositionToPlanetDefinition = {
 
 // Type definition for `nogame::models::planet::PlanetResource` struct
 export interface PlanetResource {
-  planet_id: Number;
-  name: Number;
-  amount: BigInt;
+  planet_id: number;
+  name: number;
+  amount: bigint;
 }
 
 export const PlanetResourceDefinition = {
@@ -537,8 +537,8 @@ export const PlanetResourceDefinition = {
 
 // Type definition for `nogame::models::planet::LastActive` struct
 export interface LastActive {
-  planet_id: Number;
-  time: Number;
+  planet_id: number;
+  time: number;
 }
 
 export const LastActiveDefinition = {
@@ -548,10 +548,10 @@ export const LastActiveDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyShips` struct
 export interface ColonyShips {
-  planet_id: Number;
-  colony_id: Number;
-  name: Number;
-  count: Number;
+  planet_id: number;
+  colony_id: number;
+  name: number;
+  count: number;
 }
 
 export const ColonyShipsDefinition = {
@@ -563,9 +563,9 @@ export const ColonyShipsDefinition = {
 
 // Type definition for `nogame::models::tech::PlanetTechs` struct
 export interface PlanetTechs {
-  planet_id: Number;
-  name: Number;
-  level: Number;
+  planet_id: number;
+  name: number;
+  level: number;
 }
 
 export const PlanetTechsDefinition = {
@@ -576,8 +576,8 @@ export const PlanetTechsDefinition = {
 
 // Type definition for `nogame::models::colony::ColonyOwner` struct
 export interface ColonyOwner {
-  colony_planet_id: Number;
-  planet_id: Number;
+  colony_planet_id: number;
+  planet_id: number;
 }
 
 export const ColonyOwnerDefinition = {
@@ -587,10 +587,10 @@ export const ColonyOwnerDefinition = {
 
 // Type definition for `nogame::models::defence::PlanetDefenceTimer` struct
 export interface PlanetDefenceTimer {
-  planet_id: Number;
+  planet_id: number;
   name: DefenceBuildType;
-  quantity: Number;
-  time_end: Number;
+  quantity: number;
+  time_end: number;
 }
 
 export const PlanetDefenceTimerDefinition = {
@@ -601,9 +601,9 @@ export const PlanetDefenceTimerDefinition = {
 };
 // Type definition for `nogame::models::dockyard::PlanetShips` struct
 export interface PlanetShips {
-  planet_id: Number;
-  name: Number;
-  count: Number;
+  planet_id: number;
+  name: number;
+  count: number;
 }
 
 export const PlanetShipsDefinition = {
@@ -614,8 +614,8 @@ export const PlanetShipsDefinition = {
 
 // Type definition for `nogame::models::game::GamePlanetCount` struct
 export interface GamePlanetCount {
-  game_id: Number;
-  count: Number;
+  game_id: number;
+  count: number;
 }
 
 export const GamePlanetCountDefinition = {

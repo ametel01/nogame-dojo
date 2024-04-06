@@ -3,9 +3,9 @@ import { DojoConfig, DojoProvider } from '@dojoengine/core';
 import * as torii from '@dojoengine/torii-client';
 import { createClientComponents } from '../createClientComponents';
 import { createSystemCalls } from '../createSystemCalls';
-import { defineContractComponents } from './contractComponents';
+import { defineContractComponents } from './typescript/models.gen';
 import { world } from './world';
-import { setupWorld } from './generated';
+import { setupWorld } from './typescript/contracts.gen';
 import { Account } from 'starknet';
 import { BurnerManager } from '@dojoengine/create-burner';
 import { getSdk } from '../../generated/graphql';
@@ -36,7 +36,7 @@ export async function setup({ ...config }: DojoConfig) {
   const dojoProvider = new DojoProvider(config.manifest, config.rpcUrl);
 
   // setup world
-  const client = await setupWorld();
+  const client = await setupWorld(dojoProvider);
 
   // create burner manager
   const burnerManager = new BurnerManager({
@@ -55,12 +55,7 @@ export async function setup({ ...config }: DojoConfig) {
     client,
     clientComponents,
     contractComponents,
-    systemCalls: createSystemCalls(
-      { client },
-      contractComponents,
-      // clientComponents,
-      dojoProvider
-    ),
+    systemCalls: createSystemCalls({ client }, contractComponents),
     config,
     dojoProvider,
     burnerManager,
