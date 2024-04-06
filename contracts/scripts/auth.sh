@@ -1,43 +1,39 @@
 #!/bin/bash
+set -euo pipefail
+pushd $(dirname "$0")/..
 
-KATANA_TOML_PATH="./manifests/deployments/KATANA.toml"
+export MANIFEST_PATH="manifests/dev/manifest.json"
 
-get_contract_address() {
-    local contract_name="$1"
-    awk -v name="$contract_name" '
-    $1 == "address" { last_address = $3 }  # Store the last seen address
-    $1 == "name" && $3 == "\"" name "\"" { print last_address; exit; }  # When name matches, print the last stored address
-    ' "$KATANA_TOML_PATH"
-}
+export RPC_URL="http://localhost:5050";
 
-export SOZO_WORLD=$(get_contract_address "dojo::world::world")
+export WORLD_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.world.address')
 
-export DEFENCE_ADDRESS=$(get_contract_address "nogame::defence::actions::defenceactions")
+export COLONY_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::colony::contract::colonyactions" ).address')
 
-export GAME_ADDRESS=$(get_contract_address "nogame::game::actions::gameactions")
+export COMPOUND_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::compound::contract::compoundactions" ).address')
 
-export FLEET_ADDRESS=$(get_contract_address "nogame::fleet::actions::fleetactions")
+export DEFENCE_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::defence::contract::defenceactions" ).address')
 
-export COMPOUND_ADDRESS=$(get_contract_address "nogame::compound::actions::compoundactions")
+export DOCKYARD_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::dockyard::contract::dockyardactions" ).address')
 
-export DOCKYARD_ADDRESS=$(get_contract_address "nogame::dockyard::actions::dockyardactions")
+export FLEET_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::fleet::contract::fleetactions" ).address')
 
-export COLONY_ADDRESS=$(get_contract_address "nogame::colony::actions::colonyactions")
+export GAME_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::game::contract::gameactions" ).address')
 
-export PLANET_ADDRESS=$(get_contract_address "nogame::planet::actions::planetactions")
+export PLANET_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::planet::contract::planetactions" ).address')
 
-export TECH_ADDRESS=$(get_contract_address "nogame::tech::actions::techactions")
+export TECH_ADDRESS=$(cat $MANIFEST_PATH | jq -r '.contracts[] | select(.name == "nogame::systems::tech::contract::techactions" ).address')
 
 
 # Display the addresses
 echo "-------------------------ADDRESS----------------------------------------"
-echo world : $SOZO_WORLD
-echo defenceactions : $DEFENCE_ADDRESS
-echo gameactions : $GAME_ADDRESS
-echo fleetactions : $FLEET_ADDRESS
-echo compoundactions : $COMPOUND_ADDRESS
-echo dockyardactions : $DOCKYARD_ADDRESS
+echo world : $WORLD_ADDRESS
 echo colonyactions : $COLONY_ADDRESS
+echo compoundactions : $COMPOUND_ADDRESS
+echo defenceactions : $DEFENCE_ADDRESS
+echo dockyardactions : $DOCKYARD_ADDRESS
+echo fleetactions : $FLEET_ADDRESS
+echo gameactions : $GAME_ADDRESS
 echo planetactions : $PLANET_ADDRESS
 echo techactions : $TECH_ADDRESS
 echo "---------------------------------------------------------------------------"
@@ -47,21 +43,21 @@ grant_authorization() {
     local components=("${!1}")
     local address=$2
     for component in ${components[@]}; do
-        sozo auth grant writer "$component,$address"
+        sozo auth grant --world $WORLD_ADDRESS --wait writer $component,$address
         echo "Granted writer authorization for $component to $address"
         sleep 1
     done
 }
 
 # Arrays of component names for each contract type
-COLONY_COMPONENTS=("PlanetResourcesSpent" "ColonyCompounds" "ColonyResource" "ColonyShips" "ColonyDefences" "ColonyPosition" "PositionToColony" "ColonyResourceTimer" "ColonyOwner" "PositionToPlanet" "PlanetPosition" "PlanetColoniesCount" "ColonyCount" )
-COMPOUND_COMPONENTS=("PlanetCompounds" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
-DEFENCE_COMPONENTS=("PlanetDefences" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
-DOCKYARD_COMPONENTS=("PlanetShips" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
-FLEET_COMPONENTS=("PlanetResourcesSpent" "LastActive" "PlanetDebrisField" "ColonyResourceTimer" "PlanetResourceTimer" "ActiveMission" "ActiveMissionLen" "IncomingMissions" "IncomingMissionLen" "ColonyShips" "PlanetShips" "PlanetDefences" "PlanetResource" "ColonyResource")
-GAME_COMPONENTS=("GameSetup" "GamePlanetCount")
-PLANET_COMPONENTS=("PlanetPosition" "PositionToPlanet"  "PlanetResourceTimer" "PlanetResource"  "GamePlanetCount" "GamePlanet" "GamePlanetOwner" "GameOwnerPlanet")
-TECH_COMPONENTS=("PlanetTechs" "PlanetResource" "PlanetResourceTimer" "PlanetResourcesSpent")
+COLONY_COMPONENTS=(PlanetResourcesSpent ColonyCompounds ColonyResource ColonyShips ColonyDefences ColonyPosition PositionToColony ColonyResourceTimer ColonyOwner PositionToPlanet PlanetPosition PlanetColoniesCount ColonyCount )
+COMPOUND_COMPONENTS=(PlanetCompounds PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+DEFENCE_COMPONENTS=(PlanetDefences PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+DOCKYARD_COMPONENTS=(PlanetShips PlanetResource PlanetResourceTimer PlanetResourcesSpent)
+FLEET_COMPONENTS=(PlanetResourcesSpent LastActive PlanetDebrisField ColonyResourceTimer PlanetResourceTimer ActiveMission ActiveMissionLen IncomingMissions IncomingMissionLen ColonyShips PlanetShips PlanetDefences PlanetResource ColonyResource)
+GAME_COMPONENTS=(GameSetup GamePlanetCount)
+PLANET_COMPONENTS=(PlanetPosition PositionToPlanet PlanetResourceTimer PlanetResource  GamePlanetCount GamePlanet GamePlanetOwner GameOwnerPlanet)
+TECH_COMPONENTS=(PlanetTechs PlanetResource PlanetResourceTimer PlanetResourcesSpent)
 
 # Granting authorizations
 grant_authorization COLONY_COMPONENTS[@] "$COLONY_ADDRESS"
@@ -73,6 +69,6 @@ grant_authorization GAME_COMPONENTS[@] "$GAME_ADDRESS"
 grant_authorization PLANET_COMPONENTS[@] "$PLANET_ADDRESS"
 grant_authorization TECH_COMPONENTS[@] "$TECH_ADDRESS"
 
-sozo execute $GAME_ADDRESS spawn -c 10000
+sozo execute --world $WORLD_ADDRESS $GAME_ADDRESS spawn -c 10000 --wait
 
 echo "Default authorizations have been successfully set."
