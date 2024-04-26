@@ -21,7 +21,7 @@ const CompoundsBox = ({
   const [energyRequired, setEnergyRequired] = deps.useState(0);
   const {
     setup: {
-      systemCalls: { upgradeCompound, upgradeColonyCompound },
+      systemCalls: { startCompoundUpgrade, startColonyCompoundUpgrade },
     },
     account,
   } = useDojo();
@@ -29,8 +29,8 @@ const CompoundsBox = ({
   const energy = deps.numberWithCommas(energyRequired);
   const upgrade = () => {
     colonyId === 0
-      ? upgradeCompound(account.account, functionCallName, quantity)
-      : upgradeColonyCompound(
+      ? startCompoundUpgrade(account.account, functionCallName, quantity)
+      : startColonyCompoundUpgrade(
           account.account,
           colonyId,
           functionCallName,
