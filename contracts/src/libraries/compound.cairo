@@ -5,7 +5,7 @@ use nogame::models::{compound::{PlanetCompounds, PlanetCompoundTimer}, game::Gam
 use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 
 fn upgrade_component(
-    world: IWorldDispatcher, planet_id: u32, component: CompoundUpgradeType, quantity: u8
+    world: IWorldDispatcher, planet_id: u32, name: u8, quantity: u8
 ) -> Resources {
     let compounds = shared::get_compound_levels(world, planet_id);
     shared::collect(world, planet_id, 0, compounds);
@@ -15,142 +15,134 @@ fn upgrade_component(
     let queue_status = get!(world, planet_id, PlanetCompoundTimer).time_end;
     assert!(queue_status.is_zero(), "Compound: Already building");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
-    match component {
-        CompoundUpgradeType::SteelMine => {
-            cost = cost::steel(compounds.steel, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::QuartzMine => {
-            cost = cost::quartz(compounds.quartz, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::TritiumMine => {
-            cost = cost::tritium(compounds.tritium, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::EnergyPlant => {
-            cost = cost::energy(compounds.energy, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Lab => {
-            cost = cost::lab(compounds.lab, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Dockyard => {
-            assert!(compounds.cybernetics >= 2, "Compound: Cybernetics level too low, required 2");
-            cost = cost::dockyard(compounds.dockyard, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Cybernetics => {
-            cost = cost::cybernetics(compounds.cybernetics, quantity);
-            assert!(available_resources >= cost, "Compound: Not enough resources");
-            shared::pay_resources(world, planet_id, 0, available_resources, cost);
-            let built_time = shared::build_time_is_seconds(
-                cost.steel + cost.quartz, compounds.cybernetics, game_speed
-            );
-            set!(
-                world,
-                (
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: component,
-                        levels: quantity,
-                        time_end: time_now + built_time
-                    },
-                )
-            );
-        },
-    };
+    if name == Names::Compound::STEEL {
+        cost = cost::steel(compounds.steel, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::STEEL,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::QUARTZ {
+        cost = cost::quartz(compounds.quartz, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::QUARTZ,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::TRITIUM {
+        cost = cost::tritium(compounds.tritium, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::TRITIUM,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::ENERGY {
+        cost = cost::energy(compounds.energy, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::ENERGY,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::LAB {
+        cost = cost::lab(compounds.lab, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::LAB,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::DOCKYARD {
+        assert!(compounds.cybernetics >= 2, "Compound: Cybernetics level too low, required 2");
+        cost = cost::dockyard(compounds.dockyard, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::DOCKYARD,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    } else if name == Names::Compound::CYBERNETICS {
+        cost = cost::cybernetics(compounds.cybernetics, quantity);
+        assert!(available_resources >= cost, "Compound: Not enough resources");
+        shared::pay_resources(world, planet_id, 0, available_resources, cost);
+        let built_time = shared::build_time_is_seconds(
+            cost.steel + cost.quartz, compounds.cybernetics, game_speed
+        );
+        set!(
+            world,
+            (
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: Names::Compound::CYBERNETICS,
+                    levels: quantity,
+                    time_end: time_now + built_time
+                },
+            )
+        );
+    }
     cost
 }
 
@@ -160,133 +152,126 @@ fn complete_upgrade(world: IWorldDispatcher, planet_id: u32) {
     assert!(!queue_status.time_end.is_zero(), "Compound: No upgrade in progress");
     assert!(time_now >= queue_status.time_end, "Compound: Upgrade not finished");
     let compounds = shared::get_compound_levels(world, planet_id);
-    match queue_status.name {
-        CompoundUpgradeType::SteelMine => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::STEEL,
-                        level: compounds.steel + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::QuartzMine => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::QUARTZ,
-                        level: compounds.quartz + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::TritiumMine => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::TRITIUM,
-                        level: compounds.tritium + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::EnergyPlant => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::ENERGY,
-                        level: compounds.energy + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Lab => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::LAB,
-                        level: compounds.lab + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Dockyard => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::DOCKYARD,
-                        level: compounds.dockyard + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
-        CompoundUpgradeType::Cybernetics => {
-            set!(
-                world,
-                (
-                    PlanetCompounds {
-                        planet_id,
-                        name: Names::Compound::CYBERNETICS,
-                        level: compounds.cybernetics + queue_status.levels
-                    },
-                    PlanetCompoundTimer {
-                        planet_id,
-                        name: queue_status.name,
-                        levels: Zeroable::zero(),
-                        time_end: Zeroable::zero()
-                    },
-                )
-            );
-        },
+    let name = queue_status.name;
+    if name == Names::Compound::STEEL {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::STEEL,
+                    level: compounds.steel + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::QUARTZ {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::QUARTZ,
+                    level: compounds.quartz + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::TRITIUM {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::TRITIUM,
+                    level: compounds.tritium + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::ENERGY {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::ENERGY,
+                    level: compounds.energy + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::LAB {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::LAB,
+                    level: compounds.lab + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::DOCKYARD {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::DOCKYARD,
+                    level: compounds.dockyard + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
+    } else if name == Names::Compound::CYBERNETICS {
+        set!(
+            world,
+            (
+                PlanetCompounds {
+                    planet_id,
+                    name: Names::Compound::CYBERNETICS,
+                    level: compounds.cybernetics + queue_status.levels
+                },
+                PlanetCompoundTimer {
+                    planet_id,
+                    name: queue_status.name,
+                    levels: Zeroable::zero(),
+                    time_end: Zeroable::zero()
+                },
+            )
+        );
     }
 }
 

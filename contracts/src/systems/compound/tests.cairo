@@ -18,7 +18,7 @@ fn test_upgrade_steel_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
-    actions.compound.start_upgrade(CompoundUpgradeType::SteelMine(()), 1);
+    actions.compound.start_upgrade(Names::Compound::STEEL, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -41,7 +41,7 @@ fn test_upgrade_quartz_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
-    actions.compound.start_upgrade(CompoundUpgradeType::QuartzMine(()), 1);
+    actions.compound.start_upgrade(Names::Compound::QUARTZ, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -60,7 +60,7 @@ fn test_upgrade_tritium_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
-    actions.compound.start_upgrade(CompoundUpgradeType::TritiumMine(()), 1);
+    actions.compound.start_upgrade(Names::Compound::TRITIUM, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -79,7 +79,7 @@ fn test_upgrade_energy_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
-    actions.compound.start_upgrade(CompoundUpgradeType::EnergyPlant(()), 1);
+    actions.compound.start_upgrade(Names::Compound::ENERGY, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -101,7 +101,7 @@ fn test_upgrade_lab_compound_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::QUARTZ, amount: 400 });
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::TRITIUM, amount: 200 });
 
-    actions.compound.start_upgrade(CompoundUpgradeType::Lab(()), 1);
+    actions.compound.start_upgrade(Names::Compound::LAB, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -121,7 +121,7 @@ fn test_upgrade_dockyard_compound_success() {
     actions.planet.generate_planet();
 
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::CYBERNETICS, level: 2 });
-    actions.compound.start_upgrade(CompoundUpgradeType::Dockyard(()), 1);
+    actions.compound.start_upgrade(Names::Compound::DOCKYARD, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -139,7 +139,7 @@ fn test_upgrade_cybernetics_compound_success() {
     set_contract_address(ACCOUNT_1());
     actions.planet.generate_planet();
 
-    actions.compound.start_upgrade(CompoundUpgradeType::Cybernetics(()), 1);
+    actions.compound.start_upgrade(Names::Compound::CYBERNETICS, 1);
     let queue_status = get!(world, 1, PlanetCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);

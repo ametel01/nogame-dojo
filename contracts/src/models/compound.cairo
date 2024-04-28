@@ -13,7 +13,7 @@ struct PlanetCompounds {
 struct PlanetCompoundTimer {
     #[key]
     planet_id: u32,
-    name: CompoundUpgradeType,
+    name: u8,
     levels: u8,
     time_end: u64,
 }

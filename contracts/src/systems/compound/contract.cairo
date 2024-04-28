@@ -1,6 +1,6 @@
 #[dojo::interface]
 trait ICompoundActions {
-    fn start_upgrade(component: nogame::data::types::CompoundUpgradeType, quantity: u8);
+    fn start_upgrade(component: u8, quantity: u8);
     fn complete_upgrade();
 }
 
@@ -25,7 +25,7 @@ mod compoundactions {
 
     #[abi(embed_v0)]
     impl CompoundActionsImpl of super::ICompoundActions<ContractState> {
-        fn start_upgrade(component: CompoundUpgradeType, quantity: u8) {
+        fn start_upgrade(component: u8, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
