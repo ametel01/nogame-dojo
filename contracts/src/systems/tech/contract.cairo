@@ -1,6 +1,6 @@
 #[dojo::interface]
 trait ITechActions {
-    fn start_upgrade(component: nogame::data::types::TechUpgradeType, quantity: u8);
+    fn start_upgrade(component: u8, quantity: u8);
     fn complete_upgrade();
 }
 
@@ -30,7 +30,7 @@ mod techactions {
 
     #[abi(embed_v0)]
     impl TechActionsImpl of super::ITechActions<ContractState> {
-        fn start_upgrade(component: TechUpgradeType, quantity: u8) {
+        fn start_upgrade(component: u8, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;

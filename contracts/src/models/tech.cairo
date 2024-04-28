@@ -13,7 +13,7 @@ struct PlanetTechs {
 struct PlanetTechTimer {
     #[key]
     planet_id: u32,
-    name: TechUpgradeType,
+    name: u8,
     levels: u8,
     time_end: u64,
 }

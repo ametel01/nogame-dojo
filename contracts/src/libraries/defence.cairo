@@ -83,7 +83,7 @@ fn build_component(
             )
         );
         return cost;
-    } else  {
+    } else {
         let cost = get_defences_cost(quantity, get_defences_unit_cost().plasma);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::plasma(compounds.dockyard, techs);
