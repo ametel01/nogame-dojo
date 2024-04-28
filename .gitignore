@@ -6,3 +6,5 @@ contracts/manifests
 
 
 .DS_Store
+
+client/yarn.lock
