@@ -13,7 +13,7 @@ struct PlanetDefences {
 struct PlanetDefenceTimer {
     #[key]
     planet_id: u32,
-    name: DefenceBuildType,
+    name: u8,
     quantity: u32,
     time_end: u64,
 }

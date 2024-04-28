@@ -4,9 +4,7 @@ use nogame::libraries::{constants, names::Names, shared};
 use nogame::models::{compound::{PlanetCompounds, PlanetCompoundTimer}, game::GameSetup};
 use nogame_fixed::f128::types::{Fixed, FixedTrait, ONE_u128 as ONE};
 
-fn upgrade_component(
-    world: IWorldDispatcher, planet_id: u32, name: u8, quantity: u8
-) -> Resources {
+fn upgrade_component(world: IWorldDispatcher, planet_id: u32, name: u8, quantity: u8) -> Resources {
     let compounds = shared::get_compound_levels(world, planet_id);
     shared::collect(world, planet_id, 0, compounds);
     let available_resources = shared::get_resources_available(world, planet_id, 0);

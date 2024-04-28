@@ -26,7 +26,7 @@ fn test_build_celestia_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 1 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::COMBUSTION, level: 1 });
 
-    actions.defence.start_build(DefenceBuildType::Celestia(()), 10);
+    actions.defence.start_build(Names::Defence::CELESTIA, 10);
     let queue_status = get!(world, 1, PlanetDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -50,7 +50,7 @@ fn test_build_blaster_success() {
     set!(world, PlanetResource { planet_id: 1, name: Names::Resource::STEEL, amount: 20_000 });
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 1 });
 
-    actions.defence.start_build(DefenceBuildType::Blaster(()), 10);
+    actions.defence.start_build(Names::Defence::BLASTER, 10);
     let queue_status = get!(world, 1, PlanetDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -75,7 +75,7 @@ fn test_build_beam_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ENERGY, level: 3 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::BEAM, level: 6 });
 
-    actions.defence.start_build(DefenceBuildType::Beam(()), 10);
+    actions.defence.start_build(Names::Defence::BEAM, 10);
     let queue_status = get!(world, 1, PlanetDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -104,7 +104,7 @@ fn test_build_astral_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WEAPONS, level: 3 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SHIELD, level: 1 });
 
-    actions.defence.start_build(DefenceBuildType::Astral(()), 10);
+    actions.defence.start_build(Names::Defence::ASTRAL, 10);
     let queue_status = get!(world, 1, PlanetDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -133,7 +133,7 @@ fn test_build_plasma_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 8 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::PLASMA, level: 7 });
 
-    actions.defence.start_build(DefenceBuildType::Plasma(()), 10);
+    actions.defence.start_build(Names::Defence::PLASMA, 10);
     let queue_status = get!(world, 1, PlanetDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);

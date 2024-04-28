@@ -1,6 +1,6 @@
 #[dojo::interface]
 trait IDefenceActions {
-    fn start_build(component: nogame::data::types::DefenceBuildType, quantity: u32);
+    fn start_build(component: u8, quantity: u32);
     fn complete_build();
 }
 
@@ -25,7 +25,7 @@ mod defenceactions {
 
     #[abi(embed_v0)]
     impl DefenceActionsImpl of super::IDefenceActions<ContractState> {
-        fn start_build(component: DefenceBuildType, quantity: u32) {
+        fn start_build(component: u8, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
