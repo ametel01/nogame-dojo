@@ -4,7 +4,7 @@ import { Resource } from '../constants/names/Names';
 import { Entity } from '@dojoengine/recs';
 import { useComponentValue } from '@dojoengine/react';
 import { useEffect, useState } from 'react';
-import { Resources } from './usePlanetResources';
+import { Resources } from '../dojo/generated/typescript/models.gen';
 
 export function useColonyResources(
   planetId: number,
@@ -31,26 +31,31 @@ export function useColonyResources(
   }, [planetId, getColonyUncollectedResources, colonyId]);
 
   // Reusable function to get resource level
-  const useGetResourceLevel = (resourceType: number): number => {
+  const useGetResourceLevel = (resourceType: number): bigint => {
+    // Ensure these IDs are needed as BigInt, if not, avoid conversion
     const entityId = getEntityIdFromKeys([
-      BigInt(planetId),
+      BigInt(planetId), // Converted to BigInt, assuming getEntityIdFromKeys needs BigInt
       BigInt(colonyId),
       BigInt(resourceType),
     ]) as Entity;
 
-    return Number(useComponentValue(ColonyResource, entityId)?.amount) ?? 0;
+    // Assuming useComponentValue can handle entityId as BigInt
+    const resourceComponent = useComponentValue(ColonyResource, entityId);
+
+    // Convert the BigInt amount to number before returning if needed
+    return resourceComponent ? resourceComponent.amount : BigInt(0);
   };
 
   // Use the reusable function for each resource
   const resources: Resources = {
     steel:
-      (colonyUncollectedResources?.steel || 0) +
+      BigInt(colonyUncollectedResources?.steel || 0) +
       useGetResourceLevel(Resource.Steel),
     quartz:
-      (colonyUncollectedResources?.quartz || 0) +
+      BigInt(colonyUncollectedResources?.quartz || 0) +
       useGetResourceLevel(Resource.Quartz),
     tritium:
-      (colonyUncollectedResources?.tritium || 0) +
+      BigInt(colonyUncollectedResources?.tritium || 0) +
       useGetResourceLevel(Resource.Tritium),
   };
 

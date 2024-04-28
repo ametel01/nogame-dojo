@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import BigNumber from 'bignumber.js';
 import { Position } from '../../hooks/usePlanetPosition';
-import { Resources } from '../../hooks/usePlanetResources';
+import { Resources } from '../../dojo/generated/typescript/models.gen';
 import { Techs } from '../../hooks/usePlanetTechs';
 import { Fleet } from '../../hooks/usePlanetShips';
 import { BigNumberish } from 'starknet';
@@ -217,7 +217,7 @@ export const plasmaRequirements = (
     : false;
 };
 
-export const numberWithCommas = (num: number | undefined): string => {
+export const numberWithCommas = (num: bigint | number | undefined): string => {
   if (num === undefined) return '';
 
   return num > 999

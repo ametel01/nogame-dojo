@@ -4,12 +4,7 @@ import { Resource } from '../constants/names/Names';
 import { Entity } from '@dojoengine/recs';
 import { useComponentValue } from '@dojoengine/react';
 import { useEffect, useState } from 'react';
-
-export type Resources = {
-  steel: number;
-  quartz: number;
-  tritium: number;
-};
+import { Resources } from '../dojo/generated/typescript/models.gen';
 
 export function usePlanetResources(planetId: number): Resources {
   const {
@@ -33,24 +28,24 @@ export function usePlanetResources(planetId: number): Resources {
   }, [planetId, getPlanetUncollectedResources]);
 
   // Reusable function to get resource level
-  const useGetResourceLevel = (resourceType: number): number => {
+  const useGetResourceLevel = (resourceType: number): bigint => {
     const entityId = getEntityIdFromKeys([
       BigInt(planetId),
       BigInt(resourceType),
     ]) as Entity;
-    return Number(useComponentValue(PlanetResource, entityId)?.amount) ?? 0;
+    return useComponentValue(PlanetResource, entityId)?.amount ?? BigInt(0);
   };
 
   // Use the reusable function for each resource
   const resources: Resources = {
     steel:
-      (planetUncollectedResources?.steel || 0) +
+      BigInt(planetUncollectedResources?.steel || 0) +
       useGetResourceLevel(Resource.Steel),
     quartz:
-      (planetUncollectedResources?.quartz || 0) +
+      BigInt(planetUncollectedResources?.quartz || 0) +
       useGetResourceLevel(Resource.Quartz),
     tritium:
-      (planetUncollectedResources?.tritium || 0) +
+      BigInt(planetUncollectedResources?.tritium || 0) +
       useGetResourceLevel(Resource.Tritium),
   };
 
