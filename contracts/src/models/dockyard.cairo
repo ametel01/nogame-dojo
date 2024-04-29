@@ -13,7 +13,7 @@ struct PlanetShips {
 struct PlanetDockyardTimer {
     #[key]
     planet_id: u32,
-    name: ShipBuildType,
+    name: u8,
     quantity: u32,
     time_end: u64,
 }

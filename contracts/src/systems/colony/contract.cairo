@@ -3,11 +3,11 @@ use nogame::data::types::{CompoundUpgradeType, Resources, ShipBuildType, Defence
 #[dojo::interface]
 trait IColonyActions {
     fn generate_colony();
-    fn start_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8);
+    fn start_compound_upgrade(colony_id: u8, name: u8, quantity: u8);
     fn complete_compound_upgrade(colony_id: u8);
-    fn start_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32,);
+    fn start_ship_build(colony_id: u8, name: u8, quantity: u32,);
     fn complete_ship_build(colony_id: u8);
-    fn start_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,);
+    fn start_defence_build(colony_id: u8, name: u8, quantity: u32,);
     fn complete_defence_build(colony_id: u8);
     fn get_uncollected_resources(planet_id: u32, colony_id: u8) -> Resources;
 }
@@ -111,7 +111,7 @@ mod colonyactions {
             emit!(world, PlanetGenerated { planet_id, position, account: get_caller_address() });
         }
 
-        fn start_compound_upgrade(colony_id: u8, name: CompoundUpgradeType, quantity: u8) {
+        fn start_compound_upgrade(colony_id: u8, name: u8, quantity: u8) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
@@ -127,7 +127,7 @@ mod colonyactions {
             colony::complete_upgrade(world, planet_id, colony_id);
         }
 
-        fn start_ship_build(colony_id: u8, name: ShipBuildType, quantity: u32) {
+        fn start_ship_build(colony_id: u8, name: u8, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;
@@ -143,7 +143,7 @@ mod colonyactions {
             colony::complete_ship_build(world, planet_id, colony_id);
         }
 
-        fn start_defence_build(colony_id: u8, name: DefenceBuildType, quantity: u32,) {
+        fn start_defence_build(colony_id: u8, name: u8, quantity: u32,) {
             let world = self.world_dispatcher.read();
             let caller = get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;

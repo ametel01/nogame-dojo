@@ -123,37 +123,37 @@ fn test_upgrade_colony_compound() {
         ColonyResource { planet_id: 1, colony_id: 1, name: Names::Resource::TRITIUM, amount: 10000 }
     );
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::SteelMine, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::STEEL, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::QuartzMine, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::QUARTZ, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::TritiumMine, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::TRITIUM, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::EnergyPlant, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::ENERGY, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::Dockyard, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::DOCKYARD, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_compound_upgrade(1);
 
-    actions.colony.start_compound_upgrade(1, CompoundUpgradeType::Cybernetics, 1);
+    actions.colony.start_compound_upgrade(1, Names::Compound::CYBERNETICS, 1);
     let queue_status = get!(world, (1, 1), ColonyCompoundTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -211,31 +211,31 @@ fn test_build_colony_ships() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ION, level: 2 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WARP, level: 4 });
-    actions.colony.start_ship_build(1, ShipBuildType::Carrier, 1);
+    actions.colony.start_ship_build(1, Names::Fleet::CARRIER, 1);
     let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_ship_build(1);
 
-    actions.colony.start_ship_build(1, ShipBuildType::Scraper, 1);
+    actions.colony.start_ship_build(1, Names::Fleet::SCRAPER, 1);
     let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_ship_build(1);
 
-    actions.colony.start_ship_build(1, ShipBuildType::Sparrow, 1);
+    actions.colony.start_ship_build(1, Names::Fleet::SPARROW, 1);
     let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_ship_build(1);
 
-    actions.colony.start_ship_build(1, ShipBuildType::Frigate, 1);
+    actions.colony.start_ship_build(1, Names::Fleet::FRIGATE, 1);
     let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_ship_build(1);
 
-    actions.colony.start_ship_build(1, ShipBuildType::Armade, 1);
+    actions.colony.start_ship_build(1, Names::Fleet::ARMADE, 1);
     let queue_status = get!(world, (1, 1), ColonyDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -289,31 +289,31 @@ fn test_build_colony_defence() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WEAPONS, level: 3 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::PLASMA, level: 7 });
 
-    actions.colony.start_defence_build(1, DefenceBuildType::Celestia, 1);
+    actions.colony.start_defence_build(1, Names::Defence::CELESTIA, 1);
     let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_defence_build(1);
 
-    actions.colony.start_defence_build(1, DefenceBuildType::Blaster, 1);
+    actions.colony.start_defence_build(1, Names::Defence::BLASTER, 1);
     let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_defence_build(1);
 
-    actions.colony.start_defence_build(1, DefenceBuildType::Beam, 1);
+    actions.colony.start_defence_build(1, Names::Defence::BEAM, 1);
     let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_defence_build(1);
 
-    actions.colony.start_defence_build(1, DefenceBuildType::Astral, 1);
+    actions.colony.start_defence_build(1, Names::Defence::ASTRAL, 1);
     let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
     actions.colony.complete_defence_build(1);
 
-    actions.colony.start_defence_build(1, DefenceBuildType::Plasma, 1);
+    actions.colony.start_defence_build(1, Names::Defence::PLASMA, 1);
     let queue_status = get!(world, (1, 1), ColonyDefenceTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);

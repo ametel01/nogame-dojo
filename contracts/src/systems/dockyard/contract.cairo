@@ -1,6 +1,6 @@
 #[dojo::interface]
 trait IDockyardActions {
-    fn start_build(component: nogame::data::types::ShipBuildType, quantity: u32);
+    fn start_build(component: u8, quantity: u32);
     fn complete_build();
 }
 
@@ -24,7 +24,7 @@ mod dockyardactions {
 
     #[abi(embed_v0)]
     impl DockyardActionsImpl of super::IDockyardActions<ContractState> {
-        fn start_build(component: ShipBuildType, quantity: u32) {
+        fn start_build(component: u8, quantity: u32) {
             let world = self.world_dispatcher.read();
             let caller = starknet::get_caller_address();
             let planet_id = get!(world, caller, GamePlanet).planet_id;

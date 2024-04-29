@@ -67,7 +67,7 @@ struct ColonyCompoundTimer {
     planet_id: u32,
     #[key]
     colony_id: u8,
-    name: CompoundUpgradeType,
+    name: u8,
     levels: u8,
     time_end: u64,
 }
@@ -89,7 +89,7 @@ struct ColonyDockyardTimer {
     planet_id: u32,
     #[key]
     colony_id: u8,
-    name: ShipBuildType,
+    name: u8,
     quantity: u32,
     time_end: u64,
 }
@@ -111,7 +111,7 @@ struct ColonyDefenceTimer {
     planet_id: u32,
     #[key]
     colony_id: u8,
-    name: DefenceBuildType,
+    name: u8,
     quantity: u32,
     time_end: u64,
 }

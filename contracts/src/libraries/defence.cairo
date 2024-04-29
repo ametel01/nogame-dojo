@@ -12,95 +12,54 @@ fn build_component(
     shared::collect(world, planet_id, 0, compounds);
     let available_resources = shared::get_resources_available(world, planet_id, 0);
     let time_now = starknet::get_block_timestamp();
+    let mut cost: Resources = Default::default();
+    let mut build_time = 0;
     let queue_status = get!(world, planet_id, PlanetDefenceTimer).time_end;
     assert!(queue_status.is_zero(), "PlanetDefenceTimer: Already building");
     let game_speed = get!(world, constants::GAME_ID, GameSetup).speed;
     if component == Names::Defence::CELESTIA {
-        let cost = get_defences_cost(quantity, get_defences_unit_cost().celestia);
+        cost = get_defences_cost(quantity, get_defences_unit_cost().celestia);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::celestia(compounds.dockyard, techs);
         shared::pay_resources(world, planet_id, 0, available_resources, cost);
-        let built_time = shared::build_time_is_seconds(
-            cost.steel + cost.quartz, compounds.dockyard, game_speed
-        );
-        set!(
-            world,
-            (
-                PlanetDefenceTimer {
-                    planet_id, name: component, quantity, time_end: time_now + built_time
-                },
-            )
-        );
-        return cost;
+        build_time =
+            shared::build_time_is_seconds(cost.steel + cost.quartz, compounds.dockyard, game_speed);
     } else if component == Names::Defence::BLASTER {
-        let cost = get_defences_cost(quantity, get_defences_unit_cost().blaster);
+        cost = get_defences_cost(quantity, get_defences_unit_cost().blaster);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::blaster(compounds.dockyard, techs);
         shared::pay_resources(world, planet_id, 0, available_resources, cost);
-        let built_time = shared::build_time_is_seconds(
-            cost.steel + cost.quartz, compounds.dockyard, game_speed
-        );
-        set!(
-            world,
-            (
-                PlanetDefenceTimer {
-                    planet_id, name: component, quantity, time_end: time_now + built_time
-                },
-            )
-        );
-        return cost;
+        build_time =
+            shared::build_time_is_seconds(cost.steel + cost.quartz, compounds.dockyard, game_speed);
     } else if component == Names::Defence::BEAM {
-        let cost = get_defences_cost(quantity, get_defences_unit_cost().beam);
+        cost = get_defences_cost(quantity, get_defences_unit_cost().beam);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::beam(compounds.dockyard, techs);
         shared::pay_resources(world, planet_id, 0, available_resources, cost);
-        let built_time = shared::build_time_is_seconds(
-            cost.steel + cost.quartz, compounds.dockyard, game_speed
-        );
-        set!(
-            world,
-            (
-                PlanetDefenceTimer {
-                    planet_id, name: component, quantity, time_end: time_now + built_time
-                },
-            )
-        );
-        return cost;
+        build_time =
+            shared::build_time_is_seconds(cost.steel + cost.quartz, compounds.dockyard, game_speed);
     } else if component == Names::Defence::ASTRAL {
-        let cost = get_defences_cost(quantity, get_defences_unit_cost().astral);
+        cost = get_defences_cost(quantity, get_defences_unit_cost().astral);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::astral(compounds.dockyard, techs);
         shared::pay_resources(world, planet_id, 0, available_resources, cost);
-        let built_time = shared::build_time_is_seconds(
-            cost.steel + cost.quartz, compounds.dockyard, game_speed
-        );
-        set!(
-            world,
-            (
-                PlanetDefenceTimer {
-                    planet_id, name: component, quantity, time_end: time_now + built_time
-                },
-            )
-        );
-        return cost;
+        build_time =
+            shared::build_time_is_seconds(cost.steel + cost.quartz, compounds.dockyard, game_speed);
     } else {
-        let cost = get_defences_cost(quantity, get_defences_unit_cost().plasma);
+        cost = get_defences_cost(quantity, get_defences_unit_cost().plasma);
         assert!(available_resources >= cost, "Defence: Not enough resources");
         requirements::plasma(compounds.dockyard, techs);
         shared::pay_resources(world, planet_id, 0, available_resources, cost);
-        let built_time = shared::build_time_is_seconds(
-            cost.steel + cost.quartz, compounds.dockyard, game_speed
-        );
-        set!(
-            world,
-            (
-                PlanetDefenceTimer {
-                    planet_id, name: component, quantity, time_end: time_now + built_time
-                },
-            )
-        );
-        return cost;
+        build_time =
+            shared::build_time_is_seconds(cost.steel + cost.quartz, compounds.dockyard, game_speed);
     }
+    set!(
+        world,
+        PlanetDefenceTimer {
+            planet_id, name: component, quantity, time_end: time_now + build_time
+        },
+    );
+    return cost;
 }
 
 fn complete_build(world: IWorldDispatcher, planet_id: u32) {
@@ -113,89 +72,56 @@ fn complete_build(world: IWorldDispatcher, planet_id: u32) {
     if component == Names::Defence::CELESTIA {
         set!(
             world,
-            (
-                PlanetDefences {
-                    planet_id,
-                    name: Names::Defence::CELESTIA,
-                    count: defences.celestia + queue_status.quantity
-                },
-                PlanetDefenceTimer {
-                    planet_id,
-                    name: queue_status.name,
-                    quantity: Zeroable::zero(),
-                    time_end: Zeroable::zero()
-                },
-            )
+            PlanetDefences {
+                planet_id,
+                name: Names::Defence::CELESTIA,
+                count: defences.celestia + queue_status.quantity
+            },
         );
     } else if component == Names::Defence::BLASTER {
         set!(
             world,
-            (
-                PlanetDefences {
-                    planet_id,
-                    name: Names::Defence::BLASTER,
-                    count: defences.blaster + queue_status.quantity
-                },
-                PlanetDefenceTimer {
-                    planet_id,
-                    name: queue_status.name,
-                    quantity: Zeroable::zero(),
-                    time_end: Zeroable::zero()
-                },
-            )
+            PlanetDefences {
+                planet_id,
+                name: Names::Defence::BLASTER,
+                count: defences.blaster + queue_status.quantity
+            },
         );
     } else if component == Names::Defence::BEAM {
         set!(
             world,
-            (
-                PlanetDefences {
-                    planet_id,
-                    name: Names::Defence::BEAM,
-                    count: defences.beam + queue_status.quantity
-                },
-                PlanetDefenceTimer {
-                    planet_id,
-                    name: queue_status.name,
-                    quantity: Zeroable::zero(),
-                    time_end: Zeroable::zero()
-                },
-            )
+            PlanetDefences {
+                planet_id, name: Names::Defence::BEAM, count: defences.beam + queue_status.quantity
+            },
         );
     } else if component == Names::Defence::ASTRAL {
         set!(
             world,
-            (
-                PlanetDefences {
-                    planet_id,
-                    name: Names::Defence::ASTRAL,
-                    count: defences.astral + queue_status.quantity
-                },
-                PlanetDefenceTimer {
-                    planet_id,
-                    name: queue_status.name,
-                    quantity: Zeroable::zero(),
-                    time_end: Zeroable::zero()
-                },
-            )
+            PlanetDefences {
+                planet_id,
+                name: Names::Defence::ASTRAL,
+                count: defences.astral + queue_status.quantity
+            },
         );
     } else if component == Names::Defence::PLASMA {
         set!(
             world,
-            (
-                PlanetDefences {
-                    planet_id,
-                    name: Names::Defence::PLASMA,
-                    count: defences.plasma + queue_status.quantity
-                },
-                PlanetDefenceTimer {
-                    planet_id,
-                    name: queue_status.name,
-                    quantity: Zeroable::zero(),
-                    time_end: Zeroable::zero()
-                },
-            )
+            PlanetDefences {
+                planet_id,
+                name: Names::Defence::PLASMA,
+                count: defences.plasma + queue_status.quantity
+            },
         );
     }
+    set!(
+        world,
+        PlanetDefenceTimer {
+            planet_id,
+            name: Zeroable::zero(),
+            quantity: Zeroable::zero(),
+            time_end: Zeroable::zero()
+        }
+    );
 }
 
 

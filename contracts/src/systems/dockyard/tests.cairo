@@ -25,7 +25,7 @@ fn test_build_carrier_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 2 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::COMBUSTION, level: 2 });
 
-    actions.dockyard.start_build(ShipBuildType::Carrier(()), 10);
+    actions.dockyard.start_build(Names::Fleet::CARRIER, 10);
     let queue_status = get!(world, 1, PlanetDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -53,7 +53,7 @@ fn test_build_scraper_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::COMBUSTION, level: 6 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::SHIELD, level: 2 });
 
-    actions.dockyard.start_build(ShipBuildType::Scraper(()), 10);
+    actions.dockyard.start_build(Names::Fleet::SCRAPER, 10);
     let queue_status = get!(world, 1, PlanetDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -82,7 +82,7 @@ fn test_build_sparrow_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 1 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::COMBUSTION, level: 1 });
 
-    actions.dockyard.start_build(ShipBuildType::Sparrow(()), 10);
+    actions.dockyard.start_build(Names::Fleet::SPARROW, 10);
     let queue_status = get!(world, 1, PlanetDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -111,7 +111,7 @@ fn test_build_frigate_success() {
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::ION, level: 2 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::THRUST, level: 4 });
 
-    actions.dockyard.start_build(ShipBuildType::Frigate(()), 10);
+    actions.dockyard.start_build(Names::Fleet::FRIGATE, 10);
     let queue_status = get!(world, 1, PlanetDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
@@ -140,7 +140,7 @@ fn test_build_armade_success() {
     set!(world, PlanetCompounds { planet_id: 1, name: Names::Compound::DOCKYARD, level: 7 });
     set!(world, PlanetTechs { planet_id: 1, name: Names::Tech::WARP, level: 4 });
 
-    actions.dockyard.start_build(ShipBuildType::Armade(()), 10);
+    actions.dockyard.start_build(Names::Fleet::ARMADE, 10);
     let queue_status = get!(world, 1, PlanetDockyardTimer);
     assert!(queue_status.time_end > 0, "Queue should have a time_end");
     set_block_timestamp(get_block_timestamp() + queue_status.time_end + 1);
